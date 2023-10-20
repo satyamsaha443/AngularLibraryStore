@@ -1,0 +1,12 @@
+<li class="list-group-item d-flex justify-content-between align-items-start">
+    <div class="ms-2 me-auto">
+        <div class="fw-bold">{{item?.title!}}</div>
+        Rs.{{item?.price}}
+    </div>
+    <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
+        <button type="button" class="btn btn-outline-primary" (click)="decreaseBooks(item?.ISBN!)">-</button>
+        <button type="button" class="btn btn-primary">{{item?.quantity}}</button>
+        <button type="button" class="btn btn-outline-primary" (click)="addbooks(item?.ISBN!)">+</button>
+    </div>
+    <button class="badge bg-primary rounded-pill" (click) = "removeBook(item?.ISBN!)">X</button>
+</li>
