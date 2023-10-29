@@ -106,3 +106,34 @@ export class BrowserComponent implements OnInit {
   display: block;
   margin: 0 auto;
 }
+
+<!-- Modal -->
+<div class="modal fade" id="artDetailModal" tabindex="-1" aria-labelledby="artDetailLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="artDetailLabel">{{ selectedArt?.title }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6">
+                <img [src]="selectedArt?.image_url" alt="{{ selectedArt?.title }}" class="img-fluid mb-3">
+            </div>
+            <div class="col-md-6">
+                <p><strong>Artist:</strong> {{ selectedArt?.artist_title }}</p>
+                <p><strong>Description:</strong> {{ selectedArt?.description }}</p>
+                <p><strong>Medium:</strong> {{ selectedArt?.medium_display }}</p>
+                <p><strong>Date:</strong> {{ selectedArt?.date_display }}</p>
+                <p><strong>Dimensions:</strong> {{ selectedArt?.dimensions_display }}</p>
+                <!-- Add any other relevant details available from the API -->
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+</div>
+
