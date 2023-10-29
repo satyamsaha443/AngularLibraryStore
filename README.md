@@ -27,166 +27,106 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
 
 
-
 <div class="container mt-5">
-
-  <!-- Artwork Listing -->
-  <div class="results-container row">
-    <div *ngFor="let art of artworks; let i = index" class="col-md-4 mb-4">
-      <div class="card" (click)="openModal(i)">
-        <img [src]="art.thumbnail_url" alt="{{ art.title }}" class="card-img-top">
-        <div class="card-body">
-          <h5 class="card-title">{{ art.title }}</h5>
-          <p class="card-text">{{ art.artist_title }}</p>
+    <div class="search-container mb-4">
+      <input type="text" [(ngModel)]="searchQuery" placeholder="Search for artwork, artists..." class="form-control mb-2" />
+      
+      <!-- Filters -->
+      <div class="filter-container mb-2">
+        <div class="row">
+          <div class="col-md-4">
+            <input type="text" [(ngModel)]="filterOptions.artist" placeholder="Enter artist name..." class="form-control" />
+          </div>
+          <div class="col-md-4">
+            <input type="text" [(ngModel)]="filterOptions.medium" placeholder="Enter medium..." class="form-control" />
+          </div>
+          <div class="col-md-4">
+            <select [(ngModel)]="filterOptions.timePeriod" class="form-control">
+              <option value="renaissance">Renaissance</option>
+              <option value="modern">Modern</option>
+              <option value="contemporary">Contemporary</option>
+            </select>
+          </div>
+        </div>
+      </div>
+  
+      <button (click)="searchArtworks()" class="btn btn-primary">Search</button>
+    </div>
+  
+    <!-- Artwork Listing -->
+    <div class="results-container row">
+      <div *ngFor="let art of searchResults" class="col-md-4 mb-4">
+        <div class="card">
+          <img [src]="art.thumbnail_url" alt="{{ art.title }}" class="card-img-top" />
+          <div class="card-body">
+            <h5 class="card-title">{{ art.title }}</h5>
+            <p class="card-text">{{ art.artist_title }}</p>
+          </div>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- Modal -->
-  <div class="modal fade" id="artDetailModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">{{ selectedArt?.title }}</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <img [src]="selectedArt?.image_url" alt="{{ selectedArt?.title }}" class="img-fluid mb-3">
-          <p><strong>Artist:</strong> {{ selectedArt?.artist_title }}</p>
-          <!-- Add more details as needed -->
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
+  
 
 import { Component, OnInit } from '@angular/core';
-import { ArtService } from '../art.service';
+import { ArtService } from '../shared/art.service';
 
-declare var $: any;  // If you're using Bootstrap's JavaScript, you'll need to declare jQuery
+@Component({
+  selector: 'app-search',
+  templateUrl: './search.component.html',
+  styleUrls: ['./search.component.css']
+})
+export class SearchComponent {
+  searchQuery: string = '';
+  filterOptions = {
+    artist:'',
+    medium:'',
+    timePeriod:''
+  };
+  searchResults: any[]= [];
+  constructor(private artService: ArtService){}
 
-@Component({ /*...*/ })
-export class BrowserComponent implements OnInit {
-  artworks: any[] = [];
-  selectedArt: any;
-
-  constructor(private artService: ArtService) { }
-
-  ngOnInit(): void {
-    // Assuming you're fetching artworks on init
-    this.artService.getArtworks().subscribe(data => {
-      this.artworks = data;  // Adjust based on the response structure
+  ngOnInit(): void{}
+  
+  searchArtworks():void{
+    this.artService.searchArtworks(this.searchQuery, this.filterOptions).subscribe(data => {
+      this.searchResults = data.data;
     });
   }
 
-  openModal(index: number): void {
-    this.selectedArt = this.artworks[index];
-    $('#artDetailModal').modal('show');
+}
+
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import {Observable, throwError} from 'rxjs';
+import {catchError} from 'rxjs/operators';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ArtService {
+
+  private baseUrl: string= 'https://api.artic.edu/api/v1/artworks';
+  image_url: string='https://www.artic.edu/iiif/2/{identifier}/full/1686,/0/default.jpg'
+  constructor(private http: HttpClient) { }
+  getArtworks(): Observable<any> {
+    return this.http.get(this.baseUrl); 
   }
+
+  searchArtworks(query: string, filters: any): Observable<any>{
+    let params = new HttpParams().set('q', query);
+    if(filters.artist){
+      params = params.set('artist',filters.artist);
+    }
+    if(filters.medium){
+      params = params.set('medium', filters.medium);
+    }
+    if(filters.timePeriod){
+      params = params.set('time_period', filters.timePeriod);
+    }
+    return this.http.get(this.baseUrl, {params});
+
+
+
 }
-
-.card {
-  cursor: pointer;
-  transition: transform 0.3s, box-shadow 0.3s;
 }
-
-.card:hover {
-  transform: scale(1.05);
-  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
-}
-
-.modal-body img {
-  width: 100%;
-  max-width: 500px;
-  display: block;
-  margin: 0 auto;
-}
-
-<!-- Modal -->
-<div class="modal fade" id="artDetailModal" tabindex="-1" aria-labelledby="artDetailLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="artDetailLabel">{{ selectedArt?.title }}</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div class="row">
-            <div class="col-md-6">
-                <img [src]="selectedArt?.image_url" alt="{{ selectedArt?.title }}" class="img-fluid mb-3">
-            </div>
-            <div class="col-md-6">
-                <p><strong>Artist:</strong> {{ selectedArt?.artist_title }}</p>
-                <p><strong>Description:</strong> {{ selectedArt?.description }}</p>
-                <p><strong>Medium:</strong> {{ selectedArt?.medium_display }}</p>
-                <p><strong>Date:</strong> {{ selectedArt?.date_display }}</p>
-                <p><strong>Dimensions:</strong> {{ selectedArt?.dimensions_display }}</p>
-                <!-- Add any other relevant details available from the API -->
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-
-</div>
-
-
-<!-- Modal -->
-<div class="modal fade" id="artDetailModal" tabindex="-1" aria-labelledby="artDetailLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="artDetailLabel">{{ selectedArt?.title }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <!-- Displaying larger image -->
-                        <img [src]="selectedArt?.image_url" alt="{{ selectedArt?.title }}" class="img-fluid mb-3">
-                    </div>
-                    <div class="col-md-6">
-                        <p><strong>Artist:</strong> {{ selectedArt?.artist_title }}</p>
-                        <p><strong>Date:</strong> {{ selectedArt?.date_display }}</p>
-                        <p><strong>Description:</strong> {{ selectedArt?.description }}</p>
-                        <p><strong>Medium:</strong> {{ selectedArt?.medium_display }}</p>
-                        <!-- Display any other related information available through the API -->
-                        <p><strong>Dimensions:</strong> {{ selectedArt?.dimensions_display }}</p>
-                        <!-- ... Add other details as they are available ... -->
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-.modal-body img {
-    max-width: 100%;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.modal-body p {
-    margin-bottom: 15px;
-}
-
-.modal-body p strong {
-    font-weight: 600;
-    margin-right: 10px;
-}
-
-/* ... Additional styles as desired ... */
-
-
