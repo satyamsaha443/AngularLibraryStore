@@ -135,5 +135,58 @@ export class BrowserComponent implements OnInit {
         </div>
       </div>
     </div>
+
 </div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="artDetailModal" tabindex="-1" aria-labelledby="artDetailLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="artDetailLabel">{{ selectedArt?.title }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <!-- Displaying larger image -->
+                        <img [src]="selectedArt?.image_url" alt="{{ selectedArt?.title }}" class="img-fluid mb-3">
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Artist:</strong> {{ selectedArt?.artist_title }}</p>
+                        <p><strong>Date:</strong> {{ selectedArt?.date_display }}</p>
+                        <p><strong>Description:</strong> {{ selectedArt?.description }}</p>
+                        <p><strong>Medium:</strong> {{ selectedArt?.medium_display }}</p>
+                        <!-- Display any other related information available through the API -->
+                        <p><strong>Dimensions:</strong> {{ selectedArt?.dimensions_display }}</p>
+                        <!-- ... Add other details as they are available ... -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+.modal-body img {
+    max-width: 100%;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modal-body p {
+    margin-bottom: 15px;
+}
+
+.modal-body p strong {
+    font-weight: 600;
+    margin-right: 10px;
+}
+
+/* ... Additional styles as desired ... */
+
 
