@@ -130,3 +130,49 @@ export class ArtService {
 
 }
 }
+
+
+<div *ngFor="let art of searchResults" class="col-md-4 mb-4">
+  <div class="card" (click)="openModal(art)">
+    <img [src]="getArtworkImageUrl(art.image_id)" alt="{{ art.title }}" class="card-img-top" />
+    <div class="card-body">
+      <h5 class="card-title">{{ art.title }}</h5>
+      <p class="card-text">{{ art.artist_title }}</p>
+    </div>
+  </div>
+</div>
+
+
+getArtworkImageUrl(imageId: string): string {
+  return `https://www.artic.edu/iiif/2/${imageId}/full/843,/0/default.jpg`;
+}
+
+
+<!-- Modal -->
+<div class="modal fade" id="artDetailModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ selectedArt?.title }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <img [src]="getArtworkImageUrl(selectedArt?.image_id)" alt="{{ selectedArt?.title }}" class="img-fluid mb-3">
+        <p><strong>Artist:</strong> {{ selectedArt?.artist_title }}</p>
+        <p><strong>Date:</strong> {{ selectedArt?.date }}</p>
+        <p><strong>Description:</strong> {{ selectedArt?.description }}</p>
+        <!-- Add more details as needed -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+openModal(art: any): void {
+  this.selectedArt = art;
+  $('#artDetailModal').modal('show');
+}
+
