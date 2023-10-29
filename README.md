@@ -27,37 +27,14 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
 
 
-<div class="container mt-5">
-  <div class="search-container mb-4">
-    <input type="text" [(ngModel)]="searchQuery" placeholder="Search for artwork, artists..." class="form-control mb-2" />
-    
-    <!-- Filters -->
-    <div class="filter-container mb-2">
-      <div class="row">
-        <div class="col-md-4">
-          <input type="text" [(ngModel)]="filterOptions.artist" placeholder="Enter artist name..." class="form-control" />
-        </div>
-        <div class="col-md-4">
-          <input type="text" [(ngModel)]="filterOptions.medium" placeholder="Enter medium..." class="form-control" />
-        </div>
-        <div class="col-md-4">
-          <select [(ngModel)]="filterOptions.timePeriod" class="form-control">
-            <option value="renaissance">Renaissance</option>
-            <option value="modern">Modern</option>
-            <option value="contemporary">Contemporary</option>
-          </select>
-        </div>
-      </div>
-    </div>
 
-    <button (click)="searchArtworks()" class="btn btn-primary">Search</button>
-  </div>
+<div class="container mt-5">
 
   <!-- Artwork Listing -->
   <div class="results-container row">
-    <div *ngFor="let art of searchResults" class="col-md-4 mb-4">
-      <div class="card">
-        <img [src]="art.thumbnail_url" alt="{{ art.title }}" class="card-img-top" />
+    <div *ngFor="let art of artworks; let i = index" class="col-md-4 mb-4">
+      <div class="card" (click)="openModal(i)">
+        <img [src]="art.thumbnail_url" alt="{{ art.title }}" class="card-img-top">
         <div class="card-body">
           <h5 class="card-title">{{ art.title }}</h5>
           <p class="card-text">{{ art.artist_title }}</p>
@@ -65,31 +42,67 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
       </div>
     </div>
   </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="artDetailModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">{{ selectedArt?.title }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <img [src]="selectedArt?.image_url" alt="{{ selectedArt?.title }}" class="img-fluid mb-3">
+          <p><strong>Artist:</strong> {{ selectedArt?.artist_title }}</p>
+          <!-- Add more details as needed -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 
+import { Component, OnInit } from '@angular/core';
+import { ArtService } from '../art.service';
 
+declare var $: any;  // If you're using Bootstrap's JavaScript, you'll need to declare jQuery
 
-.container {
-  max-width: 900px;
-}
+@Component({ /*...*/ })
+export class BrowserComponent implements OnInit {
+  artworks: any[] = [];
+  selectedArt: any;
 
-.search-container {
-  background-color: #f9f9f9;
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-}
+  constructor(private artService: ArtService) { }
 
-.filter-container .row > div {
-  margin-bottom: 10px;
+  ngOnInit(): void {
+    // Assuming you're fetching artworks on init
+    this.artService.getArtworks().subscribe(data => {
+      this.artworks = data;  // Adjust based on the response structure
+    });
+  }
+
+  openModal(index: number): void {
+    this.selectedArt = this.artworks[index];
+    $('#artDetailModal').modal('show');
+  }
 }
 
 .card {
+  cursor: pointer;
   transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .card:hover {
-  transform: translateY(-5px);
+  transform: scale(1.05);
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.modal-body img {
+  width: 100%;
+  max-width: 500px;
+  display: block;
+  margin: 0 auto;
 }
