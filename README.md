@@ -26,203 +26,208 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
 
-<div class="container mt-5">
-    <div class="search-container mb-4">
-      <input type="text" [(ngModel)]="searchQuery" placeholder="Search for artwork, artists..." class="form-control mb-2" />
-      
-      <!-- Filters -->
-      <div class="filter-container mb-2">
-        <div class="row">
-          <div class="col-md-4">
-            <input type="text" [(ngModel)]="filterOptions.artist" placeholder="Enter artist name..." class="form-control" />
-          </div>
-          <div class="col-md-4">
-            <input type="text" [(ngModel)]="filterOptions.medium" placeholder="Enter medium..." class="form-control" />
-          </div>
-          <div class="col-md-4">
-            <select [(ngModel)]="filterOptions.timePeriod" class="form-control">
-              <option value="renaissance">Renaissance</option>
-              <option value="modern">Modern</option>
-              <option value="contemporary">Contemporary</option>
-            </select>
-          </div>
-        </div>
-      </div>
-  
-      <button (click)="searchArtworks()" class="btn btn-primary">Search</button>
-    </div>
-  
-    <!-- Artwork Listing -->
-    <div class="results-container row">
-      <div *ngFor="let art of searchResults" class="col-md-4 mb-4">
-        <div class="card">
-          <img [src]="getArtworkImageUrl(art.image_id)" alt="{{ art.title }}" class="card-img-top" />
-          <div class="card-body">
-            <h5 class="card-title">{{ art.title }}</h5>
-            <p class="card-text">{{ art.artist_title }}</p>
-          </div>
-        </div>
+<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" *ngIf="artworkCarouselItems">
+    <ol class="carousel-indicators">
+      <li *ngFor="let item of artworkCarouselItems; let i = index" [attr.data-bs-target]="'#carouselExampleIndicators'" [attr.data-bs-slide-to]="i" [class.active]="i === 0"></li>
+    </ol>
+    <div class="carousel-inner">
+      <div *ngFor="let item of artworkCarouselItems; let i = index" class="carousel-item" [class.active]="i === 0">
+        <img [src]="item.image" [alt]="item.alt" class="d-block w-100">
       </div>
     </div>
+    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </a>
   </div>
+
+
+<div class="container mt-5">
+    <div class="row">
+      <div class="col-md-12">
+        <mat-paginator [length]="pagination.total" [pageSize]="pageSize" [pageSizeOptions]="[6, 12, 24, 48]" showFirstLastButtons (page)="onPageChange($event)">
+        </mat-paginator>
+      </div>
+    </div>
+
+    
+    <!-- Artwork Listing -->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="results-container row flex-wrap">
+          <div *ngFor="let art of pageSlice" class="col-md-4 mb-4">
+            <div class="card" (click)="openDetail(art)">
+              <img [src]="getArtworkImageUrl(art.image_id)" alt="{{ art.title }}" class="card-img-top" />
+              <div class="card-body">
+                <h5 class="card-title">{{ art.title }}</h5>
+                <p class="card-text">{{ art.artist_title }}</p>
+              </div>
+            </div>
+            <div class="button-container">
+                <button mat-icon-button color="primary" (click)="addToFavorites(art)">
+                  <mat-icon>favorite</mat-icon>
+                </button>
+              </div>
+           
+          </div>
+        </div>
+      </div>
+    </div>
   
 
+   
+    
+    <!-- Modal -->
+    <div class="modal fade" id="artDetailModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">{{ selectedArt?.title }}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <img [src]="getArtworkImageUrl(selectedArt?.image_id)" alt="{{ selectedArt?.title }}" class="img-fluid mb-3">
+              
+              <!-- <p><strong>Artist:</strong> {{ selectedArt?.artist_title }}</p>
+              <p><strong>Date:</strong> {{ selectedArt?.date }}</p>
+              <p><strong>Description:</strong> {{ selectedArt?.description }}</p> -->
+              <!-- Add more details as needed -->
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+  
 
-import { Component, OnInit } from '@angular/core';
+        
+    </div>
+
+
+
+   
+</div>  
+
+
+
 import { ArtService } from '../shared/art.service';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
+import { ArtworkdetailComponent } from '../artworkdetail/artworkdetail.component';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { ViewChild } from '@angular/core';
+
+
+declare var $: any;
 
 @Component({
-  selector: 'app-search',
-  templateUrl: './search.component.html',
-  styleUrls: ['./search.component.css']
+  selector: 'app-browser',
+  templateUrl: './browser.component.html',
+  styleUrls: ['./browser.component.css']
 })
-export class SearchComponent {
-  searchQuery: string = '';
-  filterOptions = {
-    artist:'',
-    medium:'',
-    timePeriod:''
-  };
-  searchResults: any[]= [];
-  constructor(private artService: ArtService){}
+export class BrowserComponent implements OnInit, AfterViewInit {
+  artworks: any[] =[];
+  selectedArt: any;
+  pagination: any ={};
+  pageSize: number = 6;
+  pageNumber: number = 1;
 
-  ngOnInit(): void{}
-  
-  searchArtworks(): void {
-    console.log('Search query', this.searchQuery);
-    this.artService.searchArtworks(this.searchQuery, this.filterOptions).subscribe(data => {
-      this.searchResults = data.data;
-    });
-  }
-  getArtworkImageUrl(imageId: string): string {
-    return `https://www.artic.edu/iiif/2/${imageId}/full/843,/0/default.jpg`;
-  }
-  
-
-}
+  artworkCarouselItems = [
+    {
+      image: 'assets/carousel2.jpg',
+      alt: 'Carousel Image 1'
+    },
+    {
+      image: 'assets/carousel1.jpg',
+      alt: 'Carousel Image 2'
+    },
+    {
+      image: 'assets/carousel4.jpg',
+      alt: 'Carousel Image 3'
+    }
+  ];
 
 
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import {Observable, throwError} from 'rxjs';
-import {catchError} from 'rxjs/operators';
 
 
-@Injectable({
-  providedIn: 'root'
-})
-export class ArtService {
-  
+  public pageSlice: any[] = [];
+  @ViewChild(MatPaginator)
+  paginator!: MatPaginator;
 
-  private baseUrl: string= 'https://api.artic.edu/api/v1/artworks';
-  private collectionsUrl : string = 'https://api.artic.edu/api/v1/collections';
-  private paginationUrl: string = 'https://api.artic.edu/api/v1/artists/${artistId}/artworks?page=100&limit=100';
-  id: any;
-
-  constructor(private http: HttpClient) { }
-  getArtworks(): Observable<any> {
-    return this.http.get(this.baseUrl); 
-  }
  
 
-  searchArtworks(query: string, filters: any): Observable<any>{
-    let params = new HttpParams().set('q', query);
-    if(filters.artist){
-      params = params.append('artist',filters.artist);
+
+  constructor(private artService: ArtService,
+    public dialog: MatDialog
+    ){}
+
+    favorites: ArtService[] = [];
+    addToFavorites(artwork: any): void { // modified addToFavorites method
+      this.favorites.push(artwork);
+      localStorage.setItem('favorites', JSON.stringify(this.favorites));
     }
-    if(filters.medium){
-      params = params.append('medium', filters.medium);
+
+    
+    ngOnInit(): void {
+      this.artService.getArtworks().subscribe(data => {
+        this.artworks = data.data;
+        console.log(this.artworks);
+        this.pageSlice = this.artworks.slice(0, this.pageSize);
+      });
+    
+      this.artService.getPagination().subscribe(pagination => {
+        this.pagination = pagination;
+        console.log(this.pagination);
+        this.paginator.length = this.pagination.total;
+        this.pageSize = this.pagination.perPage; // Add this line to update the pageSize value
+        this.paginator.pageSize = this.pageSize;
+        this.paginator.pageIndex = this.pageNumber - 1;
+      });
     }
-    if(filters.timePeriod){
-      params = params.append('time_period', filters.timePeriod);
+    ngAfterViewInit(): void {
+      this.paginator.pageSize = this.pageSize; // Update the pageSize value here as well
+      this.paginator.page.subscribe((event: any) => {
+        this.pageNumber = event.pageIndex + 1;
+        const startIndex = event.pageIndex * event.pageSize;
+        const endIndex = startIndex + event.pageSize;
+        this.pageSlice = this.artworks.slice(startIndex, endIndex);
+      });
+
+      setInterval(() => {
+        const activeElement = document.querySelector('.carousel-item.active');
+        const activeIndex = activeElement?.getAttribute('data-bs-slide-to');
+        const nextIndex = parseInt(activeIndex || "0") === this.artworkCarouselItems.length - 1 ? 0 : parseInt(activeIndex || "0") + 1;
+        const nextSlide = document.querySelector(`[data-bs-slide-to='${nextIndex}']`);
+        nextSlide?.dispatchEvent(new Event('click'));
+      }, 2000);
     }
-    return this.http.get(this.baseUrl, {params});  
+    onPageChange(event: PageEvent) {
+      this.pageSize = event.pageSize; // Update the pageSize value
+      this.pageNumber = event.pageIndex + 1;
+      const startIndex = event.pageIndex * event.pageSize;
+      const endIndex = startIndex + event.pageSize;
+      this.pageSlice = this.artworks.slice(startIndex, endIndex);
+      console.log(this.pageSlice);
+    }
+  openModal(art: any): void {
+    this.selectedArt = art;
+    $('#artDetailModal').modal('show');
   }
-  
-  getCollections(): Observable<any>{
-    return this.http.get(this.collectionsUrl);
-  }
 
-  getPagination(): Observable<any> {
-    return this.http.get(this.paginationUrl);
-  }
-  // searchArtworks(query: string): Observable<any> {
-  //   const apiUrl = `https://api.artic.edu/api/v1/artworks/search?q=${query}&limit=20`;
-  //   return this.http.get(apiUrl);
-  // }
-
-}
-
-
-
-
-<div class="container mt-5">
-    <div class="search-container mb-4">
-      <input type="text" [(ngModel)]="searchQuery" placeholder="Search for artwork, artists..." class="form-control mb-2" />
-      <button (click)="searchArtworks()" class="btn btn-primary">Search</button>
-    </div>
-  
-    <!-- Artwork Listing -->
-    <div class="results-container row">
-      <div *ngFor="let art of searchResults" class="col-md-4 mb-4">
-        <div class="card">
-          <img [src]="getArtworkImageUrl(art.image_id)" alt="{{ art.title }}" class="card-img-top" />
-          <div class="card-body">
-            <h5 class="card-title">{{ art.title }}</h5>
-            <p class="card-text">{{ art.artist_title }}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-</div>
-
-
-
-
-// search.component.ts
-
-export class SearchComponent implements OnInit {
-  searchQuery: string = '';
-  searchResults: any[] = [];
-
-  constructor(private artService: ArtService) {}
-
-  ngOnInit(): void {}
-
-  searchArtworks(): void {
-    this.artService.searchArtworks(this.searchQuery).subscribe(data => {
-      this.searchResults = data.data; 
+  openDetail(art:any): void {
+    this.dialog.open(ArtworkdetailComponent,{
+      width: '600px',
+      data: art
     });
   }
-
-  getArtworkImageUrl(imageId: string): string {
-    return `https://www.artic.edu/iiif/2/${imageId}/full/843,/0/default.jpg`;
-  }
+getArtworkImageUrl(imageId: string): string {
+  return `https://www.artic.edu/iiif/2/${imageId}/full/843,/0/default.jpg`;
 }
 
 
 
-// art.service.ts
-
-@Injectable({
-  providedIn: 'root'
-})
-export class ArtService {
-  private baseUrl: string = 'https://api.artic.edu/api/v1/artworks';
-
-  constructor(private http: HttpClient) {}
-
-  searchArtworks(query: string): Observable<any> {
-    let params = new HttpParams().set('q', query);
-
-    return this.http.get(this.baseUrl, { params })
-      .pipe(
-        catchError(error => {
-          console.error('Error:', error);
-          return throwError(error);
-        })
-      );
-  }
-
-  // ... other methods ...
 }
