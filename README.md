@@ -409,3 +409,19 @@ removeFromFavorites(artwork: any): void {
 }
 
 
+<div *ngFor="let art of favorites; let i = index" class="mb-4">
+    <div class="card">
+      <img [src]="getArtworkImageUrl(art.image_id)" alt="{{ art.title }}" class="card-img-top" />
+      <div class="card-body">
+        <h5 class="card-title">{{ art.title }}</h5>
+        <p class="card-text">{{ art.artist_title }}</p>
+        <button class="btn btn-danger" (click)="removeFromFavorites(art)">Remove from Favorites</button>
+      </div>
+    </div>
+
+<div *ngIf="notification" class="notification">
+    {{notification}}
+    <button (click)="dismissNotification()">X</button>
+</div>
+  </div>
+
