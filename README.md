@@ -384,3 +384,28 @@ dismissNotification(): void {
 }
 
 
+addToFavorites(artwork: any): void {
+  // Check if the artwork is already in the favorites list
+  const exists = this.favorites.some(fav => fav.image_id === artwork.image_id);
+
+  if (!exists) {
+    this.favorites.push(artwork);
+    localStorage.setItem('favorites', JSON.stringify(this.favorites));
+    this.notification = 'Artwork added to favorites!';
+  } else {
+    this.notification = 'This artwork is already in your favorites!';
+  }
+}
+
+
+removeFromFavorites(artwork: any): void {
+  const index = this.favorites.findIndex(fav => fav.image_id === artwork.image_id);
+
+  if (index > -1) {
+    this.favorites.splice(index, 1);
+    localStorage.setItem('favorites', JSON.stringify(this.favorites));
+    this.notification = 'Artwork removed from favorites!';
+  }
+}
+
+
