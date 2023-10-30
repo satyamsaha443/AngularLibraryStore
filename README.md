@@ -364,3 +364,23 @@ dismissNotification(): void {
 }
 
 
+.notification {
+  background-color: #ffdddd; /* Red background */
+  color: #a00; /* Darker red text */
+  padding: 15px;
+  margin-bottom: 20px;
+  position: relative;
+  border-radius: 5px;
+}
+
+.notification button {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+
