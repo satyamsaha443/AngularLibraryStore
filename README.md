@@ -26,7 +26,6 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
 
-
 <div class="container mt-5">
     <div class="search-container mb-4">
       <input type="text" [(ngModel)]="searchQuery" placeholder="Search for artwork, artists..." class="form-control mb-2" />
@@ -57,7 +56,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
     <div class="results-container row">
       <div *ngFor="let art of searchResults" class="col-md-4 mb-4">
         <div class="card">
-          <img [src]="art.thumbnail_url" alt="{{ art.title }}" class="card-img-top" />
+          <img [src]="getArtworkImageUrl(art.image_id)" alt="{{ art.title }}" class="card-img-top" />
           <div class="card-body">
             <h5 class="card-title">{{ art.title }}</h5>
             <p class="card-text">{{ art.artist_title }}</p>
@@ -67,6 +66,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
     </div>
   </div>
   
+
 
 import { Component, OnInit } from '@angular/core';
 import { ArtService } from '../shared/art.service';
@@ -88,91 +88,67 @@ export class SearchComponent {
 
   ngOnInit(): void{}
   
-  searchArtworks():void{
+  searchArtworks(): void {
+    console.log('Search query', this.searchQuery);
     this.artService.searchArtworks(this.searchQuery, this.filterOptions).subscribe(data => {
       this.searchResults = data.data;
     });
   }
+  getArtworkImageUrl(imageId: string): string {
+    return `https://www.artic.edu/iiif/2/${imageId}/full/843,/0/default.jpg`;
+  }
+  
 
 }
+
 
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import {Observable, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 
+
 @Injectable({
   providedIn: 'root'
 })
 export class ArtService {
+  
 
   private baseUrl: string= 'https://api.artic.edu/api/v1/artworks';
-  image_url: string='https://www.artic.edu/iiif/2/{identifier}/full/1686,/0/default.jpg'
+  private collectionsUrl : string = 'https://api.artic.edu/api/v1/collections';
+  private paginationUrl: string = 'https://api.artic.edu/api/v1/artists/${artistId}/artworks?page=100&limit=100';
+  id: any;
+
   constructor(private http: HttpClient) { }
   getArtworks(): Observable<any> {
     return this.http.get(this.baseUrl); 
   }
+ 
 
   searchArtworks(query: string, filters: any): Observable<any>{
     let params = new HttpParams().set('q', query);
     if(filters.artist){
-      params = params.set('artist',filters.artist);
+      params = params.append('artist',filters.artist);
     }
     if(filters.medium){
-      params = params.set('medium', filters.medium);
+      params = params.append('medium', filters.medium);
     }
     if(filters.timePeriod){
-      params = params.set('time_period', filters.timePeriod);
+      params = params.append('time_period', filters.timePeriod);
     }
-    return this.http.get(this.baseUrl, {params});
+    return this.http.get(this.baseUrl, {params});  
+  }
+  
+  getCollections(): Observable<any>{
+    return this.http.get(this.collectionsUrl);
+  }
 
-
+  getPagination(): Observable<any> {
+    return this.http.get(this.paginationUrl);
+  }
+  // searchArtworks(query: string): Observable<any> {
+  //   const apiUrl = `https://api.artic.edu/api/v1/artworks/search?q=${query}&limit=20`;
+  //   return this.http.get(apiUrl);
+  // }
 
 }
-}
-
-
-<div *ngFor="let art of searchResults" class="col-md-4 mb-4">
-  <div class="card" (click)="openModal(art)">
-    <img [src]="getArtworkImageUrl(art.image_id)" alt="{{ art.title }}" class="card-img-top" />
-    <div class="card-body">
-      <h5 class="card-title">{{ art.title }}</h5>
-      <p class="card-text">{{ art.artist_title }}</p>
-    </div>
-  </div>
-</div>
-
-
-getArtworkImageUrl(imageId: string): string {
-  return `https://www.artic.edu/iiif/2/${imageId}/full/843,/0/default.jpg`;
-}
-
-
-<!-- Modal -->
-<div class="modal fade" id="artDetailModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">{{ selectedArt?.title }}</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <img [src]="getArtworkImageUrl(selectedArt?.image_id)" alt="{{ selectedArt?.title }}" class="img-fluid mb-3">
-        <p><strong>Artist:</strong> {{ selectedArt?.artist_title }}</p>
-        <p><strong>Date:</strong> {{ selectedArt?.date }}</p>
-        <p><strong>Description:</strong> {{ selectedArt?.description }}</p>
-        <!-- Add more details as needed -->
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-openModal(art: any): void {
-  this.selectedArt = art;
-  $('#artDetailModal').modal('show');
-}
-
