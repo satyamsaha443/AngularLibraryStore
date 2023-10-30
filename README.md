@@ -227,7 +227,61 @@ export class BrowserComponent implements OnInit, AfterViewInit {
 getArtworkImageUrl(imageId: string): string {
   return `https://www.artic.edu/iiif/2/${imageId}/full/843,/0/default.jpg`;
 }
+}
 
 
+
+
+<div *ngFor="let art of favorites">
+    <div class="card" (click)="openDetail(art)">
+        <img [src]="getArtworkImageUrl(art.image_id)" alt="{{ art.title }}" class="card-img-top" />
+        <div class="card-body">
+          <h5 class="card-title">{{ art.title }}</h5>
+          <p class="card-text">{{ art.artist_title }}</p>
+        </div>
+      </div>
+    <!-- display other properties of the artwork as desired -->
+  </div>
+
+
+
+
+  import { Component, OnInit } from '@angular/core';
+import { ArtService } from '../shared/art.service';
+import { ArtworkdetailComponent } from '../artworkdetail/artworkdetail.component';
+import { MatDialog } from '@angular/material/dialog';
+
+
+
+
+
+@Component({
+  selector: 'app-favourites',
+  templateUrl: './favourites.component.html',
+  styleUrls: ['./favourites.component.css']
+})
+export class FavouritesComponent {
+  favorites: any[] = []; // modify favorites type to any[]
+
+  constructor( public dialog: MatDialog
+    ) { }
+
+  ngOnInit(): void {
+    const savedFavorites = localStorage.getItem('favorites');
+    if (savedFavorites) {
+      this.favorites = JSON.parse(savedFavorites);
+    }
+  }
+
+  openDetail(art:any): void {
+    this.dialog.open(ArtworkdetailComponent,{
+      width: '600px',
+      data: art
+    });
+  }
+  getArtworkImageUrl(imageId: string): string {
+    return `https://www.artic.edu/iiif/2/${imageId}/full/843,/0/default.jpg`;
+  }
+  
 
 }
