@@ -152,3 +152,77 @@ export class ArtService {
   // }
 
 }
+
+
+
+
+<div class="container mt-5">
+    <div class="search-container mb-4">
+      <input type="text" [(ngModel)]="searchQuery" placeholder="Search for artwork, artists..." class="form-control mb-2" />
+      <button (click)="searchArtworks()" class="btn btn-primary">Search</button>
+    </div>
+  
+    <!-- Artwork Listing -->
+    <div class="results-container row">
+      <div *ngFor="let art of searchResults" class="col-md-4 mb-4">
+        <div class="card">
+          <img [src]="getArtworkImageUrl(art.image_id)" alt="{{ art.title }}" class="card-img-top" />
+          <div class="card-body">
+            <h5 class="card-title">{{ art.title }}</h5>
+            <p class="card-text">{{ art.artist_title }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+
+
+// search.component.ts
+
+export class SearchComponent implements OnInit {
+  searchQuery: string = '';
+  searchResults: any[] = [];
+
+  constructor(private artService: ArtService) {}
+
+  ngOnInit(): void {}
+
+  searchArtworks(): void {
+    this.artService.searchArtworks(this.searchQuery).subscribe(data => {
+      this.searchResults = data.data; 
+    });
+  }
+
+  getArtworkImageUrl(imageId: string): string {
+    return `https://www.artic.edu/iiif/2/${imageId}/full/843,/0/default.jpg`;
+  }
+}
+
+
+
+// art.service.ts
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ArtService {
+  private baseUrl: string = 'https://api.artic.edu/api/v1/artworks';
+
+  constructor(private http: HttpClient) {}
+
+  searchArtworks(query: string): Observable<any> {
+    let params = new HttpParams().set('q', query);
+
+    return this.http.get(this.baseUrl, { params })
+      .pipe(
+        catchError(error => {
+          console.error('Error:', error);
+          return throwError(error);
+        })
+      );
+  }
+
+  // ... other methods ...
+}
