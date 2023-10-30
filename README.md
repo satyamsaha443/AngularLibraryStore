@@ -340,3 +340,27 @@ export class FavouritesComponent {
   }
 }
 
+
+// When adding
+addToFavorites(artwork: any): void {
+  this.favorites.push(artwork);
+  localStorage.setItem('favorites', JSON.stringify(this.favorites));
+  this.notification = 'Artwork added to favorites!';
+}
+
+// When removing (you might need to implement this based on your exact requirements)
+removeFromFavorites(artwork: any): void {
+  const index = this.favorites.indexOf(artwork);
+  if (index > -1) {
+    this.favorites.splice(index, 1);
+    localStorage.setItem('favorites', JSON.stringify(this.favorites));
+    this.notification = 'Artwork removed from favorites!';
+  }
+}
+
+// Method to dismiss the notification
+dismissNotification(): void {
+  this.notification = null;
+}
+
+
