@@ -285,3 +285,58 @@ export class FavouritesComponent {
   
 
 }
+/////
+
+
+
+<div *ngFor="let art of favorites; let i = index" class="mb-4">
+  <div class="card">
+    <img [src]="getArtworkImageUrl(art.image_id)" alt="{{ art.title }}" class="card-img-top" />
+    <div class="card-body">
+      <h5 class="card-title">{{ art.title }}</h5>
+      <p class="card-text">{{ art.artist_title }}</p>
+      <button class="btn btn-danger" (click)="removeFavorite(i)">Remove from Favorites</button>
+    </div>
+  </div>
+</div>
+
+
+
+// ... (other imports)
+import { MatSnackBar } from '@angular/material/snack-bar'; // for feedback messages
+
+@Component({
+  selector: 'app-favourites',
+  templateUrl: './favourites.component.html',
+  styleUrls: ['./favourites.component.css']
+})
+export class FavouritesComponent {
+  favorites: any[] = [];
+
+  constructor(public dialog: MatDialog, private snackBar: MatSnackBar) { } // Inject MatSnackBar
+
+  ngOnInit(): void {
+    const savedFavorites = localStorage.getItem('favorites');
+    if (savedFavorites) {
+      this.favorites = JSON.parse(savedFavorites);
+    }
+  }
+
+  openDetail(art: any): void {
+    this.dialog.open(ArtworkdetailComponent, {
+      width: '600px',
+      data: art
+    });
+  }
+
+  getArtworkImageUrl(imageId: string): string {
+    return `https://www.artic.edu/iiif/2/${imageId}/full/843,/0/default.jpg`;
+  }
+
+  removeFavorite(index: number): void {
+    this.favorites.splice(index, 1);
+    localStorage.setItem('favorites', JSON.stringify(this.favorites));
+    this.snackBar.open('Artwork removed from favorites!', '', { duration: 2000 });
+  }
+}
+
