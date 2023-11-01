@@ -734,3 +734,66 @@ Error: src/app/dashboard/dashboard.component.ts:54:40 - error TS2304: Cannot fin
 
 
 × Failed to compile.
+
+
+
+
+
+
+
+
+
+
+Build at: 2023-11-01T18:02:44.777Z - Hash: 0ba61f2d7af21e24 - Time: 303ms
+
+Error: src/app/attendance/attendance.component.ts:19:17 - error TS2339: Property 'http' does not exist on type 
+'AttendanceComponent'.
+
+19     return this.http.get<Attendance[]>(`https://6539e9dfe3b530c8d9e8d3cf.mockapi.io/attendance/${studentId}`);
+                   ~~~~
+
+
+Error: src/app/attendance/attendance.component.ts:28:44 - error TS4111: Property 'getAttendance' comes from an 
+index signature, so it must be accessed with ['getAttendance'].
+
+28     this.attendance$ = this.studentService.getAttendance(this.data.studentId);
+                                              ~~~~~~~~~~~~~
+
+
+Error: src/app/dashboard/dashboard.component.html:3:58 - error TS2339: Property 'value' does not exist on type 
+'EventTarget'.
+
+3       <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search by student name">       
+                                                           ~~~~~
+
+  src/app/dashboard/dashboard.component.ts:13:16
+    13   templateUrl: './dashboard.component.html',
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component DashboardComponent.
+
+
+Error: src/app/dashboard/dashboard.component.html:3:58 - error TS2531: Object is possibly 'null'.
+
+3       <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search by student name">       
+                                                           ~~~~~
+
+  src/app/dashboard/dashboard.component.ts:13:16
+    13   templateUrl: './dashboard.component.html',
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component DashboardComponent.
+
+
+Error: src/app/dashboard/dashboard.component.html:21:39 - error TS2339: Property 'onViewAttendance' does not exist on type 'DashboardComponent'.
+
+21           <button mat-button (click)="onViewAttendance(student)">View Attendance</button>
+                                         ~~~~~~~~~~~~~~~~
+
+  src/app/dashboard/dashboard.component.ts:13:16
+    13   templateUrl: './dashboard.component.html',
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component DashboardComponent.
+
+
+
+
+× Failed to compile.
