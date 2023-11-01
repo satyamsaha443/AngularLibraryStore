@@ -541,3 +541,165 @@ onSubmit(): void {
   </form>
 </div>
 
+
+
+import { Component, Inject } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { IUserDetails } from '../../core/interfaces/IUserDetails';
+
+@Component({
+  selector: 'app-edit-student',
+  templateUrl: './edit-student.component.html',
+  styleUrls: ['./edit-student.component.scss']
+})
+export class EditStudentComponent {
+  editForm: FormGroup;
+
+  constructor(
+    private fb: FormBuilder,
+    private dialogRef: MatDialogRef<EditStudentComponent>,
+    @Inject(MAT_DIALOG_DATA) public student: IUserDetails
+  ) {
+    this.editForm = this.fb.group({
+      id: [student.id, Validators.required],
+      name: [student.name, Validators.required],
+      email: [student.email, [Validators.required, Validators.email]],
+      phone: [student.phone, Validators.required],
+      gender: [student.gender],
+      dateOfBirth: [student.dateOfBirth]
+    });
+  }
+
+  onSubmit(): void {
+    if (this.editForm.valid) {
+      this.dialogRef.close(this.editForm.value);
+    }
+  }
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+}
+
+
+
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Observable } from 'rxjs';
+import { StudentService } from '../../core/services/student.service';
+import { Attendance } from '../../core/interfaces/Attendance';
+
+@Component({
+  selector: 'app-attendance',
+  templateUrl: './attendance.component.html',
+  styleUrls: ['./attendance.component.scss']
+})
+export class AttendanceComponent {
+  attendance$: Observable<Attendance[]>;
+
+  constructor(
+    private studentService: StudentService,
+    @Inject(MAT_DIALOG_DATA) public data: { studentId: number }
+  ) {
+    this.attendance$ = this.studentService.getAttendance(data.studentId);
+  }
+}
+
+
+
+<h2 mat-dialog-title>Attendance Records</h2>
+<mat-dialog-content>
+  <mat-list>
+    <mat-list-item *ngFor="let record of attendance$ | async">
+      Date: {{ record.date | date }} - Status: {{ record.status }}
+    </mat-list-item>
+  </mat-list>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Close</button>
+</mat-dialog-actions>
+
+
+<h2 mat-dialog-title>Edit Student</h2>
+<form [formGroup]="editForm" (ngSubmit)="onSubmit()">
+  <mat-dialog-content>
+    <mat-form-field appearance="fill">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" required>
+      <mat-error *ngIf="editForm.get('name').hasError('required')">Name is required</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" required>
+      <mat-error *ngIf="editForm.get('email').hasError('required')">Email is required</mat-error>
+      <mat-error *ngIf="editForm.get('email').hasError('email')">Enter a valid email</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Phone</mat-label>
+      <input matInput formControlName="phone" required>
+      <mat-error *ngIf="editForm.get('phone').hasError('required')">Phone is required</mat-error>
+    </mat-form-field>
+    <!-- Add additional fields for gender and date of birth if needed -->
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">Cancel</button>
+    <button mat-button [disabled]="!editForm.valid" type="submit">Save</button>
+  </mat-dialog-actions>
+</form>
+
+
+
+export interface Attendance {
+  id: number;                 // Unique identifier for the attendance record
+  studentId: number;          // Identifier for the student
+  date: Date;                 // The date of the attendance
+  status: 'Present' | 'Absent' | 'Excused' | 'Late'; // Attendance status
+  subject: string;            // The subject for which attendance is being recorded
+  remarks?: string;           // Optional remarks for the attendance record
+}
+
+
+@Component({
+  // ... component metadata ...
+})
+export class DashboardComponent implements OnInit {
+  // ... existing properties and methods ...
+
+  onEdit(student: IUserDetails): void {
+    // Assuming you have an EditStudentComponent that takes the current student as data
+    const dialogRef = this.dialog.open(EditStudentComponent, {
+      width: '250px',
+      data: student
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Assume result contains the updated student details
+        this.studentService.editStudent(result).subscribe(updatedStudent => {
+          // Refresh the table or handle the updated student details
+          this.loadStudents(); // You might need to implement this to refresh the data
+        });
+      }
+    });
+  }
+
+  onViewAttendance(student: IUserDetails): void {
+    // Assuming you have an AttendanceComponent to display the attendance
+    this.dialog.open(AttendanceComponent, {
+      width: '250px',
+      data: { studentId: student.id }
+    });
+
+    // If you need to perform actions after viewing attendance, handle it here
+    // For example, you could subscribe to an observable that notifies when the attendance view is closed
+  }
+
+  private loadStudents(): void {
+    this.studentService.loadStudents();
+    // Rest of the method...
+  }
+
+  // ... rest of your component ...
+}
+
