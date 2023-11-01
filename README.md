@@ -1,5 +1,139 @@
 # AngularTask4
 
+Error: src/app/add-student/add-student.component.html:4:11 - error NG8002: Can't bind to 'formGroup' since it isn't a known property of 'form'.
+
+4     <form [formGroup] ="studentForm" (ngSubmit)="onSubmit()">
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  src/app/add-student/add-student.component.ts:7:16
+    7   templateUrl: './add-student.component.html',
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component AddStudentComponent.
+
+
+Error: src/app/add-student/add-student.component.html:8:51 - error TS2531: Object is possibly 'null'.
+
+8         <mat-error *ngIf="studentForm.get('name').hasError('required')">
+                                                    ~~~~~~~~
+
+  src/app/add-student/add-student.component.ts:7:16
+    7   templateUrl: './add-student.component.html',
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component AddStudentComponent.
+
+
+Error: src/app/add-student/add-student.component.html:16:52 - error TS2531: Object is possibly 'null'.
+
+16         <mat-error *ngIf="studentForm.get('email').hasError('required')">
+                                                      ~~~~~~~~
+
+  src/app/add-student/add-student.component.ts:7:16
+    7   templateUrl: './add-student.component.html',
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component AddStudentComponent.
+
+
+Error: src/app/add-student/add-student.component.html:19:52 - error TS2531: Object is possibly 'null'.
+
+19         <mat-error *ngIf="studentForm.get('email').hasError('email')">
+                                                      ~~~~~~~~
+
+  src/app/add-student/add-student.component.ts:7:16
+    7   templateUrl: './add-student.component.html',
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component AddStudentComponent.
+
+
+Error: src/app/add-student/add-student.component.html:27:52 - error TS2531: Object is possibly 'null'.
+
+27         <mat-error *ngIf="studentForm.get('phone').hasError('required')">
+                                                      ~~~~~~~~
+
+  src/app/add-student/add-student.component.ts:7:16
+    7   templateUrl: './add-student.component.html',
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component AddStudentComponent.
+
+
+Error: src/app/add-student/add-student.component.ts:32:50 - error TS2339: Property 'value' does not exist on type 'Observable<UserDetails[]>'.
+
+32   const students = this.studentService.students$.value;
+                                                    ~~~~~
+
+
+Error: src/app/add-student/add-student.component.ts:33:24 - error TS7006: Parameter 'student' implicitly has an 'any' type.
+
+33   return students.some(student => student.id === id);
+                          ~~~~~~~
+
+
+Error: src/app/add-student/add-student.component.ts:39:13 - error TS2339: Property 'id' does not exist on type 
+'Partial<{ name: string | null; email: string | null; phone: string | null; gender: string | null; dateOfBirth: string | null; }>'.
+
+39     student.id = this.generateUniqueId();
+               ~~
+
+
+Error: src/app/add-student/add-student.component.ts:40:36 - error TS2345: Argument of type 'Partial<{ name: string | null; email: string | null; phone: string | null; gender: string | null; dateOfBirth: string | null; }>' 
+is not assignable to parameter of type 'UserDetails'.
+  Property 'id' is missing in type 'Partial<{ name: string | null; email: string | null; phone: string | null; 
+gender: string | null; dateOfBirth: string | null; }>' but required in type 'UserDetails'.
+
+40     this.studentService.addStudent(student);
+                                      ~~~~~~~
+
+  src/app/user-details.ts:2:5
+    2     id: number;
+          ~~
+    'id' is declared here.
+
+
+Error: src/app/dashboard/dashboard.component.html:3:58 - error TS2339: Property 'value' does not exist on type 
+'EventTarget'.
+
+3       <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search by student name">       
+                                                           ~~~~~
+
+  src/app/dashboard/dashboard.component.ts:12:16
+    12   templateUrl: './dashboard.component.html',
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component DashboardComponent.
+
+
+Error: src/app/dashboard/dashboard.component.html:3:58 - error TS2531: Object is possibly 'null'.
+
+3       <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search by student name">       
+                                                           ~~~~~
+
+  src/app/dashboard/dashboard.component.ts:12:16
+    12   templateUrl: './dashboard.component.html',
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component DashboardComponent.
+
+
+Error: src/app/dashboard/dashboard.component.html:20:39 - error TS2339: Property 'onEdit' does not exist on type 'DashboardComponent'.
+
+20           <button mat-button (click)="onEdit(student)">Edit</button>
+                                         ~~~~~~
+
+  src/app/dashboard/dashboard.component.ts:12:16
+    12   templateUrl: './dashboard.component.html',
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component DashboardComponent.
+
+
+Error: src/app/dashboard/dashboard.component.html:21:39 - error TS2339: Property 'onViewAttendance' does not exist on type 'DashboardComponent'.
+
+21           <button mat-button (click)="onViewAttendance(student)">View Attendance</button>
+                                         ~~~~~~~~~~~~~~~~
+
+  src/app/dashboard/dashboard.component.ts:12:16
+    12   templateUrl: './dashboard.component.html',
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component DashboardComponent.
+
+
+
 
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.5.
