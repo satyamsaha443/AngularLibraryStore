@@ -1,5 +1,15 @@
 # AngularTask4
 
+mat-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+mat-sidenav-container {
+  height: 100vh;
+}
+
 Error: src/app/add-student/add-student.component.html:4:11 - error NG8002: Can't bind to 'formGroup' since it isn't a known property of 'form'.
 
 4     <form [formGroup] ="studentForm" (ngSubmit)="onSubmit()">
