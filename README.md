@@ -1,14 +1,28 @@
 # AngularTask4
 
-mat-toolbar {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-}
 
-mat-sidenav-container {
-  height: 100vh;
-}
+<mat-toolbar color="primary">
+  <button mat-icon-button (click)="sidenav.toggle()">
+    <mat-icon>menu</mat-icon>
+  </button>
+  Student Attendance Dashboard
+</mat-toolbar>
+
+<mat-sidenav-container>
+  <mat-sidenav #sidenav mode="over">
+    <mat-nav-list>
+      <a mat-list-item [routerLink]="['/dashboard']" (click)="sidenav.close()">Dashboard</a>
+      <a mat-list-item [routerLink]="['/add-student']" (click)="sidenav.close()">Add Student</a>
+      <a mat-list-item [routerLink]="['/mark-attendance']" (click)="sidenav.close()">Mark Attendance</a>
+      <!-- ... add other navigation links as needed -->
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+
+</mat-sidenav-container>
 
 Error: src/app/add-student/add-student.component.html:4:11 - error NG8002: Can't bind to 'formGroup' since it isn't a known property of 'form'.
 
