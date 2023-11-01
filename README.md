@@ -221,3 +221,33 @@ export class DeleteConfirmationComponent {
   </mat-sidenav-content>
 </mat-sidenav-container>
 
+
+add student 
+
+
+
+export class AddStudentComponent {
+  studentForm = this.fb.group({
+    name: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
+    phone: ['', Validators.required],
+    gender: [''],
+    dateOfBirth: ['']
+  });
+
+  constructor(private fb: FormBuilder, private studentService: StudentService) {}
+
+  onSubmit(): void {
+    if (this.studentForm.valid) {
+      const student = this.studentForm.value;
+      student.id = this.generateUniqueId();
+      this.studentService.addStudent(student);
+    }
+  }
+
+  generateUniqueId(): number {
+    // Generate unique ID logic...
+  }
+}
+
+
