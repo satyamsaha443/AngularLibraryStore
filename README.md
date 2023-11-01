@@ -26,402 +26,198 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
 
-<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" *ngIf="artworkCarouselItems">
-    <ol class="carousel-indicators">
-      <li *ngFor="let item of artworkCarouselItems; let i = index" [attr.data-bs-target]="'#carouselExampleIndicators'" [attr.data-bs-slide-to]="i" [class.active]="i === 0"></li>
-    </ol>
-    <div class="carousel-inner">
-      <div *ngFor="let item of artworkCarouselItems; let i = index" class="carousel-item" [class.active]="i === 0">
-        <img [src]="item.image" [alt]="item.alt" class="d-block w-100">
-      </div>
-    </div>
-    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Previous</span>
-    </a>
-    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-bs-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Next</span>
-    </a>
-  </div>
-
-
-<div class="container mt-5">
-    <div class="row">
-      <div class="col-md-12">
-        <mat-paginator [length]="pagination.total" [pageSize]="pageSize" [pageSizeOptions]="[6, 12, 24, 48]" showFirstLastButtons (page)="onPageChange($event)">
-        </mat-paginator>
-      </div>
-    </div>
-
-    
-    <!-- Artwork Listing -->
-    <div class="row">
-      <div class="col-md-12">
-        <div class="results-container row flex-wrap">
-          <div *ngFor="let art of pageSlice" class="col-md-4 mb-4">
-            <div class="card" (click)="openDetail(art)">
-              <img [src]="getArtworkImageUrl(art.image_id)" alt="{{ art.title }}" class="card-img-top" />
-              <div class="card-body">
-                <h5 class="card-title">{{ art.title }}</h5>
-                <p class="card-text">{{ art.artist_title }}</p>
-              </div>
-            </div>
-            <div class="button-container">
-                <button mat-icon-button color="primary" (click)="addToFavorites(art)">
-                  <mat-icon>favorite</mat-icon>
-                </button>
-              </div>
-           
-          </div>
-        </div>
-      </div>
-    </div>
-  
-
-   
-    
-    <!-- Modal -->
-    <div class="modal fade" id="artDetailModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">{{ selectedArt?.title }}</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <img [src]="getArtworkImageUrl(selectedArt?.image_id)" alt="{{ selectedArt?.title }}" class="img-fluid mb-3">
-              
-              <!-- <p><strong>Artist:</strong> {{ selectedArt?.artist_title }}</p>
-              <p><strong>Date:</strong> {{ selectedArt?.date }}</p>
-              <p><strong>Description:</strong> {{ selectedArt?.description }}</p> -->
-              <!-- Add more details as needed -->
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-          </div>
-        </div>
-  
-
-        
-    </div>
 
 
 
-   
-</div>  
+
+export interface IUserDetails {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  gender?: string;
+  dateOfBirth?: Date;
+  attendance?: boolean;
+  // other fields...
+}
 
 
+student.service.ts:
 
-import { ArtService } from '../shared/art.service';
-import { AfterViewInit, Component, OnInit } from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
-import { ArtworkdetailComponent } from '../artworkdetail/artworkdetail.component';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { ViewChild } from '@angular/core';
-
-
-declare var $: any;
-
-@Component({
-  selector: 'app-browser',
-  templateUrl: './browser.component.html',
-  styleUrls: ['./browser.component.css']
+@Injectable({
+  providedIn: 'root'
 })
-export class BrowserComponent implements OnInit, AfterViewInit {
-  artworks: any[] =[];
-  selectedArt: any;
-  pagination: any ={};
-  pageSize: number = 6;
-  pageNumber: number = 1;
+export class StudentService {
+  private studentsSubject = new BehaviorSubject<IUserDetails[]>([]);
+  students$ = this.studentsSubject.asObservable();
 
-  artworkCarouselItems = [
-    {
-      image: 'assets/carousel2.jpg',
-      alt: 'Carousel Image 1'
-    },
-    {
-      image: 'assets/carousel1.jpg',
-      alt: 'Carousel Image 2'
-    },
-    {
-      image: 'assets/carousel4.jpg',
-      alt: 'Carousel Image 3'
-    }
-  ];
+  constructor(private http: HttpClient) {}
 
-
-
-
-  public pageSlice: any[] = [];
-  @ViewChild(MatPaginator)
-  paginator!: MatPaginator;
-
- 
-
-
-  constructor(private artService: ArtService,
-    public dialog: MatDialog
-    ){}
-
-    favorites: ArtService[] = [];
-    addToFavorites(artwork: any): void { // modified addToFavorites method
-      this.favorites.push(artwork);
-      localStorage.setItem('favorites', JSON.stringify(this.favorites));
-    }
-
-    
-    ngOnInit(): void {
-      this.artService.getArtworks().subscribe(data => {
-        this.artworks = data.data;
-        console.log(this.artworks);
-        this.pageSlice = this.artworks.slice(0, this.pageSize);
-      });
-    
-      this.artService.getPagination().subscribe(pagination => {
-        this.pagination = pagination;
-        console.log(this.pagination);
-        this.paginator.length = this.pagination.total;
-        this.pageSize = this.pagination.perPage; // Add this line to update the pageSize value
-        this.paginator.pageSize = this.pageSize;
-        this.paginator.pageIndex = this.pageNumber - 1;
-      });
-    }
-    ngAfterViewInit(): void {
-      this.paginator.pageSize = this.pageSize; // Update the pageSize value here as well
-      this.paginator.page.subscribe((event: any) => {
-        this.pageNumber = event.pageIndex + 1;
-        const startIndex = event.pageIndex * event.pageSize;
-        const endIndex = startIndex + event.pageSize;
-        this.pageSlice = this.artworks.slice(startIndex, endIndex);
-      });
-
-      setInterval(() => {
-        const activeElement = document.querySelector('.carousel-item.active');
-        const activeIndex = activeElement?.getAttribute('data-bs-slide-to');
-        const nextIndex = parseInt(activeIndex || "0") === this.artworkCarouselItems.length - 1 ? 0 : parseInt(activeIndex || "0") + 1;
-        const nextSlide = document.querySelector(`[data-bs-slide-to='${nextIndex}']`);
-        nextSlide?.dispatchEvent(new Event('click'));
-      }, 2000);
-    }
-    onPageChange(event: PageEvent) {
-      this.pageSize = event.pageSize; // Update the pageSize value
-      this.pageNumber = event.pageIndex + 1;
-      const startIndex = event.pageIndex * event.pageSize;
-      const endIndex = startIndex + event.pageSize;
-      this.pageSlice = this.artworks.slice(startIndex, endIndex);
-      console.log(this.pageSlice);
-    }
-  openModal(art: any): void {
-    this.selectedArt = art;
-    $('#artDetailModal').modal('show');
-  }
-
-  openDetail(art:any): void {
-    this.dialog.open(ArtworkdetailComponent,{
-      width: '600px',
-      data: art
+  loadStudents(): void {
+    this.http.get<IUserDetails[]>('YOUR_API_ENDPOINT').subscribe(data => {
+      this.studentsSubject.next(data);
     });
   }
-getArtworkImageUrl(imageId: string): string {
-  return `https://www.artic.edu/iiif/2/${imageId}/full/843,/0/default.jpg`;
+
+  addStudent(student: IUserDetails): void {
+    this.http.post('YOUR_API_ENDPOINT', student).subscribe(data => {
+      // Update BehaviorSubject with the new student data...
+    });
+  }
+
+  // Implement methods for edit, delete, and attendance similarly...
 }
-}
+
+
+dashboard 
 
 
 
-
-<div *ngFor="let art of favorites">
-    <div class="card" (click)="openDetail(art)">
-        <img [src]="getArtworkImageUrl(art.image_id)" alt="{{ art.title }}" class="card-img-top" />
-        <div class="card-body">
-          <h5 class="card-title">{{ art.title }}</h5>
-          <p class="card-text">{{ art.artist_title }}</p>
-        </div>
-      </div>
-    <!-- display other properties of the artwork as desired -->
-  </div>
-
-
-
-
-  import { Component, OnInit } from '@angular/core';
-import { ArtService } from '../shared/art.service';
-import { ArtworkdetailComponent } from '../artworkdetail/artworkdetail.component';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-
-
-
-
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { StudentService } from '../../core/services/student.service';
+import { IUserDetails } from '../../core/interfaces/IUserDetails';
+import { DeleteConfirmationComponent } from '../delete-confirmation/delete-confirmation.component';
 
 @Component({
-  selector: 'app-favourites',
-  templateUrl: './favourites.component.html',
-  styleUrls: ['./favourites.component.css']
+  selector: 'app-dashboard',
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.scss']
 })
-export class FavouritesComponent {
-  favorites: any[] = []; // modify favorites type to any[]
+export class DashboardComponent implements OnInit {
 
-  constructor( public dialog: MatDialog
-    ) { }
+  dataSource = new MatTableDataSource<IUserDetails>([]);
+  displayedColumns: string[] = ['id', 'name', 'email', 'phone', 'action'];
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+
+  constructor(private studentService: StudentService, private dialog: MatDialog) {}
 
   ngOnInit(): void {
-    const savedFavorites = localStorage.getItem('favorites');
-    if (savedFavorites) {
-      this.favorites = JSON.parse(savedFavorites);
-    }
+    this.studentService.loadStudents();
+    this.studentService.students$.subscribe(data => {
+      this.dataSource.data = data;
+    });
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
 
-  openDetail(art:any): void {
-    this.dialog.open(ArtworkdetailComponent,{
-      width: '600px',
-      data: art
+  applyFilter(filterValue: string) {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  onDelete(student: IUserDetails): void {
+    const dialogRef = this.dialog.open(DeleteConfirmationComponent, {
+      width: '250px',
+      data: { message: 'Do you confirm the deletion of this student?' }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'confirm') {
+        this.studentService.deleteStudent(student.id);
+      }
     });
   }
-  getArtworkImageUrl(imageId: string): string {
-    return `https://www.artic.edu/iiif/2/${imageId}/full/843,/0/default.jpg`;
+
+  generateUniqueId(existingIds: number[]): number {
+    let uniqueId;
+    do {
+      uniqueId = Math.floor(100 + Math.random() * 900);
+    } while (existingIds.includes(uniqueId));
+    return uniqueId;
   }
+
+  // Other methods for editing and attendance...
+}
+
+
+
+
+
+
+<div>
+  <mat-form-field>
+    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search by student name">
+  </mat-form-field>
   
+  <mat-table [dataSource]="dataSource" matSort>
+  
+    <!-- ID Column -->
+    <ng-container matColumnDef="id">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>ID</mat-header-cell>
+      <mat-cell *matCellDef="let student">{{ student.id }}</mat-cell>
+    </ng-container>
+    
+    <!-- Other columns... -->
 
-}
-/////
+    <!-- Actions Column -->
+    <ng-container matColumnDef="action">
+      <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+      <mat-cell *matCellDef="let student">
+        <button mat-button (click)="onEdit(student)">Edit</button>
+        <button mat-button (click)="onViewAttendance(student)">View Attendance</button>
+        <button mat-button (click)="onDelete(student)">Delete</button>
+      </mat-cell>
+    </ng-container>
 
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
 
+  </mat-table>
 
-<div *ngFor="let art of favorites; let i = index" class="mb-4">
-  <div class="card">
-    <img [src]="getArtworkImageUrl(art.image_id)" alt="{{ art.title }}" class="card-img-top" />
-    <div class="card-body">
-      <h5 class="card-title">{{ art.title }}</h5>
-      <p class="card-text">{{ art.artist_title }}</p>
-      <button class="btn btn-danger" (click)="removeFavorite(i)">Remove from Favorites</button>
-    </div>
-  </div>
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
 </div>
 
 
+delete-confirmation.component.ts:
 
-// ... (other imports)
-import { MatSnackBar } from '@angular/material/snack-bar'; // for feedback messages
+
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-favourites',
-  templateUrl: './favourites.component.html',
-  styleUrls: ['./favourites.component.css']
+  selector: 'app-delete-confirmation',
+  templateUrl: './delete-confirmation.component.html'
 })
-export class FavouritesComponent {
-  favorites: any[] = [];
-
-  constructor(public dialog: MatDialog, private snackBar: MatSnackBar) { } // Inject MatSnackBar
-
-  ngOnInit(): void {
-    const savedFavorites = localStorage.getItem('favorites');
-    if (savedFavorites) {
-      this.favorites = JSON.parse(savedFavorites);
-    }
-  }
-
-  openDetail(art: any): void {
-    this.dialog.open(ArtworkdetailComponent, {
-      width: '600px',
-      data: art
-    });
-  }
-
-  getArtworkImageUrl(imageId: string): string {
-    return `https://www.artic.edu/iiif/2/${imageId}/full/843,/0/default.jpg`;
-  }
-
-  removeFavorite(index: number): void {
-    this.favorites.splice(index, 1);
-    localStorage.setItem('favorites', JSON.stringify(this.favorites));
-    this.snackBar.open('Artwork removed from favorites!', '', { duration: 2000 });
-  }
+export class DeleteConfirmationComponent {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
 }
 
 
-// When adding
-addToFavorites(artwork: any): void {
-  this.favorites.push(artwork);
-  localStorage.setItem('favorites', JSON.stringify(this.favorites));
-  this.notification = 'Artwork added to favorites!';
-}
 
-// When removing (you might need to implement this based on your exact requirements)
-removeFromFavorites(artwork: any): void {
-  const index = this.favorites.indexOf(artwork);
-  if (index > -1) {
-    this.favorites.splice(index, 1);
-    localStorage.setItem('favorites', JSON.stringify(this.favorites));
-    this.notification = 'Artwork removed from favorites!';
-  }
-}
-
-// Method to dismiss the notification
-dismissNotification(): void {
-  this.notification = null;
-}
+<h2 mat-dialog-title>Delete Confirmation</h2>
+<mat-dialog-content>{{ data.message }}</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="'cancel'">Cancel</button>
+  <button mat-button [mat-dialog-close]="'confirm'">Confirm</button>
+</mat-dialog-actions>
 
 
-.notification {
-  background-color: #ffdddd; /* Red background */
-  color: #a00; /* Darker red text */
-  padding: 15px;
-  margin-bottom: 20px;
-  position: relative;
-  border-radius: 5px;
-}
-
-.notification button {
-  position: absolute;
-  top: 5px;
-  right: 10px;
-  background: none;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-}
 
 
-addToFavorites(artwork: any): void {
-  // Check if the artwork is already in the favorites list
-  const exists = this.favorites.some(fav => fav.image_id === artwork.image_id);
+<mat-toolbar color="primary">
+  <button mat-icon-button (click)="sidenav.toggle()">
+    <mat-icon>menu</mat-icon>
+  </button>
+  Student Attendance Dashboard
+</mat-toolbar>
 
-  if (!exists) {
-    this.favorites.push(artwork);
-    localStorage.setItem('favorites', JSON.stringify(this.favorites));
-    this.notification = 'Artwork added to favorites!';
-  } else {
-    this.notification = 'This artwork is already in your favorites!';
-  }
-}
+<mat-sidenav-container>
+  <mat-sidenav #sidenav mode="over">
+    <mat-nav-list>
+      <a mat-list-item [routerLink]="['/dashboard']" (click)="sidenav.close()">Dashboard</a>
+      <a mat-list-item [routerLink]="['/add-student']" (click)="sidenav.close()">Add Student</a>
+      <a mat-list-item [routerLink]="['/mark-attendance']" (click)="sidenav.close()">Mark Attendance</a>
+      <!-- ... add other navigation links as needed -->
+    </mat-nav-list>
+  </mat-sidenav>
 
-
-removeFromFavorites(artwork: any): void {
-  const index = this.favorites.findIndex(fav => fav.image_id === artwork.image_id);
-
-  if (index > -1) {
-    this.favorites.splice(index, 1);
-    localStorage.setItem('favorites', JSON.stringify(this.favorites));
-    this.notification = 'Artwork removed from favorites!';
-  }
-}
-
-
-<div *ngFor="let art of favorites; let i = index" class="mb-4">
-    <div class="card">
-      <img [src]="getArtworkImageUrl(art.image_id)" alt="{{ art.title }}" class="card-img-top" />
-      <div class="card-body">
-        <h5 class="card-title">{{ art.title }}</h5>
-        <p class="card-text">{{ art.artist_title }}</p>
-        <button class="btn btn-danger" (click)="removeFromFavorites(art)">Remove from Favorites</button>
-      </div>
-    </div>
-
-<div *ngIf="notification" class="notification">
-    {{notification}}
-    <button (click)="dismissNotification()">X</button>
-</div>
-  </div>
+  <mat-sidenav-content>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>
 
