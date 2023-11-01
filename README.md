@@ -251,3 +251,54 @@ export class AddStudentComponent {
 }
 
 
+@Injectable({
+  providedIn: 'root'
+})
+export class StudentService {
+  private studentsSubject = new BehaviorSubject<IUserDetails[]>([]);
+  students$ = this.studentsSubject.asObservable();
+
+  constructor(private http: HttpClient) {}
+
+  loadStudents(): void {
+    this.http.get<IUserDetails[]>('YOUR_API_ENDPOINT/students').subscribe(data => {
+      this.studentsSubject.next(data);
+    });
+  }
+
+  addStudent(student: IUserDetails): void {
+    this.http.post<IUserDetails>('YOUR_API_ENDPOINT/students', student).subscribe(newStudent => {
+      const currentStudents = this.studentsSubject.value;
+      this.studentsSubject.next([...currentStudents, newStudent]);
+    });
+  }
+
+  editStudent(studentId: number, studentData: Partial<IUserDetails>): void {
+    this.http.put<IUserDetails>(`YOUR_API_ENDPOINT/students/${studentId}`, studentData).subscribe(updatedStudent => {
+      const currentStudents = this.studentsSubject.value;
+      const updatedStudentsList = currentStudents.map(student => 
+        student.id === studentId ? updatedStudent : student
+      );
+      this.studentsSubject.next(updatedStudentsList);
+    });
+  }
+
+  deleteStudent(studentId: number): void {
+    this.http.delete(`YOUR_API_ENDPOINT/students/${studentId}`).subscribe(() => {
+      const currentStudents = this.studentsSubject.value;
+      const updatedStudentsList = currentStudents.filter(student => student.id !== studentId);
+      this.studentsSubject.next(updatedStudentsList);
+    });
+  }
+
+  markAttendance(studentId: number, attendanceData: any): void {
+    this.http.post(`YOUR_API_ENDPOINT/students/${studentId}/attendance`, attendanceData).subscribe((attendanceResponse: any) => {
+      // You can modify the current students data with the attendance response if needed
+      const currentStudents = this.studentsSubject.value;
+      const updatedStudentsList = currentStudents.map(student => 
+        student.id === studentId ? { ...student, attendance: attendanceResponse } : student
+      );
+      this.studentsSubject.next(updatedStudentsList);
+    });
+  }
+}
