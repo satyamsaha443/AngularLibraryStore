@@ -1,11 +1,6 @@
 # AngularTask4
 
- MatInputModule,
-    MatFormFieldModule,
-    MatButtonModule,
-    MatSelectModule,
-    MatDatepickerModule,
-    MatNativeDateModule
+
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.5.
 
