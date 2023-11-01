@@ -703,3 +703,34 @@ export class DashboardComponent implements OnInit {
   // ... rest of your component ...
 }
 
+
+
+Build at: 2023-11-01T17:51:18.098Z - Hash: 8195066d4eefaa62 - Time: 383ms
+
+Error: src/app/attendance/attendance.component.html:10:31 - error TS2339: Property 'onNoClick' does not exist on type 'AttendanceComponent'.
+
+10   <button mat-button (click)="onNoClick()">Close</button>
+                                 ~~~~~~~~~
+
+  src/app/attendance/attendance.component.ts:10:16
+    10   templateUrl: './attendance.component.html',
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component AttendanceComponent.
+
+
+Error: src/app/attendance/attendance.component.ts:20:44 - error TS4111: Property 'getAttendance' comes from an 
+index signature, so it must be accessed with ['getAttendance'].
+
+20     this.attendance$ = this.studentService.getAttendance(data.studentId);
+                                              ~~~~~~~~~~~~~
+
+
+Error: src/app/dashboard/dashboard.component.ts:54:40 - error TS2304: Cannot find name 'EditS'.
+
+54     const dialogRef = this.dialog.open(EditS)
+                                          ~~~~~
+
+
+
+
+× Failed to compile.
