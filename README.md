@@ -302,3 +302,82 @@ export class StudentService {
     });
   }
 }
+
+
+
+generateUniqueId(): number {
+  let id;
+  do {
+    id = Math.floor(Math.random() * 900) + 100; // This generates a random 3-digit number
+  } while (this.isIdDuplicate(id));
+  return id;
+}
+
+isIdDuplicate(id: number): boolean {
+  const students = this.studentService.students$.value;
+  return students.some(student => student.id === id);
+}
+
+
+onSubmit(): void {
+  if (this.studentForm.valid) {
+    const student = this.studentForm.value;
+    student.id = this.generateUniqueId();
+    this.studentService.addStudent(student);
+    this.studentForm.reset(); 
+    // Optionally navigate to another route or show feedback...
+  }
+}
+
+
+
+<div class="container">
+  <h2>Add Student</h2>
+
+  <form [formGroup]="studentForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="fill">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name">
+      <mat-error *ngIf="studentForm.get('name').hasError('required')">
+        Name is required.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" type="email">
+      <mat-error *ngIf="studentForm.get('email').hasError('required')">
+        Email is required.
+      </mat-error>
+      <mat-error *ngIf="studentForm.get('email').hasError('email')">
+        Please enter a valid email.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Phone</mat-label>
+      <input matInput formControlName="phone">
+      <mat-error *ngIf="studentForm.get('phone').hasError('required')">
+        Phone number is required.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Gender</mat-label>
+      <mat-select formControlName="gender">
+        <mat-option value="male">Male</mat-option>
+        <mat-option value="female">Female</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Date of Birth</mat-label>
+      <input matInput [matDatepicker]="dobPicker" formControlName="dateOfBirth">
+      <mat-datepicker-toggle matSuffix [for]="dobPicker"></mat-datepicker-toggle>
+      <mat-datepicker #dobPicker></mat-datepicker>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="studentForm.invalid">Add Student</button>
+  </form>
+</div>
+
