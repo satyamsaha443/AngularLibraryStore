@@ -265,93 +265,86 @@ export class ShowAttendanceComponent {
 
 
 
-<!-- Add a navbar -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#">
-    <img src="path-to-your-logo.png" alt="Logo" style="width:40px;">
-  </a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-    <ul class="navbar-nav">
-      <li class="nav-item active">
-        <a class="nav-link" href="#">Dashboard <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Settings</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Profile</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Logout</a>
-      </li>
-    </ul>
-  </div>
-</nav>
-
-<!-- Rest of the dashboard components -->
-<div class="container mt-4">
-  <div class="row">
-    <div class="col-12">
-      <h1 class="display-4">Student List</h1>
-    </div>
-  </div>
-  
-  <!-- Add a button for adding a student -->
-  <div class="text-right mb-3">
-    <button class="btn btn-primary" (click)="openAddStudentDialog()">
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1 class="dashboard-title">Student List</h1>
+    <button class="btn add-student-btn" (click)="openAddStudentDialog()">
       <i class="material-icons">add</i> Add Student
     </button>
   </div>
 
-  <!-- Student table -->
-  <div class="row">
-    <div class="col-12">
-      <mat-table #table [dataSource]="dataSource" matSort matPaginator class="mat-elevation-z8">
-        
-        <!-- Table columns -->
-
-      </mat-table>
-    </div>
+  <div class="student-table-container mat-elevation-z8">
+    <!-- Existing table code -->
   </div>
-  
-  <!-- Paginator -->
-  <mat-paginator [pageSize]="3" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
 </div>
 
 
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap');
 
+.dashboard-container {
+  font-family: 'Roboto', sans-serif;
 
-/* Navbar styling */
-.navbar-brand img {
-  height: auto;
-  width: auto;
-  max-height: 50px;
+  .dashboard-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 2rem;
+
+    .dashboard-title {
+      margin: 0;
+      color: #333;
+      font-size: 2.5rem;
+      font-weight: 500;
+    }
+
+    .add-student-btn {
+      background-color: #5c6bc0;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      transition: background-color 0.3s;
+
+      .material-icons {
+        margin-right: 0.5rem;
+      }
+
+      &:hover {
+        background-color: #3f51b5;
+      }
+    }
+  }
+
+  .student-table-container {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+
+    mat-form-field {
+      width: 100%;
+    }
+
+    table {
+      width: 100%;
+
+      mat-cell, mat-header-cell {
+        padding: 0.8rem;
+      }
+    }
+
+    button {
+      margin-right: 0.5rem;
+      transition: transform 0.2s;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+
+    .mat-icon {
+      vertical-align: middle;
+    }
+  }
 }
-
-/* Style the table to be more modern */
-.mat-elevation-z8 {
-  box-shadow: 0px 3px 15px rgba(0,0,0,0.2);
-}
-
-/* Add padding and border-radius to table */
-mat-table {
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-/* Style buttons */
-.btn-primary {
-  background-color: #007bff;
-  border: none;
-  padding: 8px 15px;
-  border-radius: 4px;
-  transition: background-color 0.3s;
-}
-
-.btn-primary:hover {
-  background-color: #0056b3;
-}
-
