@@ -240,3 +240,11 @@ Error: src/app/navbar/navbar.component.html:93:86 - error TS2339: Property 'stud
 
 × Failed to compile.
 
+
+export interface IStudent{
+    id?: number,
+    studentName: string,
+    studentEmail: string,
+    phoneNumber: string
+}s
+
