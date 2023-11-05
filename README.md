@@ -223,3 +223,20 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   }
 
 }
+
+
+Error: src/app/navbar/navbar.component.html:93:86 - error TS2339: Property 'studentId' does not exist on type 'IStudent'.
+
+93                 <button mat-stroked-button color="primary" (click)="viewMore(student.studentId)">
+                                                                                        ~~~~~~~~~
+
+  src/app/navbar/navbar.component.ts:13:16
+    13   templateUrl: './navbar.component.html',
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component NavbarComponent.
+
+
+
+
+× Failed to compile.
+
