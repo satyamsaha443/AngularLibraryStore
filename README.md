@@ -1,121 +1,199 @@
-<div>
-  <div class="d-sm-flex align-items-center justify-content-between mt-4">
-    <h1 class="h3 mb-0 text-gray-800">Student List</h1>
-  
-    <!-- Add a button with the "modal-trigger" class -->
-    <button class="btn modal-trigger" (click)="openAddStudentDialog()">
-      <i class="material-icons">add</i> Add Student
+<div style="text-align: center">
+
+<!-- Import Bootstrap CSS in your head tag -->
+<head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<!-- Create a container to hold your navbar -->
+<div class="container-fluid">
+
+  <!-- Start your navbar with the default navbar class 
+       and the background color class. -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+
+    <!-- Add a brand logo or text with a link to your homepage -->
+    <a class="navbar-brand" href="#">Home</a>
+
+    <!-- Add a toggle button for smaller screens  -->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" 
+            data-target="#navbarNav" aria-controls="navbarNav" 
+            aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
     </button>
-  
-    <!-- Add a modal dialog box for Add Student form -->
-    <div id="add-student-form" class="modal">
-      <div class="modal-content">
-  
-     
-    </div>
-  
- 
 
-   <div class="mat-elevation-z8 mt-4 mb-4">
-      <mat-table #table [dataSource]="dataSource" matSort matPaginator>
-  
-        <ng-container matColumnDef="id">
-          <mat-header-cell *matHeaderCellDef>ID</mat-header-cell>
-          <mat-cell *matCellDef="let student">{{student.id}}</mat-cell>
-        </ng-container>
-  
-        <ng-container matColumnDef="name">
-          <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
-          <mat-cell *matCellDef="let student">{{student.studentName}}</mat-cell>
-        </ng-container>
-  
-        <ng-container matColumnDef="email">
-          <mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
-          <mat-cell *matCellDef="let student">{{student.studentEmail}}</mat-cell>
-        </ng-container>
-  
-        <ng-container matColumnDef="phone">
-          <mat-header-cell *matHeaderCellDef>Phone</mat-header-cell>
-          <mat-cell *matCellDef="let student">{{student.phoneNumber}}</mat-cell>
-        </ng-container>
-  
-        <ng-container matColumnDef="action">
-          <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
-          <mat-cell *matCellDef="let student">
-            <button [routerLink]="['/showattendance',student.id]" mat-icon-button color="primary" class="btn-margin">
-              <mat-icon>visibility</mat-icon>
-            </button>
-            <button [routerLink]="['/editdatastudent',student.id]" mat-icon-button color="primary" class="btn-margin">
-              <mat-icon>edit</mat-icon>
-            </button>
-            <button mat-icon-button color="warn" class="btn-margin" (click)="deleteStudent(student.id)">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </mat-cell>
-        </ng-container>
-  
-        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-      </mat-table>
+    <!-- Add a container div with a collapse class 
+         to hold your navigation links -->
+    <div class="collapse navbar-collapse" id="navbarNav">
 
-      <mat-paginator [pageSize]="3" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+      <!-- Add a ul list with the nav class and mr-auto to align to the left -->
+      <ul class="navbar-nav mr-auto">
+
+
+      
+      
+
+      </ul>
+
+       <!-- Add a search form with a search input, a button and mr-3 class -->
+       <form class="form-inline my-2 my-lg-0 mr-3">
+         <input matInput (keyup)="applyFilter($event)" placeholder="Search">
+       </form>
+      
+      <!-- Add a div with a dropdown class to
+           hold your profile icon and dropdown menu -->
+       <div class="dropdown">
+          
+          <!-- Add a button with a dropdown-toggle class
+               and an icon or your profile image -->
+          <button class="btn dropdown-toggle" type="button" 
+                  id="dropdownMenuButton" data-toggle="dropdown" 
+                  aria-haspopup="true" aria-expanded="false">
+                  <img src="profile.png" alt="profile" height="30">
+          </button>
+          
+          <!-- Add a ul list with a dropdown-menu class and the right aria-labelledby attribute -->
+          <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+            <li><a class="dropdown-item" href="#">Profile</a></li>
+            <li><a class="dropdown-item" href="#">Settings</a></li>
+            <li><a class="dropdown-item" href="#">Log out</a></li>
+          </ul>
+       </div>
 
     </div>
-  
-  </div>
+  </nav>
 </div>
 
+<!-- Import Bootstrap JS and jQuery in your body tag -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <div class="cards">
+        <div class="student-container" *ngFor="let student of dataSource.data">
+            <mat-card class="student-card">
+              <mat-card-header>
+                <div mat-card-avatar></div>
+                <mat-card-title>{{student.studentName}}</mat-card-title>
+                <mat-card-subtitle>ID: {{student.id}}</mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-content>
+                <!-- <p>Email: {{student.studentEmail}}</p> -->
+                <!-- <p>Phone: {{student.phoneNumber}}</p> -->
+              </mat-card-content>
+              <mat-card-actions>
+                <button [routerLink]="['/showattendance', student.id]" mat-stroked-button color="primary">
+                  <mat-icon>visibility</mat-icon>
+                </button>
+                <button [routerLink]="['/editdatastudent', student.id]" mat-stroked-button color="accent">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-stroked-button color="warn" (click)="deleteStudent(student.id || 0)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </mat-card-actions>
+            </mat-card>
+          </div>
+          
+    </div>
+
+        <div class="rectangle">
+
+            <h2> Attendance List</h2>
+
+            <div class="mat-elevation-z8 mt-4 mb-4">
+                <mat-table #table [dataSource]="dataSource" matSort>
+
+                  <ng-container matColumnDef="id">
+                    <mat-header-cell *matHeaderCellDef class="id">ID</mat-header-cell>
+                    <mat-cell *matCellDef="let student">{{student.id}}</mat-cell>
+                  </ng-container>
+
+                  <ng-container matColumnDef="name">
+                    <mat-header-cell *matHeaderCellDef class="EmpName">Name</mat-header-cell>
+                    <mat-cell *matCellDef="let student">{{student.studentName}}</mat-cell>
+                  </ng-container>
+
+                  <ng-container matColumnDef="email">
+                    <mat-header-cell *matHeaderCellDef class="email">Email</mat-header-cell>
+                    <mat-cell *matCellDef="let student">{{student.studentEmail}}</mat-cell>
+                  </ng-container>
+
+                  <ng-container matColumnDef="phone">
+                    <mat-header-cell *matHeaderCellDef class="phone">Phone</mat-header-cell>
+                    <mat-cell *matCellDef="let student">{{student.phoneNumber}}</mat-cell>
+                  </ng-container>
+
+                  <ng-container matColumnDef="action">
+                    <mat-header-cell *matHeaderCellDef class="action">Action</mat-header-cell>
+                    <mat-cell *matCellDef="let student">
+                      <button [routerLink]="['/showattendance',student.id]" mat-icon-button color="primary" class="btn-margin">
+                        <mat-icon>visibility</mat-icon>
+                      </button>
+                      <button [routerLink]="['/editdatastudent',student.id]" mat-icon-button color="primary" class="btn-margin">
+                        <mat-icon>edit</mat-icon>
+                      </button>
+                      <button mat-icon-button color="warn" class="btn-margin" (click)="deleteStudent(student.id)">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </mat-cell>
+                  </ng-container>
+
+                  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                </mat-table>
+
+                <mat-paginator [pageSize]="3" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+
+                </div>
+              </div>
+        </div>
+        
+    
+
+     
 
 
-import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { StudentService } from '../student/student.service';
+import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
+import { StudentService } from '../student/student.service';
 import { MatDialog } from '@angular/material/dialog';
 import { IStudent } from '../model';
 import { MatPaginator } from '@angular/material/paginator';
-import { ViewChild } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { AddStudentComponent } from '../add-student/add-student.component';
-//import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
-
+import { ViewChild, AfterViewInit } from '@angular/core';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  selector: 'app-navbar',
+  templateUrl: './navbar.component.html',
+  styleUrls: ['./navbar.component.scss']
 })
-export class DashboardComponent implements OnInit, AfterViewInit {
+export class NavbarComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['id', 'name', 'email', 'phone', 'action'];
   dataSource: MatTableDataSource<IStudent>;
+
   @ViewChild(MatPaginator)
   paginator!: MatPaginator;
-  studentForm: FormGroup;
   
 
-  
-
-  constructor(private studentService: StudentService, private dialog: MatDialog,  private router: Router) {
+  constructor(private studentService: StudentService, private dialog: MatDialog) {
     this.dataSource = new MatTableDataSource<IStudent>();
     this.dataSource.paginator = this.paginator;
-    this.studentForm= new FormGroup({
-      'studentName': new FormControl('', Validators.required),
-      'studentEmail': new FormControl('', [Validators.required, Validators.email]),
-      'phoneNumber': new FormControl('', [Validators.required,Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$")])
-    })
-   
-    }
-  
-
+  }
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
   }
   ngOnInit(): void {
     this.getAllStudents();
+    this.dataSource.filterPredicate = (data: IStudent, filter: string) => {
+      const name = data.studentName.trim().toLowerCase();
+      // const id = data.id?.toString();
+      return name.includes(filter) ;
   }
+}
 
-  getAllStudents(): void { this.studentService.getAllStudents().subscribe((students:IStudent[]) => 
-    { this.dataSource.data = students; 
+  getAllStudents(): void {
+    this.studentService.getAllStudents().subscribe((students: IStudent[]) => {
+      this.dataSource = new MatTableDataSource<IStudent>(students);
+      this.dataSource.paginator = this.paginator;
     });
    }
 
@@ -127,224 +205,21 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         this.getAllStudents();
       });
       }
-
-    // dialogRef.afterClosed().subscribe(result => {
-    //   if (result) {
-    //     this.studentService.deleteStudentById(id).subscribe(() => {
-    //       this.getStudentList();
-    //     });
-    //   }
-    // });
-  }
-
-  openAddStudentDialog(): void{
-    const dialogRef = this.dialog.open(AddStudentComponent, {
-      width: '250px',
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if(result){
-        console.log('The dialog was closed', result);
-      }
-    });
-  }
-
-  submitStudent(){
-    Object.keys(this.studentForm.controls).forEach(field =>{
-      const control = this.studentForm.get(field);
-      if (control instanceof FormControl){
-      control.markAsTouched({onlySelf: true});
-    }
-    // if(this.studentForm.valid){
-    //   this.dialogRef.close(this.studentForm.value);
-    // }
-    });
-
-    if(this.studentForm.valid){
-      this.studentService.saveStudent(this.studentForm.value).subscribe(()=>{
-        this.router.navigate(['/dashboard'])
-      },()=>{
-        alert("please try again later");
-      })
-
     }
 
-  }
-}
+  isSignUp = false;
 
-
-
-
-
-<div class="card shadow mb-4">
-  <div class="card-header py-3">
-    <h1 class="m-0 font-weight-bold mat-title text-primary text-center">Student {{ id }} Attendance</h1>
-  </div>
-
-  <div class="card-body">
-    <div class="table-responsive">
-      <table mat-table [dataSource]="attendance" class="mat-elevation-z8">
-
-        <ng-container matColumnDef="date">
-          <th mat-header-cell *matHeaderCellDef>Date</th>
-          <td mat-cell *matCellDef="let att">{{ att.date | date }}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef>Status</th>
-          <td mat-cell *matCellDef="let att">
-            <span *ngIf="att.present">Present</span>
-            <span *ngIf="!att.present">Absent</span>
-          </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
-    </div>
-  </div>
-
-  <div class="card-footer">
-    <button mat-button color="warn" routerLink="/dashboard">Back</button>
-  </div>
-</div>
-
-
-import { StudentService } from './../student/student.service';
-import { Component, OnInit } from '@angular/core';
-import { IAttendance } from '../model';
-import { ActivatedRoute } from '@angular/router';
-
-
-@Component({
-  selector: 'app-show-attendance',
-  templateUrl: './show-attendance.component.html',
-  styleUrls: ['./show-attendance.component.scss']
-})
-export class ShowAttendanceComponent {
-  displayedColumns: string[] = ['date', 'status'];
-
-  attendance: Array<IAttendance>=[]
-  attendanceId: Array<IAttendance>=[]
-  id:number = 0;
-
-  constructor(private activeRouter:ActivatedRoute, private studentService:StudentService){
-
-  }
-  // ngOnInit(): void{
-  //   this.activeRouter.params.subscribe((paramsData) => {
-  //     this.id = paramsData['id'];
-  //     this.studentService.searchAttendance().subscribe((data) =>
-  //     {
-  //       this.attendance= data
-  //       for(let i=0;i<this.attendance.length; i++){
-  //         if(this.attendance[i].studentId===this.id){
-  //           this.attendanceId.push(this.attendance[i])
-  //         }
-  //       }
-  //     })
-  //   })
-  // }
-
-  ngOnInit(): void {
-    this.activeRouter.params.subscribe((params) => {
-      this.id = params['id'];
-      this.fetchAttendance();
-    });
+  onSignUp() {
+    this.isSignUp = true;
   }
 
-  fetchAttendance(): void {
-    this.studentService.searchAttendance().subscribe((data) => {
-      this.attendance = data.filter((att) => att.studentId === this.id);
-    });
+  onSignIn() {
+    this.isSignUp = false;
   }
 
-
-}
-
-
-
-
-<div class="dashboard-container">
-  <div class="dashboard-header">
-    <h1 class="dashboard-title">Student List</h1>
-    <button class="btn add-student-btn" (click)="openAddStudentDialog()">
-      <i class="material-icons">add</i> Add Student
-    </button>
-  </div>
-
-  <div class="student-table-container mat-elevation-z8">
-    <!-- Existing table code -->
-  </div>
-</div>
-
-
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap');
-
-.dashboard-container {
-  font-family: 'Roboto', sans-serif;
-
-  .dashboard-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 2rem;
-
-    .dashboard-title {
-      margin: 0;
-      color: #333;
-      font-size: 2.5rem;
-      font-weight: 500;
-    }
-
-    .add-student-btn {
-      background-color: #5c6bc0;
-      color: white;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      transition: background-color 0.3s;
-
-      .material-icons {
-        margin-right: 0.5rem;
-      }
-
-      &:hover {
-        background-color: #3f51b5;
-      }
-    }
+  applyFilter(event: Event): void {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  .student-table-container {
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-
-    mat-form-field {
-      width: 100%;
-    }
-
-    table {
-      width: 100%;
-
-      mat-cell, mat-header-cell {
-        padding: 0.8rem;
-      }
-    }
-
-    button {
-      margin-right: 0.5rem;
-      transition: transform 0.2s;
-
-      &:hover {
-        transform: scale(1.1);
-      }
-    }
-
-    .mat-icon {
-      vertical-align: middle;
-    }
-  }
 }
