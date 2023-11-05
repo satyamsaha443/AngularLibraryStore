@@ -3,7 +3,7 @@
     <h1 class="h3 mb-0 text-gray-800">Student List</h1>
   
     <!-- Add a button with the "modal-trigger" class -->
-    <button class="btn modal-trigger" data-target="add-student-form">
+    <button class="btn modal-trigger" (click)="openAddStudentDialog()">
       <i class="material-icons">add</i> Add Student
     </button>
   
@@ -11,37 +11,12 @@
     <div id="add-student-form" class="modal">
       <div class="modal-content">
   
-        <!-- Add a Material UI form to match your existing code -->
-        <mat-card>
-          <mat-card-content>
-            <form [formGroup]="studentForm">
-              <mat-form-field>
-                <input matInput formControlName="studentName" placeholder="Student Name" required>
-                <mat-error *ngIf="studentForm.get('studentName').invalid">{{ getErrorMessage('studentName') }}</mat-error>
-              </mat-form-field>
-              <mat-form-field>
-                <input matInput formControlName="studentEmail" placeholder="Email" required>
-                <mat-error *ngIf="studentForm.get('studentEmail').invalid">{{ getErrorMessage('studentEmail') }}</mat-error>
-              </mat-form-field>
-              <mat-form-field>
-                <input matInput formControlName="phoneNumber" placeholder="Phone Number" required>
-                <mat-error *ngIf="studentForm.get('phoneNumber').invalid">{{ getErrorMessage('phoneNumber') }}</mat-error>
-              </mat-form-field>
-            </form>
-          </mat-card-content>
-          <mat-card-actions>
-            <button mat-raised-button color="primary" (click)="submitStudent()" [disabled]="!studentForm.valid">Submit</button>
-            <button mat-raised-button (click)="closeModal()">Cancel</button>
-          </mat-card-actions>
-        </mat-card>
-      </div>
+     
     </div>
   
-  </div>
+ 
 
-
-  
-    <div class="mat-elevation-z8 mt-4 mb-4">
+   <div class="mat-elevation-z8 mt-4 mb-4">
       <mat-table #table [dataSource]="dataSource" matSort matPaginator>
   
         <ng-container matColumnDef="id">
@@ -88,21 +63,20 @@
     </div>
   
   </div>
+</div>
 
 
 
-
-
-
-  import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { StudentService } from '../student/student.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { IStudent } from '../model';
 import { MatPaginator } from '@angular/material/paginator';
 import { ViewChild } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AddStudentComponent } from '../add-student/add-student.component';
 //import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 
 
@@ -116,15 +90,22 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   dataSource: MatTableDataSource<IStudent>;
   @ViewChild(MatPaginator)
   paginator!: MatPaginator;
+  studentForm: FormGroup;
+  
 
   
 
   constructor(private studentService: StudentService, private dialog: MatDialog,  private router: Router) {
     this.dataSource = new MatTableDataSource<IStudent>();
     this.dataSource.paginator = this.paginator;
+    this.studentForm= new FormGroup({
+      'studentName': new FormControl('', Validators.required),
+      'studentEmail': new FormControl('', [Validators.required, Validators.email]),
+      'phoneNumber': new FormControl('', [Validators.required,Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$")])
+    })
    
     }
-  }
+  
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
@@ -156,3 +137,127 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     // });
   }
 
+  openAddStudentDialog(): void{
+    const dialogRef = this.dialog.open(AddStudentComponent, {
+      width: '250px',
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        console.log('The dialog was closed', result);
+      }
+    });
+  }
+
+  submitStudent(){
+    Object.keys(this.studentForm.controls).forEach(field =>{
+      const control = this.studentForm.get(field);
+      if (control instanceof FormControl){
+      control.markAsTouched({onlySelf: true});
+    }
+    // if(this.studentForm.valid){
+    //   this.dialogRef.close(this.studentForm.value);
+    // }
+    });
+
+    if(this.studentForm.valid){
+      this.studentService.saveStudent(this.studentForm.value).subscribe(()=>{
+        this.router.navigate(['/dashboard'])
+      },()=>{
+        alert("please try again later");
+      })
+
+    }
+
+  }
+}
+
+
+
+
+
+<div class="card shadow mb-4">
+  <div class="card-header py-3">
+    <h1 class="m-0 font-weight-bold mat-title text-primary text-center">Student {{ id }} Attendance</h1>
+  </div>
+
+  <div class="card-body">
+    <div class="table-responsive">
+      <table mat-table [dataSource]="attendance" class="mat-elevation-z8">
+
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef>Date</th>
+          <td mat-cell *matCellDef="let att">{{ att.date | date }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let att">
+            <span *ngIf="att.present">Present</span>
+            <span *ngIf="!att.present">Absent</span>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <button mat-button color="warn" routerLink="/dashboard">Back</button>
+  </div>
+</div>
+
+
+import { StudentService } from './../student/student.service';
+import { Component, OnInit } from '@angular/core';
+import { IAttendance } from '../model';
+import { ActivatedRoute } from '@angular/router';
+
+
+@Component({
+  selector: 'app-show-attendance',
+  templateUrl: './show-attendance.component.html',
+  styleUrls: ['./show-attendance.component.scss']
+})
+export class ShowAttendanceComponent {
+  displayedColumns: string[] = ['date', 'status'];
+
+  attendance: Array<IAttendance>=[]
+  attendanceId: Array<IAttendance>=[]
+  id:number = 0;
+
+  constructor(private activeRouter:ActivatedRoute, private studentService:StudentService){
+
+  }
+  // ngOnInit(): void{
+  //   this.activeRouter.params.subscribe((paramsData) => {
+  //     this.id = paramsData['id'];
+  //     this.studentService.searchAttendance().subscribe((data) =>
+  //     {
+  //       this.attendance= data
+  //       for(let i=0;i<this.attendance.length; i++){
+  //         if(this.attendance[i].studentId===this.id){
+  //           this.attendanceId.push(this.attendance[i])
+  //         }
+  //       }
+  //     })
+  //   })
+  // }
+
+  ngOnInit(): void {
+    this.activeRouter.params.subscribe((params) => {
+      this.id = params['id'];
+      this.fetchAttendance();
+    });
+  }
+
+  fetchAttendance(): void {
+    this.studentService.searchAttendance().subscribe((data) => {
+      this.attendance = data.filter((att) => att.studentId === this.id);
+    });
+  }
+
+
+}
