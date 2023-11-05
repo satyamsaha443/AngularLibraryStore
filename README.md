@@ -90,6 +90,9 @@
                 <button mat-stroked-button color="warn" (click)="deleteStudent(student.id || 0)">
                   <mat-icon>delete</mat-icon>
                 </button>
+                <button mat-stroked-button color="primary" (click)="viewMore(student.id)">
+                  View More
+                </button>
               </mat-card-actions>
             </mat-card>
           </div>
@@ -151,15 +154,15 @@
     
 
      
-
-
+import { StudentdetailComponent } from './../studentdetail/studentdetail.component';
+import { IStudent } from './../model';
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { StudentService } from '../student/student.service';
 import { MatDialog } from '@angular/material/dialog';
-import { IStudent } from '../model';
 import { MatPaginator } from '@angular/material/paginator';
 import { ViewChild, AfterViewInit } from '@angular/core';
+import { EditdataStudentComponent } from '../editdata-student/editdata-student.component';
 
 @Component({
   selector: 'app-navbar',
@@ -222,29 +225,29 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
+  viewMore(studentId: number | undefined): void {
+    const student = this.dataSource.data.find(s => s.id === studentId);
+    if(student){
+      this.dialog.open(StudentdetailComponent, {
+        width: '400px',
+        data: student
+      });
+
+  
+    }
+  }
+
 }
 
 
-Error: src/app/navbar/navbar.component.html:93:86 - error TS2339: Property 'studentId' does not exist on type 'IStudent'.
-
-93                 <button mat-stroked-button color="primary" (click)="viewMore(student.studentId)">
-                                                                                        ~~~~~~~~~
-
-  src/app/navbar/navbar.component.ts:13:16
-    13   templateUrl: './navbar.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component NavbarComponent.
-
-
-
-
-× Failed to compile.
-
-
-export interface IStudent{
-    id?: number,
-    studentName: string,
-    studentEmail: string,
-    phoneNumber: string
-}s
-
+No one should use fetch method to get data from API. Use httpClient and implement Behavior Subject
+Use proper folder structure
+Use proper coding practice
+All interfaces name should-start with  (capital I) eg. IUserDetails
+For fetching data make call 1st time in ngOnInit() and store it in Behavior subject and subscribe to it in your component. No need to make same api call multiple times. Only if you add student or update attendance then only just make fetch call and update your behavior subject.
+If you guys have completed some part of assignment 6 get it reviewed so that if any thing is there you guys need to improve I can give my feedback and you can implement.
+API calls will be made in service file only.
+Discuss with me how you are storing data(for student and attendance) basically what is your data structure.
+Use formBuilder for building forms.
+While giving edit functionality for user details Pre-Populate the data in the form whatever already is there.
+While marking attendance give a dropdown of (studentName-rollNumber) so that user can select that user and fill attendance for the same.
