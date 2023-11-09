@@ -1,253 +1,418 @@
-<div style="text-align: center">
-
-<!-- Import Bootstrap CSS in your head tag -->
-<head>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-
-<!-- Create a container to hold your navbar -->
-<div class="container-fluid">
-
-  <!-- Start your navbar with the default navbar class 
-       and the background color class. -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-
-    <!-- Add a brand logo or text with a link to your homepage -->
-    <a class="navbar-brand" href="#">Home</a>
-
-    <!-- Add a toggle button for smaller screens  -->
-    <button class="navbar-toggler" type="button" data-toggle="collapse" 
-            data-target="#navbarNav" aria-controls="navbarNav" 
-            aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <!-- Add a container div with a collapse class 
-         to hold your navigation links -->
-    <div class="collapse navbar-collapse" id="navbarNav">
-
-      <!-- Add a ul list with the nav class and mr-auto to align to the left -->
-      <ul class="navbar-nav mr-auto">
+package com.Jwt.controllers;
 
 
-      
-      
 
-      </ul>
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-       <!-- Add a search form with a search input, a button and mr-3 class -->
-       <form class="form-inline my-2 my-lg-0 mr-3">
-         <input matInput (keyup)="applyFilter($event)" placeholder="Search">
-       </form>
-      
-      <!-- Add a div with a dropdown class to
-           hold your profile icon and dropdown menu -->
-       <div class="dropdown">
-          
-          <!-- Add a button with a dropdown-toggle class
-               and an icon or your profile image -->
-          <button class="btn dropdown-toggle" type="button" 
-                  id="dropdownMenuButton" data-toggle="dropdown" 
-                  aria-haspopup="true" aria-expanded="false">
-                  <img src="profile.png" alt="profile" height="30">
-          </button>
-          
-          <!-- Add a ul list with a dropdown-menu class and the right aria-labelledby attribute -->
-          <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-            <li><a class="dropdown-item" href="#">Profile</a></li>
-            <li><a class="dropdown-item" href="#">Settings</a></li>
-            <li><a class="dropdown-item" href="#">Log out</a></li>
-          </ul>
-       </div>
+import jakarta.validation.Valid;
 
-    </div>
-  </nav>
-</div>
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-<!-- Import Bootstrap JS and jQuery in your body tag -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <div class="cards">
-        <div class="student-container" *ngFor="let student of dataSource.data">
-            <mat-card class="student-card">
-              <mat-card-header>
-                <div mat-card-avatar></div>
-                <mat-card-title>{{student.studentName}}</mat-card-title>
-                <mat-card-subtitle>ID: {{student.id}}</mat-card-subtitle>
-              </mat-card-header>
-              <mat-card-content>
-                <!-- <p>Email: {{student.studentEmail}}</p> -->
-                <!-- <p>Phone: {{student.phoneNumber}}</p> -->
-              </mat-card-content>
-              <mat-card-actions>
-                <button [routerLink]="['/showattendance', student.id]" mat-stroked-button color="primary">
-                  <mat-icon>visibility</mat-icon>
-                </button>
-                <button [routerLink]="['/editdatastudent', student.id]" mat-stroked-button color="accent">
-                  <mat-icon>edit</mat-icon>
-                </button>
-                <button mat-stroked-button color="warn" (click)="deleteStudent(student.id || 0)">
-                  <mat-icon>delete</mat-icon>
-                </button>
-                <button mat-stroked-button color="primary" (click)="viewMore(student.id)">
-                  View More
-                </button>
-              </mat-card-actions>
-            </mat-card>
-          </div>
-          
-    </div>
+import com.Jwt.models.ERole;
+import com.Jwt.models.Role;
+import com.Jwt.models.User;
+import com.Jwt.repository.RoleRepository;
+import com.Jwt.repository.UserRepository;
+import com.Jwt.request.LoginRequest;
+import com.Jwt.request.SignupRequest;
+import com.Jwt.response.MessageResponse;
+import com.Jwt.response.UserInfoResponse;
+import com.Jwt.security.jwt.JwtUtils;
+import com.Jwt.security.services.UserDetailsImpl;
 
-        <div class="rectangle">
 
-            <h2> Attendance List</h2>
 
-            <div class="mat-elevation-z8 mt-4 mb-4">
-                <mat-table #table [dataSource]="dataSource" matSort>
+@CrossOrigin(origins = "http://localhost:8081", maxAge = 3600, allowCredentials="true")
 
-                  <ng-container matColumnDef="id">
-                    <mat-header-cell *matHeaderCellDef class="id">ID</mat-header-cell>
-                    <mat-cell *matCellDef="let student">{{student.id}}</mat-cell>
-                  </ng-container>
+@RestController
+@RequestMapping("/api/auth")
+public class AuthController {
+  @Autowired
+  AuthenticationManager authenticationManager;
 
-                  <ng-container matColumnDef="name">
-                    <mat-header-cell *matHeaderCellDef class="EmpName">Name</mat-header-cell>
-                    <mat-cell *matCellDef="let student">{{student.studentName}}</mat-cell>
-                  </ng-container>
+  @Autowired
+  UserRepository userRepository;
 
-                  <ng-container matColumnDef="email">
-                    <mat-header-cell *matHeaderCellDef class="email">Email</mat-header-cell>
-                    <mat-cell *matCellDef="let student">{{student.studentEmail}}</mat-cell>
-                  </ng-container>
+  @Autowired
+  RoleRepository roleRepository;
 
-                  <ng-container matColumnDef="phone">
-                    <mat-header-cell *matHeaderCellDef class="phone">Phone</mat-header-cell>
-                    <mat-cell *matCellDef="let student">{{student.phoneNumber}}</mat-cell>
-                  </ng-container>
+  @Autowired
+  PasswordEncoder encoder;
 
-                  <ng-container matColumnDef="action">
-                    <mat-header-cell *matHeaderCellDef class="action">Action</mat-header-cell>
-                    <mat-cell *matCellDef="let student">
-                      <button [routerLink]="['/showattendance',student.id]" mat-icon-button color="primary" class="btn-margin">
-                        <mat-icon>visibility</mat-icon>
-                      </button>
-                      <button [routerLink]="['/editdatastudent',student.id]" mat-icon-button color="primary" class="btn-margin">
-                        <mat-icon>edit</mat-icon>
-                      </button>
-                      <button mat-icon-button color="warn" class="btn-margin" (click)="deleteStudent(student.id)">
-                        <mat-icon>delete</mat-icon>
-                      </button>
-                    </mat-cell>
-                  </ng-container>
+  @Autowired
+  JwtUtils jwtUtils;
 
-                  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-                </mat-table>
+  @PostMapping("/signin")
+  public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
-                <mat-paginator [pageSize]="3" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+    Authentication authentication = authenticationManager.authenticate(
+        new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
-                </div>
-              </div>
-        </div>
-        
-    
+    SecurityContextHolder.getContext().setAuthentication(authentication);
 
-     
-import { StudentdetailComponent } from './../studentdetail/studentdetail.component';
-import { IStudent } from './../model';
-import { Component, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
-import { StudentService } from '../student/student.service';
-import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
-import { ViewChild, AfterViewInit } from '@angular/core';
-import { EditdataStudentComponent } from '../editdata-student/editdata-student.component';
+    UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-@Component({
-  selector: 'app-navbar',
-  templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.scss']
-})
-export class NavbarComponent implements OnInit, AfterViewInit {
-  displayedColumns: string[] = ['id', 'name', 'email', 'phone', 'action'];
-  dataSource: MatTableDataSource<IStudent>;
+    ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
 
-  @ViewChild(MatPaginator)
-  paginator!: MatPaginator;
-  
+    List<String> roles = userDetails.getAuthorities().stream()
+        .map(item -> item.getAuthority())
+        .collect(Collectors.toList());
 
-  constructor(private studentService: StudentService, private dialog: MatDialog) {
-    this.dataSource = new MatTableDataSource<IStudent>();
-    this.dataSource.paginator = this.paginator;
+    return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+        .body(new UserInfoResponse(userDetails.getId(),
+                                   userDetails.getUsername(),
+                                   userDetails.getEmail(),
+                                   roles));
   }
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-  }
-  ngOnInit(): void {
-    this.getAllStudents();
-    this.dataSource.filterPredicate = (data: IStudent, filter: string) => {
-      const name = data.studentName.trim().toLowerCase();
-      // const id = data.id?.toString();
-      return name.includes(filter) ;
+
+  @PostMapping("/signup")
+  public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+      return ResponseEntity
+          .badRequest()
+          .body(new MessageResponse("Error: Username is already taken!"));
+    }
+
+    if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+      return ResponseEntity
+          .badRequest()
+          .body(new MessageResponse("Error: Email is already in use!"));
+    }
+
+    // Create new user's account
+    User user = new User(signUpRequest.getUsername(), 
+                         signUpRequest.getEmail(),
+                         encoder.encode(signUpRequest.getPassword()));
+
+    Set<String> strRoles = signUpRequest.getRoles();
+    Set<Role> roles = new HashSet<>();
+
+    if (strRoles == null) {
+      Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+          .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+      roles.add(userRole);
+    } else {
+      strRoles.forEach(role -> {
+        switch (role) {
+        case "admin":
+          Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
+              .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+          roles.add(adminRole);
+
+          break;
+        case "mod":
+          Role modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
+              .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+          roles.add(modRole);
+
+          break;
+        default:
+          Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+              .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+          roles.add(userRole);
+        }
+      });
+    }
+
+    user.setRoles(roles);
+    userRepository.save(user);
+
+    return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
   }
 }
 
-  getAllStudents(): void {
-    this.studentService.getAllStudents().subscribe((students: IStudent[]) => {
-      this.dataSource = new MatTableDataSource<IStudent>(students);
-      this.dataSource.paginator = this.paginator;
-    });
-   }
 
-  deleteStudent(id: number): void {
-    const confirmed = window.confirm('Are you sure you want to delete this student?');
 
-    if (confirmed) {
-      this.studentService.deleteStudentById(id).subscribe(() => {
-        this.getAllStudents();
-      });
+
+
+
+
+package com.Jwt.controllers;
+
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+//for Angular Client (withCredentials)
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials="true")
+//@CrossOrigin(origins = "*", maxAge = 3600)
+@RestController
+@RequestMapping("/api/test")
+public class TestController {
+  @GetMapping("/all")
+  public String allAccess() {
+    return "Public Content.";
+  }
+
+  @GetMapping("/user")
+  @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+  public String userAccess() {
+    return "User Content.";
+  }
+
+  @GetMapping("/mod")
+  @PreAuthorize("hasRole('MODERATOR')")
+  public String moderatorAccess() {
+    return "Moderator Board.";
+  }
+
+  @GetMapping("/admin")
+  @PreAuthorize("hasRole('ADMIN')")
+  public String adminAccess() {
+    return "Admin Board.";
+  }
+}
+
+
+
+package com.Jwt.security.jwt;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+@Component
+public class AuthEntryPointJwt implements AuthenticationEntryPoint {
+
+  private static final Logger logger = LoggerFactory.getLogger(AuthEntryPointJwt.class);
+
+  @Override
+  public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
+      throws IOException, ServletException {
+    logger.error("Unauthorized error: {}", authException.getMessage());
+
+    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
+    final Map<String, Object> body = new HashMap<>();
+    body.put("status", HttpServletResponse.SC_UNAUTHORIZED);
+    body.put("error", "Unauthorized");
+    body.put("message", authException.getMessage());
+    body.put("path", request.getServletPath());
+
+    final ObjectMapper mapper = new ObjectMapper();
+    mapper.writeValue(response.getOutputStream(), body);
+  }
+
+}
+
+
+package com.Jwt.security.jwt;
+
+import java.io.IOException;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.Jwt.security.services.UserDetailsServiceImpl;
+
+
+public class AuthTokenFilter extends OncePerRequestFilter {
+  @Autowired
+  private JwtUtils jwtUtils;
+
+  @Autowired
+  private UserDetailsServiceImpl userDetailsService;
+
+  private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
+
+  @Override
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+      throws ServletException, IOException {
+    try {
+      String jwt = parseJwt(request);
+      if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
+        String username = jwtUtils.getUserNameFromJwtToken(jwt);
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
+            userDetails.getAuthorities());
+        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
       }
+    } catch (Exception e) {
+      logger.error("Cannot set user authentication: {}", e);
     }
 
-  isSignUp = false;
-
-  onSignUp() {
-    this.isSignUp = true;
+    filterChain.doFilter(request, response);
   }
 
-  onSignIn() {
-    this.isSignUp = false;
+  private String parseJwt(HttpServletRequest request) {
+    String jwt = jwtUtils.getJwtFromCookies(request);
+    return jwt;
   }
-
-  applyFilter(event: Event): void {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
-
-  viewMore(studentId: number | undefined): void {
-    const student = this.dataSource.data.find(s => s.id === studentId);
-    if(student){
-      this.dialog.open(StudentdetailComponent, {
-        width: '400px',
-        data: student
-      });
-
-  
-    }
-  }
-
 }
 
 
-No one should use fetch method to get data from API. Use httpClient and implement Behavior Subject
-Use proper folder structure
-Use proper coding practice
-All interfaces name should-start with  (capital I) eg. IUserDetails
-For fetching data make call 1st time in ngOnInit() and store it in Behavior subject and subscribe to it in your component. No need to make same api call multiple times. Only if you add student or update attendance then only just make fetch call and update your behavior subject.
-If you guys have completed some part of assignment 6 get it reviewed so that if any thing is there you guys need to improve I can give my feedback and you can implement.
-API calls will be made in service file only.
-Discuss with me how you are storing data(for student and attendance) basically what is your data structure.
-Use formBuilder for building forms.
-While giving edit functionality for user details Pre-Populate the data in the form whatever already is there.
-While marking attendance give a dropdown of (studentName-rollNumber) so that user can select that user and fill attendance for the same.
+package com.Jwt.security.jwt;
+
+import java.security.Key;
+import java.util.Date;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
+import org.springframework.stereotype.Component;
+import org.springframework.web.util.WebUtils;
+
+import com.Jwt.security.services.UserDetailsImpl;
+
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+
+@Component
+public class JwtUtils {
+  private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
+
+  @Value("${JwtAuth.app.jwtSecret}")
+  private String jwtSecret;
+
+  @Value("${JwtAuth.app.jwtExpirationMs}")
+  private int jwtExpirationMs;
+
+  @Value("${JwtAuth.app.jwtCookieName}")
+  private String jwtCookie;
+
+  public String getJwtFromCookies(HttpServletRequest request) {
+    Cookie cookie = WebUtils.getCookie(request, jwtCookie);
+    if (cookie != null) {
+      return cookie.getValue();
+    } else {
+      return null;
+    }
+  }
+
+  public ResponseCookie generateJwtCookie(UserDetailsImpl userPrincipal) {
+    String jwt = generateTokenFromUsername(userPrincipal.getUsername());
+    ResponseCookie cookie = ResponseCookie.from(jwtCookie, jwt).path("/api").maxAge(24 * 60 * 60).httpOnly(true).build();
+    return cookie;
+  }
+
+  public ResponseCookie getCleanJwtCookie() {
+    ResponseCookie cookie = ResponseCookie.from(jwtCookie, null).path("/api").build();
+    return cookie;
+  }
+
+  public String getUserNameFromJwtToken(String token) {
+    return Jwts.parserBuilder().setSigningKey(key()).build()
+        .parseClaimsJws(token).getBody().getSubject();
+  }
+  
+  private Key key() {
+    return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
+  }
+
+  public boolean validateJwtToken(String authToken) {
+    try {
+      Jwts.parserBuilder().setSigningKey(key()).build().parse(authToken);
+      return true;
+    } catch (MalformedJwtException e) {
+      logger.error("Invalid JWT token: {}", e.getMessage());
+    } catch (ExpiredJwtException e) {
+      logger.error("JWT token is expired: {}", e.getMessage());
+    } catch (UnsupportedJwtException e) {
+      logger.error("JWT token is unsupported: {}", e.getMessage());
+    } catch (IllegalArgumentException e) {
+      logger.error("JWT claims string is empty: {}", e.getMessage());
+    }
+
+    return false;
+  }
+  
+  public String generateTokenFromUsername(String username) {   
+    return Jwts.builder()
+              .setSubject(username)
+              .setIssuedAt(new Date())
+              .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+              .signWith(key(), SignatureAlgorithm.HS256)
+              .compact();
+  }
+}
+
+
+
+
+
+
+User Authentication and Authorization:
+•
+Secure user registration and login with role-based access control (admin, manager, staff, etc.).
+•
+Permissions to control who can add, edit, delete, or view inventory items.
+2.
+Product Database:
+•
+A centralized database to store product information, including name, description, SKU (Stock Keeping Unit), category, manufacturer, price, and quantity.
+
+
+Product Images:
+•
+Support for attaching product images for easy visual identification.
+8.
+Supplier Management:
+•
+Maintain a list of suppliers, including contact details and pricing agreements.
+9.
+Purchase Orders:
+•
+Create, edit, and manage purchase orders for restocking inventory.
+•
+Include the option to email or print purchase orders.
+10.
+Sales Orders:
+•
+Generate and manage sales orders for tracking customer orders.
+•
+Link sales orders to available inventory.
+11.
+Inventory Valuation:
+•
+Calculate the value of the inventory based on the purchase cost, including FIFO (First-In, First-Out) or LIFO (Last-In, First-Out) methods.
