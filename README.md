@@ -101,3 +101,83 @@ public class Products {
         this.images = images;
     }
 }
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class ProductService {
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    public Products createProduct(Products product) {
+        return productRepository.save(product);
+    }
+
+    public List<Products> getAllProducts() {
+        return productRepository.findAll();
+    }
+
+    public Optional<Products> getProductById(String id) {
+        return productRepository.findById(id);
+    }
+
+    public Products updateProduct(String id, Products productDetails) {
+        Products product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found for this id :: " + id));
+        // Update product fields here
+        return productRepository.save(product);
+    }
+
+    public void deleteProduct(String id) {
+        Products product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found for this id :: " + id));
+        productRepository.delete(product);
+    }
+}
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/products")
+public class ProductController {
+
+    @Autowired
+    private ProductService productService;
+
+    @PostMapping
+    public ResponseEntity<Products> createProduct(@RequestBody Products product) {
+        return ResponseEntity.ok(productService.createProduct(product));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Products>> getAllProducts() {
+        return ResponseEntity.ok(productService.getAllProducts());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Products> getProductById(@PathVariable String id) {
+        return productService.getProductById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Products> updateProduct(@PathVariable String id, @RequestBody Products productDetails) {
+        return ResponseEntity.ok(productService.updateProduct(id, productDetails));
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteProduct(@PathVariable String id) {
+        productService.deleteProduct(id);
+    }
+}
