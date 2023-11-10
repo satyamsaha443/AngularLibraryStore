@@ -62,14 +62,7 @@ export class SignupComponent {
            Signup
         </div>
     
-        <!-- <div class="input-container"> 
-           <input type="text" name="name" class="input" placeholder="Name" formControlName="name">
-        </div>
-        <div class="msg error" *ngIf="f['name'].invalid && (f['name'].dirty || f['name'].touched)">
-            <span *ngIf="f['name'].errors?.['required']">
-                Name is required  
-          </span>
-        </div> -->
+   
         
         <div class="input-container"> 
             <input type="text" formControlName="username" name="username" class="input" placeholder="Username">
@@ -105,18 +98,7 @@ export class SignupComponent {
     </span>
     </div>
     
-       <!-- <div class="input-container"> 
-           <input type="password" formControlName="confirmPassword" name="confirm password" class="input" placeholder="Confirm Password">
-       </div>
-    
-       <div class="msg error" *ngIf="f['confirmPassword'].invalid && (f['confirmPassword'].dirty || f['confirmPassword'].touched)">
-        <span *ngIf="f['confirmPassword'].errors?.['required']">
-            ConfirmPassword is required  
-      </span>
-      <span *ngIf="f['confirmPassword'].errors?.['mustMatch']">
-        Password and confirm password should be matched  
-    </span>
-       </div> -->
+
     
        <button type="submit" id="btnSubmit" [disabled]="frm.invalid">Signup</button>
        
@@ -126,7 +108,7 @@ export class SignupComponent {
     
          <a routerLink="/login" class="link">Already a member? Login here</a>
         </form>
-    </div>
+
     </div>
 
     
