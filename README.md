@@ -178,3 +178,43 @@ public class TestController {
     return "Admin Board.";
   }
 }
+
+package com.Jwt.controllers;
+
+import com.Jwt.models.Order;
+import com.Jwt.services.OrderService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/orders")
+public class OrderController {
+
+    @Autowired
+    private OrderService orderService;
+
+    // POST endpoint to create a new order
+    @PostMapping
+    public ResponseEntity<Order> createOrder(@RequestBody Order order) {
+        Order createdOrder = orderService.createOrder(order);
+        return ResponseEntity.ok(createdOrder);
+    }
+
+    // GET endpoint to retrieve all orders
+    @GetMapping
+    public ResponseEntity<List<Order>> getAllOrders() {
+        List<Order> orders = orderService.getAllOrders();
+        return ResponseEntity.ok(orders);
+    }
+
+    // GET endpoint to retrieve a single order by its ID
+    @GetMapping("/{id}")
+    public ResponseEntity<Order> getOrderById(@PathVariable String id) {
+        return orderService.getOrderById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+}
