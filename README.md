@@ -1,11 +1,12 @@
-
 onPost() {
   this.status = {statusCode: 0, message: "wait...."};
   this.signupService.login(this.frm.value).subscribe({
     next: (res) => {
-      localStorage.setItem('accessToken', res.accessToken);
-      // Handle other response data as needed
-      this.router.navigate(['./dashboard']);
+      // Convert accessToken to string if necessary
+      const accessToken = typeof res.accessToken === 'string' ? res.accessToken : JSON.stringify(res.accessToken);
+      localStorage.setItem('accessToken', accessToken);
+
+      // Other code...
     },
     error: (err) => {
       console.log(err);
