@@ -1,120 +1,180 @@
+package com.Jwt.controllers;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.Date;
+
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-@Document(collection = "orders")
-public class Order {
-    @Id
-    private String id;
-
-    @Field("userType")
-    private UserType userType;
-
-    @Field("orderDate")
-    private Date orderDate;
-
-    @Field("deliveryDate")
-    private Date deliveryDate;
-
-    @Field("person")
-    private Person person;
-
-    @Field("items")
-    private List<ProductOrder> items;
-
-    @Field("status")
-    private Status status;
-
-    // Getters and setters
-}
-
-// Define UserType,
-
-
-
- Status, Person, and ProductOrder classes similarly
-
+import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.Jwt.models.ERole;
+import com.Jwt.models.Role;
+import com.Jwt.models.User;
+import com.Jwt.repository.RoleRepository;
+import com.Jwt.repository.UserRepository;
+import com.Jwt.request.LoginRequest;
+import com.Jwt.request.SignupRequest;
+import com.Jwt.response.MessageResponse;
+import com.Jwt.response.UserInfoResponse;
+import com.Jwt.security.jwt.JwtUtils;
+import com.Jwt.security.services.UserDetailsImpl;
+
+
+//
+//@CrossOrigin(origins = "http://localhost:8081", maxAge = 3600, allowCredentials="true")
 
 @RestController
-@RequestMapping("/api/orders")
-public class OrderController {
+@RequestMapping("/api/auth")
+public class AuthController {
+  @Autowired
+  AuthenticationManager authenticationManager;
 
-    @Autowired
-    private OrderService orderService;
+  @Autowired
+  UserRepository userRepository;
 
-    @PostMapping
-    public Order createOrder(@RequestBody Order order) {
-        return orderService.createOrder(order);
+  @Autowired
+  RoleRepository roleRepository;
+
+  @Autowired
+  PasswordEncoder encoder;
+
+  @Autowired
+  JwtUtils jwtUtils;
+
+  @PostMapping("/signin")
+  public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+
+    Authentication authentication = authenticationManager.authenticate(
+        new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+
+    UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+    ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
+
+    List<String> roles = userDetails.getAuthorities().stream()
+        .map(item -> item.getAuthority())
+        .collect(Collectors.toList());
+
+    return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+        .body(new UserInfoResponse(userDetails.getId(),
+                                   userDetails.getUsername(),
+                                   userDetails.getEmail(),
+                                   roles));
+  }
+
+  @PostMapping("/signup")
+  public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+      return ResponseEntity
+          .badRequest()
+          .body(new MessageResponse("Error: Username is already taken!"));
     }
 
-    // Add other endpoints (GET, PUT, DELETE) as needed
+    if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+      return ResponseEntity
+          .badRequest()
+          .body(new MessageResponse("Error: Email is already in use!"));
+    }
+
+    // Create new user's account
+    User user = new User(signUpRequest.getUsername(), 
+                         signUpRequest.getEmail(),
+                         encoder.encode(signUpRequest.getPassword()));
+
+    Set<String> strRoles = signUpRequest.getRoles();
+    Set<Role> roles = new HashSet<>();
+
+    if (strRoles == null) {
+      Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+          .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+      roles.add(userRole);
+    } else {
+      strRoles.forEach(role -> {
+        switch (role) {
+        case "admin":
+          Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
+              .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+          roles.add(adminRole);
+
+          break;
+        case "mod":
+          Role modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
+              .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+          roles.add(modRole);
+
+          break;
+        default:
+          Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+              .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+          roles.add(userRole);
+        }
+      });
+    }
+
+    user.setRoles(roles);
+    userRepository.save(user);
+
+    return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+  }
 }
 
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.Optional;
 
-@Service
-public class OrderService {
 
-    @Autowired
-    private OrderRepository orderRepository;
+package com.Jwt.controllers;
 
-    public Order createOrder(Order order) {
-        return orderRepository.save(order);
-    }
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-    public List<Order> getAllOrders() {
-        return orderRepository.findAll();
-    }
+////for Angular Client (withCredentials)
+//@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials="true")
+@CrossOrigin(origins = "*", maxAge = 3600)
+@RestController
+@RequestMapping("/api/test")
+public class TestController {
+  @GetMapping("/all")
+  public String allAccess() {
+    return "Public Content.";
+  }
 
-    public Optional<Order> getOrderById(String id) {
-        return orderRepository.findById(id);
-    }
+  @GetMapping("/user")
+  @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+  public String userAccess() {
+    return "User Content.";
+   
+  }
 
-    public Order updateOrder(String id, Order orderDetails) {
-        Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found for this id :: " + id));
-        order.setUserType(orderDetails.getUserType());
-        order.setOrderDate(orderDetails.getOrderDate());
-        order.setDeliveryDate(orderDetails.getDeliveryDate());
-        order.setPerson(orderDetails.getPerson());
-        order.setItems(orderDetails.getItems());
-        order.setStatus(orderDetails.getStatus());
-        return orderRepository.save(order);
-    }
+  @GetMapping("/mod")
+ @PreAuthorize("hasRole('MODERATOR')")
+  public String moderatorAccess() {
+    return "Moderator Board.";
+  }
 
-    public void deleteOrder(String id) {
-        Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found for this id :: " + id));
-        orderRepository.delete(order);
-    }
-}
-
-{
-  "userType": "Customer",
-  "orderDate": "2023-11-10T00:00:00",
-  "deliveryDate": "2023-11-15T00:00:00",
-  "person": {
-    "name": "John Doe",
-    "contact": "123456789",
-    "email": "johndoe@example.com"
-  },
-  "items": [
-    {
-      "product_id": "some_product_id",
-      "quantity": 2,
-      "priceAgreement": 19.99
-    }
-  ],
-  "status": "Pending"
+  @GetMapping("/admin")
+ @PreAuthorize("hasRole('ADMIN')")
+  public String adminAccess() {
+    return "Admin Board.";
+  }
 }
