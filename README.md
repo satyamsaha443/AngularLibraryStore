@@ -1,138 +1,67 @@
-package com.Jwt.controllers;
-
-
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import jakarta.validation.Valid;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.Jwt.models.ERole;
-import com.Jwt.models.Role;
-import com.Jwt.models.User;
-import com.Jwt.repository.RoleRepository;
-import com.Jwt.repository.UserRepository;
-import com.Jwt.request.LoginRequest;
-import com.Jwt.request.SignupRequest;
-import com.Jwt.response.MessageResponse;
-import com.Jwt.response.UserInfoResponse;
-import com.Jwt.security.jwt.JwtUtils;
-import com.Jwt.security.services.UserDetailsImpl;
-
-
-
-@CrossOrigin(origins = "http://localhost:8081", maxAge = 3600, allowCredentials="true")
-
-@RestController
-@RequestMapping("/api/auth")
-public class AuthController {
-  @Autowired
-  AuthenticationManager authenticationManager;
-
-  @Autowired
-  UserRepository userRepository;
-
-  @Autowired
-  RoleRepository roleRepository;
-
-  @Autowired
-  PasswordEncoder encoder;
-
-  @Autowired
-  JwtUtils jwtUtils;
-
-  @PostMapping("/signin")
-  public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-
-    Authentication authentication = authenticationManager.authenticate(
-        new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-
-    SecurityContextHolder.getContext().setAuthentication(authentication);
-
-    UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
-    ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
-
-    List<String> roles = userDetails.getAuthorities().stream()
-        .map(item -> item.getAuthority())
-        .collect(Collectors.toList());
-
-    return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-        .body(new UserInfoResponse(userDetails.getId(),
-                                   userDetails.getUsername(),
-                                   userDetails.getEmail(),
-                                   roles));
-  }
-
-  @PostMapping("/signup")
-  public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-    if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-      return ResponseEntity
-          .badRequest()
-          .body(new MessageResponse("Error: Username is already taken!"));
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
+ 
+namespace InventoryManagement.Models
+{
+    public enum UserType
+    {
+        Customer,
+        Supplier
     }
-
-    if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-      return ResponseEntity
-          .badRequest()
-          .body(new MessageResponse("Error: Email is already in use!"));
+    public enum Status
+    {
+        Successfull,
+        Pending,
+        Failed
     }
-
-    // Create new user's account
-    User user = new User(signUpRequest.getUsername(), 
-                         signUpRequest.getEmail(),
-                         encoder.encode(signUpRequest.getPassword()));
-
-    Set<String> strRoles = signUpRequest.getRoles();
-    Set<Role> roles = new HashSet<>();
-
-    if (strRoles == null) {
-      Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-          .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-      roles.add(userRole);
-    } else {
-      strRoles.forEach(role -> {
-        switch (role) {
-        case "admin":
-          Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-              .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-          roles.add(adminRole);
-
-          break;
-        case "mod":
-          Role modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
-              .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-          roles.add(modRole);
-
-          break;
-        default:
-          Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-              .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-          roles.add(userRole);
-        }
-      });
+    public class Orders
+    {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; } = string.Empty;
+ 
+        [BsonElement("userType")]
+        [BsonRepresentation(BsonType.String)]
+        public UserType UserType { get; set; }
+ 
+        [BsonElement("orderDate")]
+        public DateTime OrderDate { get; set; }
+ 
+        [BsonElement("deliveryDate")]
+        public DateTime DeliveryDate { get; set; }
+ 
+        [BsonElement("person")]
+        public Person Person { get; set; } = new Person();
+ 
+        [BsonElement("items")]
+        public List<ProductOrder> Items { get; set; } = new List<ProductOrder>();
+ 
+        [BsonElement("status")]
+        public Status Status { get; set; }
     }
-
-    user.setRoles(roles);
-    userRepository.save(user);
-
-    return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
-  }
+ 
+    public class Person
+    {
+        [BsonElement("name")]
+        public string Name { get; set; } = string.Empty;
+ 
+        [BsonElement("contact")]
+        public string Contact { get; set; } = string.Empty;
+ 
+        [BsonElement("email")]
+        public string Email { get; set; } = string.Empty;
+    }
+ 
+    public class ProductOrder
+    {
+        [BsonElement("product_id")]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; } = string.Empty;
+ 
+        [BsonElement("quantity")]
+        public int Quantity { get; set; }
+ 
+        [BsonElement("priceAgreement")]
+        public double PriceAgreement { get; set; }
+    }
 }
