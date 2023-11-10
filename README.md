@@ -218,3 +218,23 @@ public class OrderController {
                 .orElse(ResponseEntity.notFound().build());
     }
 }
+{
+  "userType": "Customer",
+  "orderDate": "2023-11-10T00:00:00",
+  "deliveryDate": "2023-11-15T00:00:00",
+  "person": {
+    "name": "John Doe",
+    "contact": "123456789",
+    "email": "johndoe@example.com"
+  },
+  "items": [
+    {
+      "product_id": "some_product_id",
+      "quantity": 2,
+      "priceAgreement": 19.99
+    }
+  ],
+  "status": "Pending"
+}
+
+
