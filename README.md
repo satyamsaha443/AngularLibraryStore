@@ -587,3 +587,714 @@ public class Expense implements Serializable {
 	}
 
 }
+
+
+
+
+package dev.delta.stockbay.entities;
+
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "stockbay_income")
+public class Income implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4617049187057806541L;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	Long id;
+	String employee_fname;
+	String employee_email;
+	String employee_phone;
+	String employee_gender;
+	String employee_nid;
+	String status_id;
+	String employee_birthday;
+	String employee_address;
+	String employee_salary;
+
+	public Income() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public Income(String employee_fname, String employee_email, String employee_phone, String employee_gender,
+			String employee_nid, String status_id, String employee_birthday, String employee_address,
+			String employee_salary) {
+		super();
+		this.employee_fname = employee_fname;
+		this.employee_email = employee_email;
+		this.employee_phone = employee_phone;
+		this.employee_gender = employee_gender;
+		this.employee_nid = employee_nid;
+		this.status_id = status_id;
+		this.employee_birthday = employee_birthday;
+		this.employee_address = employee_address;
+		this.employee_salary = employee_salary;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getEmployee_fname() {
+		return employee_fname;
+	}
+
+	public void setEmployee_fname(String employee_fname) {
+		this.employee_fname = employee_fname;
+	}
+
+	public String getEmployee_email() {
+		return employee_email;
+	}
+
+	public void setEmployee_email(String employee_email) {
+		this.employee_email = employee_email;
+	}
+
+	public String getEmployee_phone() {
+		return employee_phone;
+	}
+
+	public void setEmployee_phone(String employee_phone) {
+		this.employee_phone = employee_phone;
+	}
+
+	public String getEmployee_gender() {
+		return employee_gender;
+	}
+
+	public void setEmployee_gender(String employee_gender) {
+		this.employee_gender = employee_gender;
+	}
+
+	public String getEmployee_nid() {
+		return employee_nid;
+	}
+
+	public void setEmployee_nid(String employee_nid) {
+		this.employee_nid = employee_nid;
+	}
+
+	public String getStatus_id() {
+		return status_id;
+	}
+
+	public void setStatus_id(String status_id) {
+		this.status_id = status_id;
+	}
+
+	public String getEmployee_birthday() {
+		return employee_birthday;
+	}
+
+	public void setEmployee_birthday(String employee_birthday) {
+		this.employee_birthday = employee_birthday;
+	}
+
+	public String getEmployee_address() {
+		return employee_address;
+	}
+
+	public void setEmployee_address(String employee_address) {
+		this.employee_address = employee_address;
+	}
+
+	public String getEmployee_salary() {
+		return employee_salary;
+	}
+
+	public void setEmployee_salary(String employee_salary) {
+		this.employee_salary = employee_salary;
+	}
+
+}
+
+
+
+package dev.delta.stockbay.entities;
+
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
+@Entity
+@Table(name = "stockbay_product")
+public class Product implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8698757387767929675L;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	Long id;
+	String product_name;
+
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "category_id")
+	Category category_id;
+
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "supplier_id")
+	Supplier supplier_id;
+
+	String product_unit;
+	String product_alertquantity;
+	String product_supplierPrice;
+	String product_sellPrice;
+	String product_code;
+	String product_tax;
+	String warehouse_id;
+	String product_details;
+	String product_detailsforinvoice;
+
+	@OneToMany(cascade = CascadeType.ALL)
+	@JsonProperty(access = Access.WRITE_ONLY)
+	private Set<Buy> buys = new HashSet<Buy>();
+
+	public Product() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public Product(String product_name, Category category_id, Supplier supplier_id, String product_unit,
+			String product_alertquantity, String product_supplierPrice, String product_sellPrice, String product_code,
+			String product_tax, String warehouse_id, String product_details, String product_detailsforinvoice) {
+		super();
+		this.product_name = product_name;
+		this.category_id = category_id;
+		this.supplier_id = supplier_id;
+		this.product_unit = product_unit;
+		this.product_alertquantity = product_alertquantity;
+		this.product_supplierPrice = product_supplierPrice;
+		this.product_sellPrice = product_sellPrice;
+		this.product_code = product_code;
+		this.product_tax = product_tax;
+		this.warehouse_id = warehouse_id;
+		this.product_details = product_details;
+		this.product_detailsforinvoice = product_detailsforinvoice;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getProduct_name() {
+		return product_name;
+	}
+
+	public void setProduct_name(String product_name) {
+		this.product_name = product_name;
+	}
+
+	public Category getCategory_id() {
+		return category_id;
+	}
+
+	public void setCategory_id(Category category_id) {
+		this.category_id = category_id;
+	}
+
+	public Supplier getSupplier_id() {
+		return supplier_id;
+	}
+
+	public void setSupplier_id(Supplier supplier_id) {
+		this.supplier_id = supplier_id;
+	}
+
+	public String getProduct_unit() {
+		return product_unit;
+	}
+
+	public void setProduct_unit(String product_unit) {
+		this.product_unit = product_unit;
+	}
+
+	public String getProduct_alertquantity() {
+		return product_alertquantity;
+	}
+
+	public void setProduct_alertquantity(String product_alertquantity) {
+		this.product_alertquantity = product_alertquantity;
+	}
+
+	public String getProduct_supplierPrice() {
+		return product_supplierPrice;
+	}
+
+	public void setProduct_supplierPrice(String product_supplierPrice) {
+		this.product_supplierPrice = product_supplierPrice;
+	}
+
+	public String getProduct_sellPrice() {
+		return product_sellPrice;
+	}
+
+	public void setProduct_sellPrice(String product_sellPrice) {
+		this.product_sellPrice = product_sellPrice;
+	}
+
+	public String getProduct_code() {
+		return product_code;
+	}
+
+	public void setProduct_code(String product_code) {
+		this.product_code = product_code;
+	}
+
+	public String getProduct_tax() {
+		return product_tax;
+	}
+
+	public void setProduct_tax(String product_tax) {
+		this.product_tax = product_tax;
+	}
+
+	public String getWarehouse_id() {
+		return warehouse_id;
+	}
+
+	public void setWarehouse_id(String warehouse_id) {
+		this.warehouse_id = warehouse_id;
+	}
+
+	public String getProduct_details() {
+		return product_details;
+	}
+
+	public void setProduct_details(String product_details) {
+		this.product_details = product_details;
+	}
+
+	public String getProduct_detailsforinvoice() {
+		return product_detailsforinvoice;
+	}
+
+	public void setProduct_detailsforinvoice(String product_detailsforinvoice) {
+		this.product_detailsforinvoice = product_detailsforinvoice;
+	}
+
+}
+
+
+
+package dev.delta.stockbay.entities;
+
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "stockbay_revenue")
+public class Revenue implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5934032785346540901L;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	Long id;
+	String income_paymentDate;
+
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "customer_id")
+	Client customer_id;
+
+	String income_paymentType;
+	String income_paymentAccount;
+	String income_amount;
+	String income_details;
+
+	public Revenue() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public Revenue(String income_paymentDate, Client customer_id, String income_paymentType,
+			String income_paymentAccount, String income_amount, String income_details) {
+		super();
+		this.income_paymentDate = income_paymentDate;
+		this.customer_id = customer_id;
+		this.income_paymentType = income_paymentType;
+		this.income_paymentAccount = income_paymentAccount;
+		this.income_amount = income_amount;
+		this.income_details = income_details;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getIncome_paymentDate() {
+		return income_paymentDate;
+	}
+
+	public void setIncome_paymentDate(String income_paymentDate) {
+		this.income_paymentDate = income_paymentDate;
+	}
+
+	public Client getCustomer_id() {
+		return customer_id;
+	}
+
+	public void setCustomer_id(Client customer_id) {
+		this.customer_id = customer_id;
+	}
+
+	public String getIncome_paymentType() {
+		return income_paymentType;
+	}
+
+	public void setIncome_paymentType(String income_paymentType) {
+		this.income_paymentType = income_paymentType;
+	}
+
+	public String getIncome_paymentAccount() {
+		return income_paymentAccount;
+	}
+
+	public void setIncome_paymentAccount(String income_paymentAccount) {
+		this.income_paymentAccount = income_paymentAccount;
+	}
+
+	public String getIncome_amount() {
+		return income_amount;
+	}
+
+	public void setIncome_amount(String income_amount) {
+		this.income_amount = income_amount;
+	}
+
+	public String getIncome_details() {
+		return income_details;
+	}
+
+	public void setIncome_details(String income_details) {
+		this.income_details = income_details;
+	}
+
+}
+
+
+package dev.delta.stockbay.entities;
+
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "stockbay_sell")
+public class Sell implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4497992680923909136L;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	Long id;
+
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "customer_id")
+	Client customer_id;
+
+	String sale_date;
+	String sale_status;
+	String sale_invoiceNo;
+
+	public Sell() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public Sell(Client customer_id, String sale_date, String sale_status, String sale_invoiceNo) {
+		super();
+		this.customer_id = customer_id;
+		this.sale_date = sale_date;
+		this.sale_status = sale_status;
+		this.sale_invoiceNo = sale_invoiceNo;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Client getCustomer_id() {
+		return customer_id;
+	}
+
+	public void setCustomer_id(Client customer_id) {
+		this.customer_id = customer_id;
+	}
+
+	public String getSale_date() {
+		return sale_date;
+	}
+
+	public void setSale_date(String sale_date) {
+		this.sale_date = sale_date;
+	}
+
+	public String getSale_status() {
+		return sale_status;
+	}
+
+	public void setSale_status(String sale_status) {
+		this.sale_status = sale_status;
+	}
+
+	public String getSale_invoiceNo() {
+		return sale_invoiceNo;
+	}
+
+	public void setSale_invoiceNo(String sale_invoiceNo) {
+		this.sale_invoiceNo = sale_invoiceNo;
+	}
+
+}
+
+
+
+package dev.delta.stockbay.entities;
+
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
+@Entity
+@Table(name = "stockbay_supplier")
+public class Supplier implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3470927673791783361L;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	Long id;
+	String supplier_name;
+	String supplier_phone;
+	String supplier_email;
+	String supplier_company;
+	String supplier_address;
+	String status_id;
+	String supplier_description;
+
+	@OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@JsonProperty(access = Access.WRITE_ONLY)
+	private Set<Buy> buys = new HashSet<Buy>();
+
+	@OneToMany(cascade = CascadeType.DETACH, orphanRemoval = true, mappedBy = "supplier_id")
+	@JsonProperty(access = Access.WRITE_ONLY)
+	private Set<Product> products = new HashSet<Product>();
+
+	@OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@JsonProperty(access = Access.WRITE_ONLY)
+	private Set<Expense> expenses = new HashSet<Expense>();
+
+	public Supplier() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public Supplier(String supplier_name, String supplier_phone, String supplier_email, String supplier_company,
+			String supplier_address, String status_id, String supplier_description) {
+		super();
+		this.supplier_name = supplier_name;
+		this.supplier_phone = supplier_phone;
+		this.supplier_email = supplier_email;
+		this.supplier_company = supplier_company;
+		this.supplier_address = supplier_address;
+		this.status_id = status_id;
+		this.supplier_description = supplier_description;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getSupplier_name() {
+		return supplier_name;
+	}
+
+	public void setSupplier_name(String supplier_name) {
+		this.supplier_name = supplier_name;
+	}
+
+	public String getSupplier_phone() {
+		return supplier_phone;
+	}
+
+	public void setSupplier_phone(String supplier_phone) {
+		this.supplier_phone = supplier_phone;
+	}
+
+	public String getSupplier_email() {
+		return supplier_email;
+	}
+
+	public void setSupplier_email(String supplier_email) {
+		this.supplier_email = supplier_email;
+	}
+
+	public String getSupplier_company() {
+		return supplier_company;
+	}
+
+	public void setSupplier_company(String supplier_company) {
+		this.supplier_company = supplier_company;
+	}
+
+	public String getSupplier_address() {
+		return supplier_address;
+	}
+
+	public void setSupplier_address(String supplier_address) {
+		this.supplier_address = supplier_address;
+	}
+
+	public String getStatus_id() {
+		return status_id;
+	}
+
+	public void setStatus_id(String status_id) {
+		this.status_id = status_id;
+	}
+
+	public String getSupplier_description() {
+		return supplier_description;
+	}
+
+	public void setSupplier_description(String supplier_description) {
+		this.supplier_description = supplier_description;
+	}
+
+}
+
+
+
+package dev.delta.stockbay.entities;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "stockbay_warehouse")
+public class WareHouse {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	Long id;
+	String name;
+	String status;
+	String details;
+
+	public WareHouse() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public WareHouse(String name, String status, String details) {
+		super();
+		this.name = name;
+		this.status = status;
+		this.details = details;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getDetails() {
+		return details;
+	}
+
+	public void setDetails(String details) {
+		this.details = details;
+	}
+
+}
