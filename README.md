@@ -246,3 +246,28 @@ public class Revenue implements Serializable {
 
     // Constructors, getters, and setters...
 }
+
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+
+import java.io.Serializable;
+
+@Document(collection = "stockbay_sell")
+public class Sell implements Serializable {
+
+    private static final long serialVersionUID = -4497992680923909136L;
+
+    @Id
+    String id;
+
+    @DBRef
+    Client customer;
+
+    String saleDate;
+    String saleStatus;
+    String saleInvoiceNo;
+
+    // Constructors, Getters, and Setters
+}
