@@ -1,194 +1,223 @@
-package com.Jwt.security.jwt;
+package com.Jwt.controllers;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.MediaType;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.stereotype.Component;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-@Component
-public class AuthEntryPointJwt implements AuthenticationEntryPoint {
-
-  private static final Logger logger = LoggerFactory.getLogger(AuthEntryPointJwt.class);
-
-  @Override
-  public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
-      throws IOException, ServletException {
-    logger.error("Unauthorized error: {}", authException.getMessage());
-
-    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-
-    final Map<String, Object> body 	= new HashMap<>();
-    body.put("status", HttpServletResponse.SC_UNAUTHORIZED);
-    body.put("error", "Unauthorized");
-    body.put("message", authException.getMessage());
-    body.put("path", request.getServletPath());
-
-    final ObjectMapper mapper = new ObjectMapper();
-    mapper.writeValue(response.getOutputStream(), body);
-  }
-
-}
-
-
-
-package com.Jwt.security.jwt;
-
-import java.io.IOException;
-
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.Jwt.security.services.UserDetailsServiceImpl;
+import com.Jwt.models.Buy;
+import com.Jwt.security.services.BuyService;
 
+@RestController
+@RequestMapping("/api/buys")
+public class BuyController {
 
-public class AuthTokenFilter extends OncePerRequestFilter {
-  @Autowired
-  private JwtUtils jwtUtils;
+    @Autowired
+    private BuyService buyService;
+    
 
-  @Autowired
-  private UserDetailsServiceImpl userDetailsService;
+    public BuyService getBuyService() {
+		return buyService;
+	}
 
-  private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
+	public void setBuyService(BuyService buyService) {
+		this.buyService = buyService;
+	}
 
-  @Override
-  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-      throws ServletException, IOException {
-    try {
-      String jwt = parseJwt(request);
-      if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-        String username = jwtUtils.getUserNameFromJwtToken(jwt);
-
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
-            userDetails.getAuthorities());
-        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-      }
-    } catch (Exception e) {
-      logger.error("Cannot set user authentication: {}", e);
+	@GetMapping
+    public List<Buy> getAllBuys() {
+        return buyService.getAllBuys();
     }
 
-    filterChain.doFilter(request, response);
-  }
+    @GetMapping("/{id}")
+    public ResponseEntity<Buy> getBuyById(@PathVariable String id) {
+        Buy buy = buyService.getBuyById(id);
+        if (buy != null) {
+            return ResponseEntity.ok(buy);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
-  private String parseJwt(HttpServletRequest request) {
-    String jwt = jwtUtils.getJwtFromCookies(request);
-    return jwt;
-  }
+    @PostMapping
+    public Buy createBuy(@RequestBody Buy buy) {
+        return buyService.createBuy(buy);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Buy> updateBuy(@PathVariable String id, @RequestBody Buy buy) {
+        if (buyService.getBuyById(id) != null) {
+            return ResponseEntity.ok(buyService.updateBuy(id, buy));
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteBuy(@PathVariable String id) {
+        if (buyService.getBuyById(id) != null) {
+            buyService.deleteBuy(id);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
 
 
-package com.Jwt.security.jwt;
+package com.Jwt.models;
 
-import java.security.Key;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.io.Serializable;
 import java.util.Date;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
+@Document(collection = "inv_buy")
+public class Buy implements Serializable {
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseCookie;
-import org.springframework.stereotype.Component;
-import org.springframework.web.util.WebUtils;
+    private static final long serialVersionUID = 105253940174394025L;
 
-import com.Jwt.security.services.UserDetailsImpl;
+    @Id
+    private String id;
 
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
+    @DBRef
+    private Supplier supplier;
 
-@Component
-public class JwtUtils {
-  private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
+    @DBRef
+    private Products product;
 
-  @Value("${JwtAuth.app.jwtSecret}")
-  private String jwtSecret;
+    private Date purchaseDate;
+    private String purchaseInvoiceNo;
+    private String purchaseStatus;
 
-  @Value("${JwtAuth.app.jwtExpirationMs}")
-  private int jwtExpirationMs;
+    public Buy() {
 
-  @Value("${JwtAuth.app.jwtCookieName}")
-  private String jwtCookie;
-
-  public String getJwtFromCookies(HttpServletRequest request) {
-    Cookie cookie = WebUtils.getCookie(request, jwtCookie);
-    if (cookie != null) {
-      return cookie.getValue();
-    } else {
-      return null;
-    }
-  }
-
-  public ResponseCookie generateJwtCookie(UserDetailsImpl userPrincipal) {
-    String jwt = generateTokenFromUsername(userPrincipal.getUsername());
-    ResponseCookie cookie = ResponseCookie.from(jwtCookie, jwt).path("/api").maxAge(24 * 60 * 60).httpOnly(true).build();
-    return cookie;
-  }
-
-  public ResponseCookie getCleanJwtCookie() {
-    ResponseCookie cookie = ResponseCookie.from(jwtCookie, null).path("/api").build();
-    return cookie;
-  }
-
-  public String getUserNameFromJwtToken(String token) {
-    return Jwts.parserBuilder().setSigningKey(key()).build()
-        .parseClaimsJws(token).getBody().getSubject();
-  }
-  
-  private Key key() {
-    return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
-  }
-
-  public boolean validateJwtToken(String authToken) {
-    try {
-      Jwts.parserBuilder().setSigningKey(key()).build().parse(authToken);
-      return true;
-    } catch (MalformedJwtException e) {
-      logger.error("Invalid JWT token: {}", e.getMessage());
-    } catch (ExpiredJwtException e) {
-      logger.error("JWT token is expired: {}", e.getMessage());
-    } catch (UnsupportedJwtException e) {
-      logger.error("JWT token is unsupported: {}", e.getMessage());
-    } catch (IllegalArgumentException e) {
-      logger.error("JWT claims string is empty: {}", e.getMessage());
     }
 
-    return false;
-  }
-  
-  public String generateTokenFromUsername(String username) {   
-    return Jwts.builder()
-              .setSubject(username)
-              .setIssuedAt(new Date())
-              .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-              .signWith(key(), SignatureAlgorithm.HS256)
-              .compact();
-  }
+    public Buy(Supplier supplier, Products product, Date purchaseDate, String purchaseInvoiceNo, String purchaseStatus) {
+        this.supplier = supplier;
+        this.product = product;
+        this.purchaseDate = purchaseDate;
+        this.purchaseInvoiceNo = purchaseInvoiceNo;
+        this.purchaseStatus = purchaseStatus;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Supplier getSupplier() {
+        return supplier;
+    }
+
+    public void setSupplier(Supplier supplier) {
+        this.supplier = supplier;
+    }
+
+    public Products getProduct() {
+        return product;
+    }
+
+    public void setProduct(Products product) {
+        this.product = product;
+    }
+
+    public Date getPurchaseDate() {
+        return purchaseDate;
+    }
+
+    public void setPurchaseDate(Date purchaseDate) {
+        this.purchaseDate = purchaseDate;
+    }
+
+    public String getPurchaseInvoiceNo() {
+        return purchaseInvoiceNo;
+    }
+
+    public void setPurchaseInvoiceNo(String purchaseInvoiceNo) {
+        this.purchaseInvoiceNo = purchaseInvoiceNo;
+    }
+
+    public String getPurchaseStatus() {
+        return purchaseStatus;
+    }
+
+    public void setPurchaseStatus(String purchaseStatus) {
+        this.purchaseStatus = purchaseStatus;
+    }
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	@Override
+	public String toString() {
+		return "Buy [id=" + id + ", supplier=" + supplier + ", product=" + product + ", purchaseDate=" + purchaseDate
+				+ ", purchaseInvoiceNo=" + purchaseInvoiceNo + ", purchaseStatus=" + purchaseStatus + "]";
+	}
+    
+}
+
+package com.Jwt.security.services;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.Jwt.models.Buy;
+import com.Jwt.repository.BuyRepository;
+
+@Service
+public class BuyService {
+	
+	@Autowired
+	private BuyRepository buyRepository;
+	
+	
+	   public List<Buy> getBuys() {
+	        return buyRepository.findAll();
+	    }
+	    
+
+	public List<Buy> getAllBuys(){
+		return buyRepository.findAll();
+	}
+	public Buy getBuyById(String id) {
+		return buyRepository.findById(id).orElse(null);
+	}
+	
+	public Buy createBuy(Buy buy) {
+		return buyRepository.save(buy);
+	}
+	public Buy updateBuy(String id, Buy buy) {
+		buy.setId(id);
+		return buyRepository.save(buy);
+	}
+	
+	public void deleteBuy(String id) {
+		buyRepository.deleteById(id);
+	}
+	public BuyRepository getBuyRepository() {
+		return buyRepository;
+	}
+	public void setBuyRepository(BuyRepository buyRepository) {
+		this.buyRepository = buyRepository;
+	}
+	
+
 }
