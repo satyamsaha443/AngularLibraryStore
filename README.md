@@ -1,87 +1,52 @@
-package com.Jwt.models;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
+import java.util.List;
 
-import java.io.Serializable;
-import java.util.Date;
+@RestController
+@RequestMapping("/api/buys")
+public class BuyController {
 
-@Document(collection = "inv_buy")
-public class Buy implements Serializable {
+    @Autowired
+    private BuyService buyService;
 
-    private static final long serialVersionUID = 105253940174394025L;
-
-    @Id
-    private String id;
-
-    @DBRef
-    private Supplier supplier;
-
-    @DBRef
-    private Products product;
-
-    private Date purchaseDate;
-    private String purchaseInvoiceNo;
-    private String purchaseStatus;
-
-    public Buy() {
-
+    @GetMapping
+    public List<Buy> getAllBuys() {
+        return buyService.getAllBuys();
     }
 
-    public Buy(Supplier supplier, Products product, Date purchaseDate, String purchaseInvoiceNo, String purchaseStatus) {
-        this.supplier = supplier;
-        this.product = product;
-        this.purchaseDate = purchaseDate;
-        this.purchaseInvoiceNo = purchaseInvoiceNo;
-        this.purchaseStatus = purchaseStatus;
+    @GetMapping("/{id}")
+    public ResponseEntity<Buy> getBuyById(@PathVariable String id) {
+        Buy buy = buyService.getBuyById(id);
+        if (buy != null) {
+            return ResponseEntity.ok(buy);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    public String getId() {
-        return id;
+    @PostMapping
+    public Buy createBuy(@RequestBody Buy buy) {
+        return buyService.createBuy(buy);
     }
 
-    public void setId(String id) {
-        this.id = id;
+    @PutMapping("/{id}")
+    public ResponseEntity<Buy> updateBuy(@PathVariable String id, @RequestBody Buy buy) {
+        if (buyService.getBuyById(id) != null) {
+            return ResponseEntity.ok(buyService.updateBuy(id, buy));
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    public Supplier getSupplier() {
-        return supplier;
-    }
-
-    public void setSupplier(Supplier supplier) {
-        this.supplier = supplier;
-    }
-
-    public Products getProduct() {
-        return product;
-    }
-
-    public void setProduct(Products product) {
-        this.product = product;
-    }
-
-    public Date getPurchaseDate() {
-        return purchaseDate;
-    }
-
-    public void setPurchaseDate(Date purchaseDate) {
-        this.purchaseDate = purchaseDate;
-    }
-
-    public String getPurchaseInvoiceNo() {
-        return purchaseInvoiceNo;
-    }
-
-    public void setPurchaseInvoiceNo(String purchaseInvoiceNo) {
-        this.purchaseInvoiceNo = purchaseInvoiceNo;
-    }
-
-    public String getPurchaseStatus() {
-        return purchaseStatus;
-    }
-
-    public void setPurchaseStatus(String purchaseStatus) {
-        this.purchaseStatus = purchaseStatus;
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteBuy(@PathVariable String id) {
+        if (buyService.getBuyById(id) != null) {
+            buyService.deleteBuy(id);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
