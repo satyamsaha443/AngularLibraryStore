@@ -1,93 +1,76 @@
-package com.Jwt.security;
+package com.Jwt.models;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
-import com.Jwt.security.jwt.AuthEntryPointJwt;
-import com.Jwt.security.jwt.AuthTokenFilter;
-import com.Jwt.security.services.UserDetailsServiceImpl;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Configuration
-//@EnableWebSecurity
-@EnableMethodSecurity
-//(securedEnabled = true,
-//jsr250Enabled = true,
-//prePostEnabled = true) // by default
-public class WebSecurityConfig implements WebMvcConfigurer {
-  @Autowired
-  UserDetailsServiceImpl userDetailsService;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
-  @Autowired
-  private AuthEntryPointJwt unauthorizedHandler;
-
-  @Bean
-  public AuthTokenFilter authenticationJwtTokenFilter() {
-    return new AuthTokenFilter();
-  }	
-
-  @Bean
-  public DaoAuthenticationProvider authenticationProvider() {
-      DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-       
-      authProvider.setUserDetailsService(userDetailsService);
-      authProvider.setPasswordEncoder(passwordEncoder());
-   
-      return authProvider;
-  }
-  
-  @Bean
-  public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-    return authConfig.getAuthenticationManager();
-  }
-
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
-
-  @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.csrf(csrf -> csrf.disable())
-        .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
-        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .authorizeHttpRequests(auth -> 
-          auth.requestMatchers("/api/auth/**").permitAll()
-          .requestMatchers("/api/buys").permitAll()
-              .requestMatchers("/api/test/**").permitAll()
-              .anyRequest().authenticated()
-        );
+@Document(collection = "inv_category")
+public class Category implements Serializable {
     
-    http.authenticationProvider(authenticationProvider());
-
-    http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+    private static final long serialVersionUID = -3942285530464977887L;
     
-    return http.build();
-  }
+    @Id
+    private String id;
+    private String category_name;
+    private String status_id;
+    private String category_details;
+
+    @JsonProperty(access = Access.WRITE_ONLY)
+    private Set<Buy> products = new HashSet<>();
+
+    public Category() {
+        
+    }
+
+    public Category(String category_name, String status_id, String category_details) {
+        this.category_name = category_name;
+        this.status_id = status_id;
+        this.category_details = category_details;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getCategory_name() {
+        return category_name;
+    }
+
+    public void setCategory_name(String category_name) {
+        this.category_name = category_name;
+    }
+
+    public String getStatus_id() {
+        return status_id;
+    }
+
+    public void setStatus_id(String status_id) {
+        this.status_id = status_id;
+    }
+
+    public String getCategory_details() {
+        return category_details;
+    }
+
+    public void setCategory_details(String category_details) {
+        this.category_details = category_details;
+    }
   
-  @Bean
-  public WebMvcConfigurer corsConfigurer() {
-      return new WebMvcConfigurer() {
-          @Override
-          public void addCorsMappings(CorsRegistry registry) {
-              registry.addMapping("/**")
-                      .allowedOrigins("http://localhost:4200")
-                      .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                      .allowedHeaders("*")
-                      .allowCredentials(true);
-          }
-      };
-  }
+    public Set<Buy> getProducts() {
+        return products;
+    }
+
+    public void setProducts(Set<Buy> products) {
+        this.products = products;
+    }
 }
