@@ -84,3 +84,10 @@ public class CategoryController {
 
     // Additional endpoints can be added here
 }
+
+
+http.authorizeHttpRequests(auth -> 
+    auth.antMatchers(HttpMethod.GET, "/api/categories").permitAll() // allow public access to GET requests
+    .antMatchers("/api/categories/**").authenticated() // require authentication for other category endpoints
+    // ... other configuration
+);
