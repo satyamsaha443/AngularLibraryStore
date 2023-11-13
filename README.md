@@ -1,76 +1,86 @@
-package com.Jwt.models;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.Optional;
+import com.Jwt.models.Category;
 
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+@Service
+public class CategoryService {
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+    @Autowired
+    private CategoryRepository categoryRepository;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
-
-@Document(collection = "inv_category")
-public class Category implements Serializable {
-    
-    private static final long serialVersionUID = -3942285530464977887L;
-    
-    @Id
-    private String id;
-    private String category_name;
-    private String status_id;
-    private String category_details;
-
-    @JsonProperty(access = Access.WRITE_ONLY)
-    private Set<Buy> products = new HashSet<>();
-
-    public Category() {
-        
+    public List<Category> getAllCategories() {
+        return categoryRepository.findAll();
     }
 
-    public Category(String category_name, String status_id, String category_details) {
-        this.category_name = category_name;
-        this.status_id = status_id;
-        this.category_details = category_details;
+    public Optional<Category> getCategoryById(String id) {
+        return categoryRepository.findById(id);
     }
 
-    public String getId() {
-        return id;
+    public Category createCategory(Category category) {
+        return categoryRepository.save(category);
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public Category updateCategory(String id, Category category) {
+        category.setId(id);
+        return categoryRepository.save(category);
     }
 
-    public String getCategory_name() {
-        return category_name;
+    public void deleteCategory(String id) {
+        categoryRepository.deleteById(id);
     }
 
-    public void setCategory_name(String category_name) {
-        this.category_name = category_name;
+    // Additional business logic and methods can be added here
+}
+
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/categories")
+public class CategoryController {
+
+    @Autowired
+    private CategoryService categoryService;
+
+    @GetMapping
+    public List<Category> getAllCategories() {
+        return categoryService.getAllCategories();
     }
 
-    public String getStatus_id() {
-        return status_id;
+    @GetMapping("/{id}")
+    public ResponseEntity<Category> getCategoryById(@PathVariable String id) {
+        return categoryService.getCategoryById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    public void setStatus_id(String status_id) {
-        this.status_id = status_id;
+    @PostMapping
+    public Category createCategory(@RequestBody Category category) {
+        return categoryService.createCategory(category);
     }
 
-    public String getCategory_details() {
-        return category_details;
+    @PutMapping("/{id}")
+    public ResponseEntity<Category> updateCategory(@PathVariable String id, @RequestBody Category category) {
+        return categoryService.getCategoryById(id)
+                .map(storedCategory -> ResponseEntity.ok(categoryService.updateCategory(id, category)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    public void setCategory_details(String category_details) {
-        this.category_details = category_details;
-    }
-  
-    public Set<Buy> getProducts() {
-        return products;
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteCategory(@PathVariable String id) {
+        if (categoryService.getCategoryById(id).isPresent()) {
+            categoryService.deleteCategory(id);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    public void setProducts(Set<Buy> products) {
-        this.products = products;
-    }
+    // Additional endpoints can be added here
 }
