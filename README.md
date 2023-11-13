@@ -1,80 +1,42 @@
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-// ... other imports
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import Stock from 'src/app/main/models/Stock';
+import { HTTPService } from 'src/app/main/services/HTTPService';
+import URLS from 'src/app/main/urls/urls';
+import { URLLoader } from '../../../../main/configs/URLLoader';
 
-@Document(collection = "stockbay_client")
-public class Client implements Serializable {
-    // ... other fields
+@Component({
+  selector: 'app-stock',
+  templateUrl: './stock.component.html',
+  styleUrls: ['./stock.component.css']
+})
+export class StockComponent extends URLLoader implements OnInit {
 
-    @Id
-    private String id; // Changed from Long to String for MongoDB ObjectId
+  showsummary:boolean=false
+  showgraphic:boolean=false
+  stock$:Stock[]=[{
+        "id": 1,
+        "name": "",
+        "status": "",
+        "details": ""
+    }]
+  constructor(private httpService:HTTPService) {
+    super()
+   }
+  
 
-    // ... constructors, getters and setters
+ngOnInit() {
+ super.loadScripts();
+ this.getAll()
 }
 
+ getAll() {
+     this.httpService.getAll(URLS.URL_BASE+URLS.URL_PORT+"/stockbay/warehouse/all")
+     .subscribe((data:Stock[])=>{
+       this.stock$=data
+     },(err:HttpErrorResponse)=>{
+       super.show("Error",err.message,"error")
+     })
+  }
 
-import org.springframework.data.mongodb.repository.MongoRepository;
-import dev.delta.stockbay.entities.Client;
-
-public interface ClientRepository extends MongoRepository<Client, String> {
-    // Custom query methods can be added here
-}
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import java.util.Optional;
-// ... other imports
-
-@Service
-public class ClientService {
-    @Autowired
-    private ClientRepository clientRepository;
-
-    public Client saveOrUpdate(Client client) {
-        return clientRepository.save(client);
-    }
-
-    public Iterable<Client> findAll() {
-        return clientRepository.findAll();
-    }
-
-    public Optional<Client> findById(String id) {
-        return clientRepository.findById(id);
-    }
-
-    public void delete(String id) {
-        clientRepository.deleteById(id);
-    }
-}
-
-
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-// ... other imports
-
-@RestController
-@RequestMapping("/stockbay/client")
-@CrossOrigin
-public class ClientController {
-    @Autowired
-    private ClientService clientService;
-
-    // ... other methods
-
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getClientById(@PathVariable String id) {
-        Optional<Client> client = clientService.findById(id);
-        return client.map(response -> ResponseEntity.ok().body(response))
-                     .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteClient(@PathVariable String id) {
-        clientService.delete(id);
-        return new ResponseEntity<>("Client was deleted", HttpStatus.OK);
-    }
-
-    // ... other methods
 }
