@@ -1,403 +1,357 @@
-package com.Inv.models;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.Optional;
+import com.Inv.models.Revenue;
+import com.Inv.repository.RevenueRepository; // Assuming you have this repository
 
-import java.io.Serializable;
+@Service
+public class RevenueService {
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
+    @Autowired
+    private RevenueRepository revenueRepository;
 
-import io.swagger.annotations.ApiModelProperty;
-
-@Document
-public class Revenue implements Serializable {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 5934032785346540901L;
-    
-    @Id
-    @ApiModelProperty(notes = "The database generated revenue ID")
-    private String id;
-    
-    @ApiModelProperty(notes = "The date of the payment")
-    private String income_paymentDate;
-
-    @DBRef
-    @ApiModelProperty(notes = "The customer who made the payment")
-    private Client customer;
-
-    @ApiModelProperty(notes = "The payment type")
-    private String income_paymentType;
-    
-    @ApiModelProperty(notes = "The payment account")
-    private String income_paymentAccount;
-    
-    @ApiModelProperty(notes = "The amount of the payment")
-    private String income_amount;
-    
-    @ApiModelProperty(notes = "Details about the payment")
-    private String income_details;
-
-    public Revenue() {
-        // TODO Auto-generated constructor stub
+    public List<Revenue> getAllRevenues() {
+        return revenueRepository.findAll();
     }
 
-    public Revenue(String income_paymentDate, Client customer, String income_paymentType,
-                   String income_paymentAccount, String income_amount, String income_details) {
-        super();
-        this.income_paymentDate = income_paymentDate;
-        this.customer = customer;
-        this.income_paymentType = income_paymentType;
-        this.income_paymentAccount = income_paymentAccount;
-        this.income_amount = income_amount;
-        this.income_details = income_details;
+    public Optional<Revenue> getRevenueById(String id) {
+        return revenueRepository.findById(id);
     }
 
-    public String getId() {
-        return id;
+    public Revenue createRevenue(Revenue revenue) {
+        return revenueRepository.save(revenue);
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public Revenue updateRevenue(String id, Revenue revenue) {
+        revenue.setId(id);
+        return revenueRepository.save(revenue);
     }
 
-    public String getIncome_paymentDate() {
-        return income_paymentDate;
+    public void deleteRevenue(String id) {
+        revenueRepository.deleteById(id);
     }
 
-    public void setIncome_paymentDate(String income_paymentDate) {
-        this.income_paymentDate = income_paymentDate;
+    // Additional business logic and methods can be added here
+}
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/revenues")
+public class RevenueController {
+
+    @Autowired
+    private RevenueService revenueService;
+
+    @GetMapping
+    public List<Revenue> getAllRevenues() {
+        return revenueService.getAllRevenues();
     }
 
-    public Client getCustomer() {
-        return customer;
+    @GetMapping("/{id}")
+    public ResponseEntity<Revenue> getRevenueById(@PathVariable String id) {
+        return revenueService.getRevenueById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    public void setCustomer(Client customer) {
-        this.customer = customer;
+    @PostMapping
+    public Revenue createRevenue(@RequestBody Revenue revenue) {
+        return revenueService.createRevenue(revenue);
     }
 
-    public String getIncome_paymentType() {
-        return income_paymentType;
+    @PutMapping("/{id}")
+    public ResponseEntity<Revenue> updateRevenue(@PathVariable String id, @RequestBody Revenue revenue) {
+        return revenueService.getRevenueById(id)
+                .map(storedRevenue -> ResponseEntity.ok(revenueService.updateRevenue(id, revenue)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    public void setIncome_paymentType(String income_paymentType) {
-        this.income_paymentType = income_paymentType;
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteRevenue(@PathVariable String id) {
+        if (revenueService.getRevenueById(id).isPresent()) {
+            revenueService.deleteRevenue(id);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    public String getIncome_paymentAccount() {
-        return income_paymentAccount;
+    // Additional endpoints can be added here
+}
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.Optional;
+import com.Inv.models.Sell;
+import com.Inv.repository.SellRepository; // Assuming you have this repository
+
+@Service
+public class SellService {
+
+    @Autowired
+    private SellRepository sellRepository;
+
+    public List<Sell> getAllSells() {
+        return sellRepository.findAll();
     }
 
-    public void setIncome_paymentAccount(String income_paymentAccount) {
-        this.income_paymentAccount = income_paymentAccount;
+    public Optional<Sell> getSellById(String id) {
+        return sellRepository.findById(id);
     }
 
-    public String getIncome_amount() {
-        return income_amount;
+    public Sell createSell(Sell sell) {
+        return sellRepository.save(sell);
     }
 
-    public void setIncome_amount(String income_amount) {
-        this.income_amount = income_amount;
+    public Sell updateSell(String id, Sell sell) {
+        sell.setId(id);
+        return sellRepository.save(sell);
     }
 
-    public String getIncome_details() {
-        return income_details;
+    public void deleteSell(String id) {
+        sellRepository.deleteById(id);
     }
 
-    public void setIncome_details(String income_details) {
-        this.income_details = income_details;
+    // Additional business logic and methods can be added here
+}
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/sells")
+public class SellController {
+
+    @Autowired
+    private SellService sellService;
+
+    @GetMapping
+    public List<Sell> getAllSells() {
+        return sellService.getAllSells();
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Sell> getSellById(@PathVariable String id) {
+        return sellService.getSellById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    public Sell createSell(@RequestBody Sell sell) {
+        return sellService.createSell(sell);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Sell> updateSell(@PathVariable String id, @RequestBody Sell sell) {
+        return sellService.getSellById(id)
+                .map(storedSell -> ResponseEntity.ok(sellService.updateSell(id, sell)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteSell(@PathVariable String id) {
+        if (sellService.getSellById(id).isPresent()) {
+            sellService.deleteSell(id);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // Additional endpoints can be added here
+}
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.Optional;
+import com.Inv.models.Supplier;
+import com.Inv.repository.SupplierRepository; // Assuming you have this repository
+
+@Service
+public class SupplierService {
+
+    @Autowired
+    private SupplierRepository supplierRepository;
+
+    public List<Supplier> getAllSuppliers() {
+        return supplierRepository.findAll();
+    }
+
+    public Optional<Supplier> getSupplierById(String id) {
+        return supplierRepository.findById(id);
+    }
+
+    public Supplier createSupplier(Supplier supplier) {
+        return supplierRepository.save(supplier);
+    }
+
+    public Supplier updateSupplier(String id, Supplier supplier) {
+        supplier.setId(id);
+        return supplierRepository.save(supplier);
+    }
+
+    public void deleteSupplier(String id) {
+        supplierRepository.deleteById(id);
+    }
+
+    // Additional business logic and methods can be added here
+}
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/suppliers")
+public class SupplierController {
+
+    @Autowired
+    private SupplierService supplierService;
+
+    @GetMapping
+    public List<Supplier> getAllSuppliers() {
+        return supplierService.getAllSuppliers();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Supplier> getSupplierById(@PathVariable String id) {
+        return supplierService.getSupplierById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    public Supplier createSupplier(@RequestBody Supplier supplier) {
+        return supplierService.createSupplier(supplier);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Supplier> updateSupplier(@PathVariable String id, @RequestBody Supplier supplier) {
+        return supplierService.getSupplierById(id)
+                .map(storedSupplier -> ResponseEntity.ok(supplierService.updateSupplier(id, supplier)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteSupplier(@PathVariable String id) {
+        if (supplierService.getSupplierById(id).isPresent()) {
+            supplierService.deleteSupplier(id);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // Additional endpoints can be added here
+}
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.Optional;
+import com.Inv.models.WareHouse;
+import com.Inv.repository.WareHouseRepository; // Assuming you have this repository
+
+@Service
+public class WareHouseService {
+
+    @Autowired
+    private WareHouseRepository wareHouseRepository;
+
+    public List<WareHouse> getAllWareHouses() {
+        return wareHouseRepository.findAll();
+    }
+
+    public Optional<WareHouse> getWareHouseById(String id) {
+        return wareHouseRepository.findById(id);
+    }
+
+    public WareHouse createWareHouse(WareHouse wareHouse) {
+        return wareHouseRepository.save(wareHouse);
+    }
+
+    public WareHouse updateWareHouse(String id, WareHouse wareHouse) {
+        wareHouse.setId(id);
+        return wareHouseRepository.save(wareHouse);
+    }
+
+    public void deleteWareHouse(String id) {
+        wareHouseRepository.deleteById(id);
+    }
+
+    // Additional business logic and methods can be added here
+}
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/warehouses")
+public class WareHouseController {
+
+    @Autowired
+    private WareHouseService wareHouseService;
+
+    @GetMapping
+    public List<WareHouse> getAllWareHouses() {
+        return wareHouseService.getAllWareHouses();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<WareHouse> getWareHouseById(@PathVariable String id) {
+        return wareHouseService.getWareHouseById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    public WareHouse createWareHouse(@RequestBody WareHouse wareHouse) {
+        return wareHouseService.createWareHouse(wareHouse);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<WareHouse> updateWareHouse(@PathVariable String id, @RequestBody WareHouse wareHouse) {
+        return wareHouseService.getWareHouseById(id)
+                .map(storedWareHouse -> ResponseEntity.ok(wareHouseService.updateWareHouse(id, wareHouse)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteWareHouse(@PathVariable String id) {
+        if (wareHouseService.getWareHouseById(id).isPresent()) {
+            wareHouseService.deleteWareHouse(id);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // Additional endpoints can be added here
 }
 
 
 
-package com.Inv.models;
 
-import java.io.Serializable;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "inv_sell")
-public class Sell implements Serializable {
-    
-    private static final long serialVersionUID = -4497992680923909136L;
-    
-    @Id
-    private String id;
 
-    @DBRef
-    private Client customer_id;
-
-    private String sale_date;
-    private String sale_status;
-    private String sale_invoiceNo;
-
-    public Sell() {
-
-    }
-
-    public Sell(Client customer_id, String sale_date, String sale_status, String sale_invoiceNo) {
-        this.customer_id = customer_id;
-        this.sale_date = sale_date;
-        this.sale_status = sale_status;
-        this.sale_invoiceNo = sale_invoiceNo;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public Client getCustomer_id() {
-        return customer_id;
-    }
-
-    public void setCustomer_id(Client customer_id) {
-        this.customer_id = customer_id;
-    }
-
-    public String getSale_date() {
-        return sale_date;
-    }
-
-    public void setSale_date(String sale_date) {
-        this.sale_date = sale_date;
-    }
-
-    public String getSale_status() {
-        return sale_status;
-    }
-
-    public void setSale_status(String sale_status) {
-        this.sale_status = sale_status;
-    }
-
-    public String getSale_invoiceNo() {
-        return sale_invoiceNo;
-    }
-
-    public void setSale_invoiceNo(String sale_invoiceNo) {
-        this.sale_invoiceNo = sale_invoiceNo;
-    }
-
-}
-
-
-
-package com.Inv.models;
-
-import java.util.HashSet;
-import java.util.Set;
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
-
-@Document(collection = "inv_supplier")
-public class Supplier {
-    @Id
-    private String id;
-
-    @Field(name = "supplier_name")
-    private String supplierName;
-
-    @Field(name = "supplier_phone")
-    private String supplierPhone;
-
-    @Field(name = "supplier_email")
-    private String supplierEmail;
-
-    @Field(name = "supplier_company")
-    private String supplierCompany;
-
-    @Field(name = "supplier_address")
-    private String supplierAddress;
-
-    @Field(name = "status_id")
-    private String statusId;
-
-    @Field(name = "supplier_description")
-    private String supplierDescription;
-
-    @Field(name = "buys")
-    @JsonProperty(access = Access.WRITE_ONLY)
-    private Set<Buy> buys = new HashSet<>();
-
-    @Field(name = "products")
-    @JsonProperty(access = Access.WRITE_ONLY)
-    private Set<Products> products = new HashSet<>();
-
-    @Field(name = "expenses")
-    @JsonProperty(access = Access.WRITE_ONLY)
-    private Set<Expense> expenses = new HashSet<>();
-
-    public Supplier() {}
-
-    public Supplier(
-        String supplierName,
-        String supplierPhone,
-        String supplierEmail,
-        String supplierCompany,
-        String supplierAddress,
-        String statusId,
-        String supplierDescription
-    ) {
-        this.supplierName = supplierName;
-        this.supplierPhone = supplierPhone;
-        this.supplierEmail = supplierEmail;
-        this.supplierCompany = supplierCompany;
-        this.supplierAddress = supplierAddress;
-        this.statusId = statusId;
-        this.supplierDescription = supplierDescription;
-    }
-
-    // getters and setters
-
-    public String getId() {
-        return id;
-    }
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getSupplierName() {
-        return supplierName;
-    }
-    public void setSupplierName(String supplierName) {
-        this.supplierName = supplierName;
-    }
-
-    public String getSupplierPhone() {
-        return supplierPhone;
-    }
-    public void setSupplierPhone(String supplierPhone) {
-        this.supplierPhone = supplierPhone;
-    }
-
-    public String getSupplierEmail() {
-        return supplierEmail;
-    }
-    public void setSupplierEmail(String supplierEmail) {
-        this.supplierEmail = supplierEmail;
-    }
-
-    public String getSupplierCompany() {
-        return supplierCompany;
-    }
-    public void setSupplierCompany(String supplierCompany) {
-        this.supplierCompany = supplierCompany;
-    }
-
-    public String getSupplierAddress() {
-        return supplierAddress;
-    }
-    public void setSupplierAddress(String supplierAddress) {
-        this.supplierAddress = supplierAddress;
-    }
-
-    public String getStatusId() {
-        return statusId;
-    }
-    public void setStatusId(String statusId) {
-        this.statusId = statusId;
-    }
-
-    public String getSupplierDescription() {
-        return supplierDescription;
-    }
-    public void setSupplierDescription(String supplierDescription) {
-        this.supplierDescription = supplierDescription;
-    }
-
-    public Set<Buy> getBuys() {
-        return buys;
-    }
-    public void setBuys(Set<Buy> buys) {
-        this.buys = buys;
-    }
-
-    public Set<Products> getProducts() {
-        return products;
-    }
-    public void setProducts(Set<Products> products) {
-        this.products = products;
-    }
-
-    public Set<Expense> getExpenses() {
-        return expenses;
-    }
-    public void setExpenses(Set<Expense> expenses) {
-        this.expenses = expenses;
-    }
-}
-
-
-
-package com.Inv.models;
-
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-@Document
-public class WareHouse {
-    @Id
-    private String id;
-    
-    private String name;
-    private String status;
-    private String details;
-
-    public WareHouse() {
-        // TODO Auto-generated constructor stub
-    }
-
-    public WareHouse(String name, String status, String details) {
-        super();
-        this.name = name;
-        this.status = status;
-        this.details = details;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getDetails() {
-        return details;
-    }
-
-    public void setDetails(String details) {
-        this.details = details;
-    }
-
-}
