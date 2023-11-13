@@ -1,357 +1,252 @@
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+package com.Inv.models;
+
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
+@Document(collection = "inv_client")
+public class Client implements Serializable {
+    
+//    private static final long serialVersionUID = -874579554809953800L;
+    
+    @Id
+    private String id;
+    private String customer_name;
+    private String customer_phone;
+    private String customer_address;
+    private String customer_email;
+    private String status_id;
+    private String customer_description;
+
+    @JsonProperty(access = Access.WRITE_ONLY)
+    private Set<Sell> sells = new HashSet<>();
+
+    @JsonProperty(access = Access.WRITE_ONLY)
+    private Set<Revenue> employees = new HashSet<>();
+
+    public Client() {
+        
+    }
+
+    public Client(String customer_name, String customer_phone, String customer_address, String customer_email, String status_id, String customer_description) {
+        this.customer_name = customer_name;
+        this.customer_phone = customer_phone;
+        this.customer_address = customer_address;
+        this.customer_email = customer_email;
+        this.status_id = status_id;
+        this.customer_description = customer_description;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getCustomer_name() {
+        return customer_name;
+    }
+
+    public void setCustomer_name(String customer_name) {
+        this.customer_name = customer_name;
+    }
+
+    public String getCustomer_phone() {
+        return customer_phone;
+    }
+
+    public void setCustomer_phone(String customer_phone) {
+        this.customer_phone = customer_phone;
+    }
+
+    public String getCustomer_address() {
+        return customer_address;
+    }
+
+    public void setCustomer_address(String customer_address) {
+        this.customer_address = customer_address;
+    }
+
+    public String getCustomer_email() {
+        return customer_email;
+    }
+
+    public void setCustomer_email(String customer_email) {
+        this.customer_email = customer_email;
+    }
+
+    public String getStatus_id() {
+        return status_id;
+    }
+
+    public void setStatus_id(String status_id) {
+        this.status_id = status_id;
+    }
+
+    public String getCustomer_description() {
+        return customer_description;
+    }
+
+    public void setCustomer_description(String customer_description) {
+        this.customer_description = customer_description;
+    }
+
+    public Set<Sell> getSells() {
+        return sells;
+    }
+
+    public void setSells(Set<Sell> sells) {
+        this.sells = sells;
+    }
+
+    public Set<Revenue> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(Set<Revenue> employees) {
+        this.employees = employees;
+    }
+}
+
+
+
+package com.Inv.services;
+
 import java.util.List;
 import java.util.Optional;
-import com.Inv.models.Revenue;
-import com.Inv.repository.RevenueRepository; // Assuming you have this repository
-
-@Service
-public class RevenueService {
-
-    @Autowired
-    private RevenueRepository revenueRepository;
-
-    public List<Revenue> getAllRevenues() {
-        return revenueRepository.findAll();
-    }
-
-    public Optional<Revenue> getRevenueById(String id) {
-        return revenueRepository.findById(id);
-    }
-
-    public Revenue createRevenue(Revenue revenue) {
-        return revenueRepository.save(revenue);
-    }
-
-    public Revenue updateRevenue(String id, Revenue revenue) {
-        revenue.setId(id);
-        return revenueRepository.save(revenue);
-    }
-
-    public void deleteRevenue(String id) {
-        revenueRepository.deleteById(id);
-    }
-
-    // Additional business logic and methods can be added here
-}
-
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import java.util.List;
-
-@RestController
-@RequestMapping("/api/revenues")
-public class RevenueController {
-
-    @Autowired
-    private RevenueService revenueService;
-
-    @GetMapping
-    public List<Revenue> getAllRevenues() {
-        return revenueService.getAllRevenues();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Revenue> getRevenueById(@PathVariable String id) {
-        return revenueService.getRevenueById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @PostMapping
-    public Revenue createRevenue(@RequestBody Revenue revenue) {
-        return revenueService.createRevenue(revenue);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Revenue> updateRevenue(@PathVariable String id, @RequestBody Revenue revenue) {
-        return revenueService.getRevenueById(id)
-                .map(storedRevenue -> ResponseEntity.ok(revenueService.updateRevenue(id, revenue)))
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteRevenue(@PathVariable String id) {
-        if (revenueService.getRevenueById(id).isPresent()) {
-            revenueService.deleteRevenue(id);
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    // Additional endpoints can be added here
-}
-
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.Optional;
-import com.Inv.models.Sell;
-import com.Inv.repository.SellRepository; // Assuming you have this repository
-
-@Service
-public class SellService {
-
-    @Autowired
-    private SellRepository sellRepository;
-
-    public List<Sell> getAllSells() {
-        return sellRepository.findAll();
-    }
-
-    public Optional<Sell> getSellById(String id) {
-        return sellRepository.findById(id);
-    }
-
-    public Sell createSell(Sell sell) {
-        return sellRepository.save(sell);
-    }
-
-    public Sell updateSell(String id, Sell sell) {
-        sell.setId(id);
-        return sellRepository.save(sell);
-    }
-
-    public void deleteSell(String id) {
-        sellRepository.deleteById(id);
-    }
-
-    // Additional business logic and methods can be added here
-}
-
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import java.util.List;
-
-@RestController
-@RequestMapping("/api/sells")
-public class SellController {
-
-    @Autowired
-    private SellService sellService;
-
-    @GetMapping
-    public List<Sell> getAllSells() {
-        return sellService.getAllSells();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Sell> getSellById(@PathVariable String id) {
-        return sellService.getSellById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @PostMapping
-    public Sell createSell(@RequestBody Sell sell) {
-        return sellService.createSell(sell);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Sell> updateSell(@PathVariable String id, @RequestBody Sell sell) {
-        return sellService.getSellById(id)
-                .map(storedSell -> ResponseEntity.ok(sellService.updateSell(id, sell)))
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteSell(@PathVariable String id) {
-        if (sellService.getSellById(id).isPresent()) {
-            sellService.deleteSell(id);
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    // Additional endpoints can be added here
-}
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.Optional;
-import com.Inv.models.Supplier;
-import com.Inv.repository.SupplierRepository; // Assuming you have this repository
+
+import com.Inv.models.Client;
+import com.Inv.repository.ClientRepository;
 
 @Service
-public class SupplierService {
+public class ClientService {
 
     @Autowired
-    private SupplierRepository supplierRepository;
+    private ClientRepository clientRepository;
 
-    public List<Supplier> getAllSuppliers() {
-        return supplierRepository.findAll();
+    public List<Client> getAllClients() {
+        return clientRepository.findAll();
     }
 
-    public Optional<Supplier> getSupplierById(String id) {
-        return supplierRepository.findById(id);
+    public Optional<Client> getClientById(String id) {
+        return clientRepository.findById(id);
     }
 
-    public Supplier createSupplier(Supplier supplier) {
-        return supplierRepository.save(supplier);
+    public Client addClient(Client client) {
+        return clientRepository.save(client);
     }
 
-    public Supplier updateSupplier(String id, Supplier supplier) {
-        supplier.setId(id);
-        return supplierRepository.save(supplier);
-    }
-
-    public void deleteSupplier(String id) {
-        supplierRepository.deleteById(id);
-    }
-
-    // Additional business logic and methods can be added here
-}
-
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import java.util.List;
-
-@RestController
-@RequestMapping("/api/suppliers")
-public class SupplierController {
-
-    @Autowired
-    private SupplierService supplierService;
-
-    @GetMapping
-    public List<Supplier> getAllSuppliers() {
-        return supplierService.getAllSuppliers();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Supplier> getSupplierById(@PathVariable String id) {
-        return supplierService.getSupplierById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @PostMapping
-    public Supplier createSupplier(@RequestBody Supplier supplier) {
-        return supplierService.createSupplier(supplier);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Supplier> updateSupplier(@PathVariable String id, @RequestBody Supplier supplier) {
-        return supplierService.getSupplierById(id)
-                .map(storedSupplier -> ResponseEntity.ok(supplierService.updateSupplier(id, supplier)))
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteSupplier(@PathVariable String id) {
-        if (supplierService.getSupplierById(id).isPresent()) {
-            supplierService.deleteSupplier(id);
-            return ResponseEntity.ok().build();
+    public Optional<Client> updateClient(String id, Client client) {
+        Optional<Client> existingClient = clientRepository.findById(id);
+        if (existingClient.isPresent()) {
+            client.setId(id);
+            return Optional.of(clientRepository.save(client));
         } else {
-            return ResponseEntity.notFound().build();
+            return Optional.empty();
         }
     }
 
-    // Additional endpoints can be added here
+    public boolean deleteClient(String id) {
+        Optional<Client> existingClient = clientRepository.findById(id);
+        if (existingClient.isPresent()) {
+            clientRepository.delete(existingClient.get());
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+
+package com.Inv.controllers;
+
 import java.util.List;
-import java.util.Optional;
-import com.Inv.models.WareHouse;
-import com.Inv.repository.WareHouseRepository; // Assuming you have this repository
 
-@Service
-public class WareHouseService {
-
-    @Autowired
-    private WareHouseRepository wareHouseRepository;
-
-    public List<WareHouse> getAllWareHouses() {
-        return wareHouseRepository.findAll();
-    }
-
-    public Optional<WareHouse> getWareHouseById(String id) {
-        return wareHouseRepository.findById(id);
-    }
-
-    public WareHouse createWareHouse(WareHouse wareHouse) {
-        return wareHouseRepository.save(wareHouse);
-    }
-
-    public WareHouse updateWareHouse(String id, WareHouse wareHouse) {
-        wareHouse.setId(id);
-        return wareHouseRepository.save(wareHouse);
-    }
-
-    public void deleteWareHouse(String id) {
-        wareHouseRepository.deleteById(id);
-    }
-
-    // Additional business logic and methods can be added here
-}
-
-
+import org.apache.el.stream.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.Inv.models.Buy;
+import com.Inv.models.Client;
+import com.Inv.services.ClientService;
 
 @RestController
-@RequestMapping("/api/warehouses")
-public class WareHouseController {
+@RequestMapping("/api/cl")
+public class ClientController {
 
     @Autowired
-    private WareHouseService wareHouseService;
+    private ClientService clientService;
 
-    @GetMapping
-    public List<WareHouse> getAllWareHouses() {
-        return wareHouseService.getAllWareHouses();
+    @GetMapping("/get")
+    public ResponseEntity<List<Client>> getAllClients() {
+        List<Client> clients = clientService.getAllClients();
+        return new ResponseEntity<>(clients, HttpStatus.OK);
     }
+
+
 
     @GetMapping("/{id}")
-    public ResponseEntity<WareHouse> getWareHouseById(@PathVariable String id) {
-        return wareHouseService.getWareHouseById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @PostMapping
-    public WareHouse createWareHouse(@RequestBody WareHouse wareHouse) {
-        return wareHouseService.createWareHouse(wareHouse);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<WareHouse> updateWareHouse(@PathVariable String id, @RequestBody WareHouse wareHouse) {
-        return wareHouseService.getWareHouseById(id)
-                .map(storedWareHouse -> ResponseEntity.ok(wareHouseService.updateWareHouse(id, wareHouse)))
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteWareHouse(@PathVariable String id) {
-        if (wareHouseService.getWareHouseById(id).isPresent()) {
-            wareHouseService.deleteWareHouse(id);
-            return ResponseEntity.ok().build();
+    public ResponseEntity<Client> getClientById(@PathVariable String id) {
+        Optional<Client> client = clientService.getClientById(id);
+        if (client.isPresent()) {
+            return new ResponseEntity<>(client.get(), HttpStatus.OK);
         } else {
-            return ResponseEntity.notFound().build();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    // Additional endpoints can be added here
+    @PostMapping
+    public ResponseEntity<Client> addClient(@RequestBody Client client) {
+        Client savedClient = clientService.addClient(client);
+        return new ResponseEntity<>(savedClient, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Client> updateClient(@PathVariable String id, @RequestBody Client client) {
+        Optional<Client> updatedClient = clientService.updateClient(id, client);
+        if (updatedClient.isPresent()) {
+            return new ResponseEntity<>(updatedClient.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteClient(@PathVariable String id) {
+        boolean isDeleted = clientService.deleteClient(id);
+        if (isDeleted) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }
 
 
-
-
-
-
-
+{
+    "timestamp": "2023-11-13T09:01:12.084+00:00",
+    "status": 404,
+    "error": "Not Found",
+    "path": "/api/cl/get"
+}
