@@ -1,9 +1,22 @@
-Error: src/app/modules/stock/components/stock/stock.component.ts:35:17 - error TS2345: Argument of type '(data: Stock[]) => void' is not assignable to parameter of type '(value: Object) => void'.
-  Types of parameters 'data' and 'value' are incompatible.
-    Type 'Object' is not assignable to type 'Stock[]'.
-      The 'Object' type is assignable to very few other types. Did you mean to use the 'any' type instead?        
+getAll() {
+  this.httpService.getAll(URLS.URL_BASE + URLS.URL_PORT + "/stockbay/warehouse/all")
+    .subscribe((data: any) => { // Use 'any' or create an interface that matches the response structure
+      this.stock$ = data as Stock[]; // Explicit cast
+    }, (err: HttpErrorResponse) => {
+      super.show("Error", err.message, "error");
+    });
+}
 
-35      .subscribe((data:Stock[])=>{
+
+interface ApiResponse {
+  stocks: Stock[];
+  // include other properties that the response might have
+}
+
+// Then in your subscription:
+.subscribe((data: ApiResponse) => {
+  this.stock$ = data.stocks;
+});
                    ~~~~~~~~~~~~~~~~~
 
 
