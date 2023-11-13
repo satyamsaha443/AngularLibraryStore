@@ -1,3 +1,13 @@
+Error: src/app/modules/stock/components/stock/stock.component.ts:35:17 - error TS2345: Argument of type '(data: Stock[]) => void' is not assignable to parameter of type '(value: Object) => void'.
+  Types of parameters 'data' and 'value' are incompatible.
+    Type 'Object' is not assignable to type 'Stock[]'.
+      The 'Object' type is assignable to very few other types. Did you mean to use the 'any' type instead?        
+
+35      .subscribe((data:Stock[])=>{
+                   ~~~~~~~~~~~~~~~~~
+
+
+
 export default class Stock {
    
     id:number
