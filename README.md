@@ -1,580 +1,298 @@
-package com.Inv.models;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.Optional;
+import com.Inv.models.Configuration;
 
-import java.io.Serializable;
+@Service
+public class ConfigurationService {
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+    @Autowired
+    private ConfigurationRepository configurationRepository;
 
-@Document
-public class Configuration implements Serializable {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 6288598345366900275L;
-    
-    @Id
-    private String id;
-    
-    private String name;
-    private String email;
-    private String address;
-    private String language;
-    private String currency;
-
-    public Configuration() {
-        // TODO Auto-generated constructor stub
+    public List<Configuration> getAllConfigurations() {
+        return configurationRepository.findAll();
     }
 
-    public Configuration(String name, String email, String address, String language, String currency) {
-        super();
-        this.name = name;
-        this.email = email;
-        this.address = address;
-        this.language = language;
-        this.currency = currency;
+    public Optional<Configuration> getConfigurationById(String id) {
+        return configurationRepository.findById(id);
     }
 
-    public String getId() {
-        return id;
+    public Configuration createConfiguration(Configuration configuration) {
+        return configurationRepository.save(configuration);
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public Configuration updateConfiguration(String id, Configuration configuration) {
+        configuration.setId(id);
+        return configurationRepository.save(configuration);
     }
 
-    public String getName() {
-        return name;
+    public void deleteConfiguration(String id) {
+        configurationRepository.deleteById(id);
     }
 
-    public void setName(String name) {
-        this.name = name;
+    // Additional business logic and methods can be added here
+}
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/configurations")
+public class ConfigurationController {
+
+    @Autowired
+    private ConfigurationService configurationService;
+
+    @GetMapping
+    public List<Configuration> getAllConfigurations() {
+        return configurationService.getAllConfigurations();
     }
 
-    public String getEmail() {
-        return email;
+    @GetMapping("/{id}")
+    public ResponseEntity<Configuration> getConfigurationById(@PathVariable String id) {
+        return configurationService.getConfigurationById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    @PostMapping
+    public Configuration createConfiguration(@RequestBody Configuration configuration) {
+        return configurationService.createConfiguration(configuration);
     }
 
-    public String getAddress() {
-        return address;
+    @PutMapping("/{id}")
+    public ResponseEntity<Configuration> updateConfiguration(@PathVariable String id, @RequestBody Configuration configuration) {
+        return configurationService.getConfigurationById(id)
+                .map(storedConfiguration -> ResponseEntity.ok(configurationService.updateConfiguration(id, configuration)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteConfiguration(@PathVariable String id) {
+        if (configurationService.getConfigurationById(id).isPresent()) {
+            configurationService.deleteConfiguration(id);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    public String getLanguage() {
-        return language;
+    // Additional endpoints can be added here
+}
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.Optional;
+import com.Inv.models.Employee;
+
+@Service
+public class EmployeeService {
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
+    public List<Employee> getAllEmployees() {
+        return employeeRepository.findAll();
     }
 
-    public void setLanguage(String language) {
-        this.language = language;
+    public Optional<Employee> getEmployeeById(String id) {
+        return employeeRepository.findById(id);
     }
 
-    public String getCurrency() {
-        return currency;
+    public Employee createEmployee(Employee employee) {
+        return employeeRepository.save(employee);
     }
 
-    public void setCurrency(String currency) {
-        this.currency = currency;
+    public Employee updateEmployee(String id, Employee employee) {
+        employee.setId(id);
+        return employeeRepository.save(employee);
     }
 
+    public void deleteEmployee(String id) {
+        employeeRepository.deleteById(id);
+    }
+
+    // Additional business logic and methods can be added here
+}
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/employees")
+public class EmployeeController {
+
+    @Autowired
+    private EmployeeService employeeService;
+
+    @GetMapping
+    public List<Employee> getAllEmployees() {
+        return employeeService.getAllEmployees();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Employee> getEmployeeById(@PathVariable String id) {
+        return employeeService.getEmployeeById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    public Employee createEmployee(@RequestBody Employee employee) {
+        return employeeService.createEmployee(employee);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Employee> updateEmployee(@PathVariable String id, @RequestBody Employee employee) {
+        return employeeService.getEmployeeById(id)
+                .map(storedEmployee -> ResponseEntity.ok(employeeService.updateEmployee(id, employee)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteEmployee(@PathVariable String id) {
+        if (employeeService.getEmployeeById(id).isPresent()) {
+            employeeService.deleteEmployee(id);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // Additional endpoints can be added here
+}
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.Optional;
+import com.Inv.models.Expense;
+import com.Inv.repository.ExpenseRepository; // Assuming you have this repository
+
+@Service
+public class ExpenseService {
+
+    @Autowired
+    private ExpenseRepository expenseRepository;
+
+    public List<Expense> getAllExpenses() {
+        return expenseRepository.findAll();
+    }
+
+    public Optional<Expense> getExpenseById(String id) {
+        return expenseRepository.findById(id);
+    }
+
+    public Expense createExpense(Expense expense) {
+        return expenseRepository.save(expense);
+    }
+
+    public Expense updateExpense(String id, Expense expense) {
+        expense.setId(id);
+        return expenseRepository.save(expense);
+    }
+
+    public void deleteExpense(String id) {
+        expenseRepository.deleteById(id);
+    }
+
+    // Additional business logic and methods can be added here
+}
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/expenses")
+public class ExpenseController {
+
+    @Autowired
+    private ExpenseService expenseService;
+
+    @GetMapping
+    public List<Expense> getAllExpenses() {
+        return expenseService.getAllExpenses();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Expense> getExpenseById(@PathVariable String id) {
+        return expenseService.getExpenseById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    public Expense createExpense(@RequestBody Expense expense) {
+        return expenseService.createExpense(expense);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Expense> updateExpense(@PathVariable String id, @RequestBody Expense expense) {
+        return expenseService.getExpenseById(id)
+                .map(storedExpense -> ResponseEntity.ok(expenseService.updateExpense(id, expense)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteExpense(@PathVariable String id) {
+        if (expenseService.getExpenseById(id).isPresent()) {
+            expenseService.deleteExpense(id);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // Additional endpoints can be added here
+}
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.Optional;
+import com.Inv.models.Products;
+
+@Service
+public class ProductsService {
+
+    @Autowired
+    private ProductsRepository productsRepository;
+
+    public List<Products> getAllProducts() {
+        return productsRepository.findAll();
+    }
+
+    public Optional<Products> getProductById(String id) {
+        return productsRepository.findById(id);
+    }
+
+    public Products createProduct(Products product) {
+        return productsRepository.save(product);
+    }
+
+    public Products updateProduct(String id, Products product) {
+        product.setId(id);
+        return productsRepository.save(product);
+    }
+
+    public void deleteProduct(String id) {
+        productsRepository.deleteById(id);
+    }
+
+    // Additional business logic and methods can be added here
 }
 
 
 
-
-package com.Inv.models;
-
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
-
-@Document(collection = "inv_employee")
-public class Employee {
-    @Id
-    private String id;
-
-    @Field(name = "employee_fname")
-    private String name;
-
-    @Field(name = "employee_email")
-    private String email;
-
-    @Field(name = "employee_phone")
-    private String phone;
-
-    @Field(name = "employee_address")
-    private String address;
-
-    @Field(name = "status_id")
-    private String status;
-
-    public Employee() {}
-
-    public Employee(String name, String email, String phone, String address, String status) {
-        this.name = name;
-        this.email = email;
-        this.phone = phone;
-        this.address = address;
-        this.status = status;
-    }
-
-    // getters and setters
-
-    public String getId() {
-        return id;
-    }
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-    public void setStatus(String status) {
-        this.status = status;
-    }
-}
-
-
-
-
-package com.Inv.models;
-
-import java.io.Serializable;
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
-
-@Document(collection = "inv_expense")
-public class Expense implements Serializable {
-    private static final long serialVersionUID = -7662008307295661236L;
-
-    @Id
-    private String id;
-
-    @Field(name = "expense_paymentDate")
-    private String expensePaymentDate;
-
-    @DBRef
-    @Field(name = "supplier_id")
-    private Supplier supplier;
-
-    @Field(name = "expense_paymentType")
-    private String expensePaymentType;
-
-    @Field(name = "expense_paymentAccount")
-    private String expensePaymentAccount;
-
-    @Field(name = "expense_amount")
-    private String expenseAmount;
-
-    @Field(name = "expense_details")
-    private String expenseDetails;
-
-    public Expense() {}
-
-    public Expense(
-        String expensePaymentDate,
-        Supplier supplier,
-        String expensePaymentType,
-        String expensePaymentAccount,
-        String expenseAmount,
-        String expenseDetails
-    ) {
-        this.expensePaymentDate = expensePaymentDate;
-        this.supplier = supplier;
-        this.expensePaymentType = expensePaymentType;
-        this.expensePaymentAccount = expensePaymentAccount;
-        this.expenseAmount = expenseAmount;
-        this.expenseDetails = expenseDetails;
-    }
-
-    // getters and setters
-
-    public String getId() {
-        return id;
-    }
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getExpensePaymentDate() {
-        return expensePaymentDate;
-    }
-    public void setExpensePaymentDate(String expensePaymentDate) {
-        this.expensePaymentDate = expensePaymentDate;
-    }
-
-    public Supplier getSupplier() {
-        return supplier;
-    }
-    public void setSupplier(Supplier supplier) {
-        this.supplier = supplier;
-    }
-
-    public String getExpensePaymentType() {
-        return expensePaymentType;
-    }
-    public void setExpensePaymentType(String expensePaymentType) {
-        this.expensePaymentType = expensePaymentType;
-    }
-
-    public String getExpensePaymentAccount() {
-        return expensePaymentAccount;
-    }
-    public void setExpensePaymentAccount(String expensePaymentAccount) {
-        this.expensePaymentAccount = expensePaymentAccount;
-    }
-
-    public String getExpenseAmount() {
-        return expenseAmount;
-    }
-    public void setExpenseAmount(String expenseAmount) {
-        this.expenseAmount = expenseAmount;
-    }	
-
-    public String getExpenseDetails() {
-        return expenseDetails;
-    }
-    public void setExpenseDetails(String expenseDetails) {
-        this.expenseDetails = expenseDetails;
-    }
-}
-
-
-
-package com.Inv.models;
-
-import java.io.Serializable;
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-@Document
-public class Income implements Serializable {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 4617049187057806541L;
-    
-    @Id
-    private String id;
-    
-    private String employee_fname;
-    private String employee_email;
-    private String employee_phone;
-    private String employee_gender;
-    private String employee_nid;
-    private String status_id;
-    private String employee_birthday;
-    private String employee_address;
-    private String employee_salary;
-
-    public Income() {
-        // TODO Auto-generated constructor stub
-    }
-
-    public Income(String employee_fname, String employee_email, String employee_phone, String employee_gender,
-            String employee_nid, String status_id, String employee_birthday, String employee_address,
-            String employee_salary) {
-        super();
-        this.employee_fname = employee_fname;
-        this.employee_email = employee_email;
-        this.employee_phone = employee_phone;
-        this.employee_gender = employee_gender;
-        this.employee_nid = employee_nid;
-        this.status_id = status_id;
-        this.employee_birthday = employee_birthday;
-        this.employee_address = employee_address;
-        this.employee_salary = employee_salary;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getEmployee_fname() {
-        return employee_fname;
-    }
-
-    public void setEmployee_fname(String employee_fname) {
-        this.employee_fname = employee_fname;
-    }
-
-    public String getEmployee_email() {
-        return employee_email;
-    }
-
-    public void setEmployee_email(String employee_email) {
-        this.employee_email = employee_email;
-    }
-
-    public String getEmployee_phone() {
-        return employee_phone;
-    }
-
-    public void setEmployee_phone(String employee_phone) {
-        this.employee_phone = employee_phone;
-    }
-
-    public String getEmployee_gender() {
-        return employee_gender;
-    }
-
-    public void setEmployee_gender(String employee_gender) {
-        this.employee_gender = employee_gender;
-    }
-
-    public String getEmployee_nid() {
-        return employee_nid;
-    }
-
-    public void setEmployee_nid(String employee_nid) {
-        this.employee_nid = employee_nid;
-    }
-
-    public String getStatus_id() {
-        return status_id;
-    }
-
-    public void setStatus_id(String status_id) {
-        this.status_id = status_id;
-    }
-
-    public String getEmployee_birthday() {
-        return employee_birthday;
-    }
-
-    public void setEmployee_birthday(String employee_birthday) {
-        this.employee_birthday = employee_birthday;
-    }
-
-    public String getEmployee_address() {
-        return employee_address;
-    }
-
-    public void setEmployee_address(String employee_address) {
-        this.employee_address = employee_address;
-    }
-
-    public String getEmployee_salary() {
-        return employee_salary;
-    }
-
-    public void setEmployee_salary(String employee_salary) {
-        this.employee_salary = employee_salary;
-    }
-
-}
-
-
-package com.Inv.models;
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-
-@Document(collection = "inv_products")
-public class Products implements Serializable {
-
-    private static final long serialVersionUID = -8698757387767929675L;
-
-    @Id
-    private String id;
-    private String productName;
-
-    @DBRef
-    private Category category;
-
-    @DBRef
-    private Supplier supplier;
-
-    private String productUnit;
-    private String productAlertQuantity;
-    private String productSupplierPrice;
-    private String productSellPrice;
-    private String productCode;
-    private String productTax;
-    private String warehouseId;
-    private String productDetails;
-    private String productDetailsForInvoice;
-
-    private Set<Buy> buys = new HashSet<>();
-
-    public Products() {
-
-    }
-
-    public Products(String productName, Category category, Supplier supplier, String productUnit,
-                   String productAlertQuantity, String productSupplierPrice, String productSellPrice, String productCode,
-                   String productTax, String warehouseId, String productDetails, String productDetailsForInvoice) {
-        this.productName = productName;
-        this.category = category;
-        this.supplier = supplier;
-        this.productUnit = productUnit;
-        this.productAlertQuantity = productAlertQuantity;
-        this.productSupplierPrice = productSupplierPrice;
-        this.productSellPrice = productSellPrice;
-        this.productCode = productCode;
-        this.productTax = productTax;
-        this.warehouseId = warehouseId;
-        this.productDetails = productDetails;
-        this.productDetailsForInvoice = productDetailsForInvoice;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    public Supplier getSupplier() {
-        return supplier;
-    }
-
-    public void setSupplier(Supplier supplier) {
-        this.supplier = supplier;
-    }
-
-    public String getProductUnit() {
-        return productUnit;
-    }
-
-    public void setProductUnit(String productUnit) {
-        this.productUnit = productUnit;
-    }
-
-    public String getProductAlertQuantity() {
-        return productAlertQuantity;
-    }
-
-    public void setProductAlertQuantity(String productAlertQuantity) {
-        this.productAlertQuantity = productAlertQuantity;
-    }
-
-    public String getProductSupplierPrice() {
-        return productSupplierPrice;
-    }
-
-    public void setProductSupplierPrice(String productSupplierPrice) {
-        this.productSupplierPrice = productSupplierPrice;
-    }
-
-    public String getProductSellPrice() {
-        return productSellPrice;
-    }
-
-    public void setProductSellPrice(String productSellPrice) {
-        this.productSellPrice = productSellPrice;
-    }
-
-    public String getProductCode() {
-        return productCode;
-    }
-
-    public void setProductCode(String productCode) {
-        this.productCode = productCode;
-    }
-
-    public String getProductTax() {
-        return productTax;
-    }
-
-    public void setProductTax(String productTax) {
-        this.productTax = productTax;
-    }
-
-    public String getWarehouseId() {
-        return warehouseId;
-    }
-
-    public void setWarehouseId(String warehouseId) {
-        this.warehouseId = warehouseId;
-    }
-
-    public String getProductDetails() {
-        return productDetails;
-    }
-
-    public void setProductDetails(String productDetails) {
-        this.productDetails = productDetails;
-    }
-
-    public String getProductDetailsForInvoice() {
-        return productDetailsForInvoice;
-    }
-
-    public void setProductDetailsForInvoice(String productDetailsForInvoice) {
-        this.productDetailsForInvoice = productDetailsForInvoice;
-    }
-
-    public Set<Buy> getBuys() {
-        return buys;
-    }
-
-    public void setBuys(Set<Buy> buys) {
-        this.buys = buys;
-    }
-}
