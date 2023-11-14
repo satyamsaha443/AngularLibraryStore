@@ -1,68 +1,20 @@
-Error: src/app/main/interfaces/Service.ts:3:5 - error TS7010: 'get', which lacks return-type annotation, implicitly has an 'any' return type.
+Error: src/app/modules/buy/add-buy/add-buy.component.ts:64:17 - error TS2769: No overload matches this call.      
+  Overload 1 of 2, '(observerOrNext?: Partial<Observer<Object>> | ((value: Object) => void) | undefined): Subscription', gave the following error.
+    Argument of type '(data: Supplier[]) => void' is not assignable to parameter of type 'Partial<Observer<Object>> | ((value: Object) => void) | undefined'.
+      Type '(data: Supplier[]) => void' is not assignable to type '(value: Object) => void'.
+        Types of parameters 'data' and 'value' are incompatible.
+          The 'Object' type is assignable to very few other types. Did you mean to use the 'any' type instead?    
+            Type 'Object' is missing the following properties from type 'Supplier[]': length, pop, push, concat, and 29 more.
+  Overload 2 of 2, '(next?: ((value: Object) => void) | null | undefined, error?: ((error: any) => void) | null | 
+undefined, complete?: (() => void) | null | undefined): Subscription', gave the following error.
+    Argument of type '(data: Supplier[]) => void' is not assignable to parameter of type '(value: Object) => void'.
+      Types of parameters 'data' and 'value' are incompatible.
+        Type 'Object' is not assignable to type 'Supplier[]'.
+          The 'Object' type is assignable to very few other types. Did you mean to use the 'any' type instead?    
 
-3     get(id)
-      ~~~~~~~
+64      .subscribe((data:Supplier[])=>{
+                   ~~~~~~~~~~~~~~~~~~~~
 
-
-Error: src/app/main/interfaces/Service.ts:3:9 - error TS7006: Parameter 'id' implicitly has an 'any' type.        
-
-3     get(id)
-          ~~
-
-
-Error: src/app/main/interfaces/Service.ts:4:5 - error TS7010: 'create', which lacks return-type annotation, implicitly has an 'any' return type.
-
-4     create(data)
-      ~~~~~~~~~~~~
-
-
-Error: src/app/main/interfaces/Service.ts:4:12 - error TS7006: Parameter 'data' implicitly has an 'any' type.     
-
-4     create(data)
-             ~~~~
-
-
-Error: src/app/main/interfaces/Service.ts:5:5 - error TS7010: 'update', which lacks return-type annotation, implicitly has an 'any' return type.
-
-5     update(old, data)
-      ~~~~~~~~~~~~~~~~~
-
-
-Error: src/app/main/interfaces/Service.ts:5:12 - error TS7006: Parameter 'old' implicitly has an 'any' type.      
-
-5     update(old, data)
-             ~~~
-
-
-Error: src/app/main/interfaces/Service.ts:5:17 - error TS7006: Parameter 'data' implicitly has an 'any' type.     
-
-5     update(old, data)
-                  ~~~~
-
-
-Error: src/app/main/interfaces/Service.ts:6:5 - error TS7010: 'remove', which lacks return-type annotation, implicitly has an 'any' return type.
-
-6     remove(id)
-      ~~~~~~~~~~
-
-
-Error: src/app/main/interfaces/Service.ts:6:12 - error TS7006: Parameter 'id' implicitly has an 'any' type.       
-
-6     remove(id)
-             ~~
-
-
-Error: src/app/main/mocks/ExpenseTestService.ts:9:45 - error TS2345: Argument of type 'null' is not assignable to 
-parameter of type 'string'.
-
-9     public ID = new BehaviorSubject<string>(null);
-                                              ~~~~
-
-
-Error: src/app/main/mocks/ProductTestService.ts:10:45 - error TS2345: Argument of type 'null' is not assignable to parameter of type 'string'.
-
-10     public ID = new BehaviorSubject<string>(null);
-                                               ~~~~
 
 
 
@@ -70,71 +22,114 @@ Error: src/app/main/mocks/ProductTestService.ts:10:45 - error TS2345: Argument o
 × Failed to compile.
 
 
-export default interface Service {
-    getAll():any
-    get(id)
-    create(data)
-    update(old, data)
-    remove(id)
+import { Component, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { URLLoader } from 'src/app/main/configs/URLLoader';
+import BuyMessage from 'src/app/main/messages/BuyMessage';
+import BuyTestService from 'src/app/main/mocks/BuyTestService';
+import Product from 'src/app/main/models/Product';
+import Supplier from 'src/app/main/models/Supplier';
+import { HTTPService } from 'src/app/main/services/HTTPService';
+import URLS from 'src/app/main/urls/urls';
+import BuyValidation from 'src/app/main/validations/BuyValidation';
+
+@Component({
+  selector: 'app-add-buy',
+  templateUrl: './add-buy.component.html',
+  styleUrls: ['./add-buy.component.css']
+})
+export class AddBuyComponent extends URLLoader implements OnInit {
+
+  buyForm: FormGroup
+  msg: BuyMessage
+  submitted = false
+  suppliers$:Supplier[]=[]
+  products$:Product[]=[]
+
+  get f() { return this.buyForm.controls; }
+
+  constructor(private httpService:HTTPService ,
+    private validation: BuyValidation, 
+    private message: BuyMessage, 
+    private buyTestService: BuyTestService) {
+    super()
+    this.buyForm = this.validation.formGroupInstance
+    this.msg = this.message
+
+  }
+
+  ngOnInit(): void {
+    this.getAllProducts()
+    this.getAllSuppliers()
+  }
+
+  reset() {
+    this.buyForm.reset()
+  }
+
+  add() {
+    
+    this.submitted = true;
+    this.buyForm.value.supplier=this.suppliers$.filter(x => 
+    x.id == parseInt(this.buyForm.value.supplier))[0]
+    this.buyForm.value.product_id=this.products$.filter(x => 
+    x.id == parseInt(this.buyForm.value.product_id))[0]
+
+    if (this.validation.checkValidation()) {
+      this.httpService.create(URLS.URL_BASE+URLS.URL_PORT+"/stockbay/buy/create",this.buyForm.value)    
+      super.show('Confirmation', this.msg.confirmations.add, 'success')
+       window.location.reload();
+     
+    }
+  }
+
+  getAllSuppliers() {
+     this.httpService.getAll(URLS.URL_BASE+URLS.URL_PORT+"/stockbay/supplier/all")
+     .subscribe((data:Supplier[])=>{
+       this.suppliers$=data
+     })
+  }
+
+
+  getAllProducts() {
+     this.httpService.getAll(URLS.URL_BASE+URLS.URL_PORT+"/stockbay/product/all")
+     .subscribe((data:any)=>{
+       this.products$=data as Product[];   
+     })
+  }
+
 }
 
-import { Injectable } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
-import Service from "../interfaces/Service";
+
+export default class Supplier {
+    id: number
+    supplier_name: string
+    supplier_phone: string
+    supplier_email: string
+    supplier_company: string
+    supplier_address: string
+    status_id: string
+    supplier_description: string
 
 
-@Injectable({
-    providedIn: 'root'
-})
-export default class EmployeeTestService implements Service {
-    create(data: any) {
-        throw new Error("Method not implemented.");
+    constructor(
+        id: number,
+        supplier_name: string,
+        supplier_phone: string,
+        supplier_email: string,
+        supplier_company: string,
+        supplier_address: string,
+        status_id: string,
+        supplier_description: string
+    ) {
+        this.id = id
+        this.supplier_name = supplier_name
+        this.supplier_phone = supplier_phone
+        this.supplier_email = supplier_email
+        this.supplier_company = supplier_company
+        this.supplier_address = supplier_address
+        this.status_id = status_id
+        this.supplier_description = supplier_description
     }
-    update(old: any, data: any) {
-        throw new Error("Method not implemented.");
-    }
-    public ID = new BehaviorSubject<string>(null);
-    static _employee = [{
-        "id": 1,
-        "employee_fname": "Eglantine Deschênes",
-        "employee_email": "EglantineDeschenes@teleworm.us",
-        "employee_phone": "01.50.38.11.50",
-        "employee_gender": "string",
-        "employee_nid": "string",
-        "status_id": "active",
-        "employee_birthday": "string",
-        "employee_address": "84, Quai des Belges 77100 MEAUX",
-        "employee_salary": "33.000"
-    }]
-
-
-
-    static id = 0
-
-    public getAll() {
-        return EmployeeTestService._employee;
-    }
-
-    public get(id: number) {
-        return EmployeeTestService._employee.find(item => item.id === id);
-    };
-
-    // public create(data) {
-    //     data["id"] = EmployeeTestService.id
-    //     EmployeeTestService._employee.push(data);
-    //     EmployeeTestService.id++
-    //     console.log(data)
-    // };
-
-    // public update(data) {
-
-    //     var foundIndex = EmployeeTestService._employee.findIndex(item => item.id === data.id);
-    //     EmployeeTestService._employee[foundIndex] = data;
-    // };
-
-    public remove(id: number) {
-        EmployeeTestService._employee.splice(id, 1);
-    };
-
 
 }
