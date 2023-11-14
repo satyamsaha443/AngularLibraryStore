@@ -1,91 +1,26 @@
- products: Product[] = [];
-  isModalOpen = false;
-  isEditing = false;
-  formData: Product = {
-    // Initialize formData with empty values for the form fields
-    id: '',
-    productName: '',
-    category: { id: '', category_name: '', status_id: '', category_details: '' },
-    supplier: { id: '', supplierName: '', supplierPhone: '', supplierEmail: '', supplierCompany: '', supplierAddress: '', statusId: '', supplierDescription: '' },
-    productUnit: '',
-    productAlertQuantity: '',
-    productSupplierPrice: '',
-    productSellPrice: '',
-    productCode: '',
-    productTax: '',
-    warehouseId: '',
-    productDetails: '',
-    productDetailsForInvoice: '',
-    buys: []
-  };
+Error: src/app/component/product/product.component.html:52:49 - error TS2339: Property 'categories' does not exist on type 'ProductComponent'.
 
-  constructor(private productService: ProductService) {}
+52                 <option *ngFor="let category of categories" [ngValue]="category">{{ category.category_name }}</option>
+                                                   ~~~~~~~~~~
 
-  ngOnInit(): void {
-    this.loadProducts();
-  }
+  src/app/component/product/product.component.ts:7:16
+    7   templateUrl: './product.component.html',
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component ProductComponent.
 
-  loadProducts() {
-    this.productService.getAllProducts().subscribe((data) => {
-      this.products = data;
-    });
-  }
 
-  openCreateProductModal() {
-    this.isModalOpen = true;
-    this.isEditing = false;
-    // Initialize formData with empty values for creating a new product
-    this.formData = {
-      id: '',
-      productName: '',
-      category: { id: '', category_name: '', status_id: '', category_details: '' },
-      supplier: { id: '', supplierName: '', supplierPhone: '', supplierEmail: '', supplierCompany: '', supplierAddress: '', statusId: '', supplierDescription: '' },
-      productUnit: '',
-      productAlertQuantity: '',
-      productSupplierPrice: '',
-      productSellPrice: '',
-      productCode: '',
-      productTax: '',
-      warehouseId: '',
-      productDetails: '',
-      productDetailsForInvoice: '',
-      buys: []
-    };
-  }
+Error: src/app/component/product/product.component.html:58:49 - error TS2339: Property 'suppliers' does not exist 
+on type 'ProductComponent'.
 
-  editProduct(product: Product) {
-    this.isModalOpen = true;
-    this.isEditing = true;
-    // Set formData to the selected product for editing
-    this.formData = { ...product };
-  }
+58                 <option *ngFor="let supplier of suppliers" [ngValue]="supplier">{{ supplier.supplierName }}</option>
+                                                   ~~~~~~~~~
 
-  deleteProduct(id: string) {
-    // Implement the deleteProduct method to delete a product by ID
-    this.productService.deleteProduct(id).subscribe(() => {
-      // After deletion, reload the list of products
-      this.loadProducts();
-    });
-  }
+  src/app/component/product/product.component.ts:7:16
+    7   templateUrl: './product.component.html',
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component ProductComponent.
 
-  createProduct() {
-    // Implement the createProduct method to create a new product
-    this.productService.createProduct(this.formData).subscribe(() => {
-      // After creation, close the modal and reload the list of products
-      this.isModalOpen = false;
-      this.loadProducts();
-    });
-  }
 
-  updateProduct() {
-    // Implement the updateProduct method to update an existing product
-    this.productService.updateProduct(this.formData.id, this.formData).subscribe(() => {
-      // After update, close the modal and reload the list of products
-      this.isModalOpen = false;
-      this.loadProducts();
-    });
-  }
 
-  closeModal() {
-    this.isModalOpen = false;
-  }
+
+× Failed to compile.
