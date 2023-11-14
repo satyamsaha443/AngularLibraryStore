@@ -1,590 +1,559 @@
-package models;
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-
-@Document(collection = "inv_products")
-public class Products implements Serializable {
-
-    private static final long serialVersionUID = -8698757387767929675L;
-
-    @Id
-    private String id;
-    private String productName;
-
-    @DBRef
-    private Category category;
-
-    @DBRef
-    private Supplier supplier;
-
-    private String productUnit;
-    private String productAlertQuantity;
-    private String productSupplierPrice;
-    private String productSellPrice;
-    private String productCode;
-    private String productTax;
-    private String warehouseId;
-    private String productDetails;
-    private String productDetailsForInvoice;
-
-    private Set<Buy> buys = new HashSet<>();
-
-    public Products() {
-
-    }
-
-    public Products(String productName, Category category, Supplier supplier, String productUnit,
-                   String productAlertQuantity, String productSupplierPrice, String productSellPrice, String productCode,
-                   String productTax, String warehouseId, String productDetails, String productDetailsForInvoice) {
-        this.productName = productName;
-        this.category = category;
-        this.supplier = supplier;
-        this.productUnit = productUnit;
-        this.productAlertQuantity = productAlertQuantity;
-        this.productSupplierPrice = productSupplierPrice;
-        this.productSellPrice = productSellPrice;
-        this.productCode = productCode;
-        this.productTax = productTax;
-        this.warehouseId = warehouseId;
-        this.productDetails = productDetails;
-        this.productDetailsForInvoice = productDetailsForInvoice;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    public Supplier getSupplier() {
-        return supplier;
-    }
-
-    public void setSupplier(Supplier supplier) {
-        this.supplier = supplier;
-    }
-
-    public String getProductUnit() {
-        return productUnit;
-    }
-
-    public void setProductUnit(String productUnit) {
-        this.productUnit = productUnit;
-    }
-
-    public String getProductAlertQuantity() {
-        return productAlertQuantity;
-    }
 
-    public void setProductAlertQuantity(String productAlertQuantity) {
-        this.productAlertQuantity = productAlertQuantity;
-    }
+Error: src/app/app.module.ts:20:5 - error NG6001: The class 'ProductComponent' is listed in the declarations of the NgModule 'AppModule', but is not a directive, a component, or a pipe. Either remove it from the NgModule's declarations, or add an appropriate Angular decorator.
 
-    public String getProductSupplierPrice() {
-        return productSupplierPrice;
-    }
+20     ProductComponent,
+       ~~~~~~~~~~~~~~~~
 
-    public void setProductSupplierPrice(String productSupplierPrice) {
-        this.productSupplierPrice = productSupplierPrice;
-    }
+  src/app/modules/product/product/product.component.ts:11:14
+    11 export class ProductComponent extends URLLoader implements OnInit {
+                    ~~~~~~~~~~~~~~~~
+    'ProductComponent' is declared here.
 
-    public String getProductSellPrice() {
-        return productSellPrice;
-    }
 
-    public void setProductSellPrice(String productSellPrice) {
-        this.productSellPrice = productSellPrice;
-    }
+Error: src/app/general/dashboard/dashboard.component.ts:112:21 - error TS2552: Cannot find name 'Chart'. Did you mean 'myChart'?
 
-    public String getProductCode() {
-        return productCode;
-    }
+112   var myChart = new Chart(ctx, {
+                        ~~~~~
 
-    public void setProductCode(String productCode) {
-        this.productCode = productCode;
-    }
+  src/app/general/dashboard/dashboard.component.ts:112:7
+    112   var myChart = new Chart(ctx, {
+              ~~~~~~~
+    'myChart' is declared here.
 
-    public String getProductTax() {
-        return productTax;
-    }
-
-    public void setProductTax(String productTax) {
-        this.productTax = productTax;
-    }
-
-    public String getWarehouseId() {
-        return warehouseId;
-    }
-
-    public void setWarehouseId(String warehouseId) {
-        this.warehouseId = warehouseId;
-    }
-
-    public String getProductDetails() {
-        return productDetails;
-    }
-
-    public void setProductDetails(String productDetails) {
-        this.productDetails = productDetails;
-    }
-
-    public String getProductDetailsForInvoice() {
-        return productDetailsForInvoice;
-    }
-
-    public void setProductDetailsForInvoice(String productDetailsForInvoice) {
-        this.productDetailsForInvoice = productDetailsForInvoice;
-    }
-
-    public Set<Buy> getBuys() {
-        return buys;
-    }
-
-    public void setBuys(Set<Buy> buys) {
-        this.buys = buys;
-    }
-}
-
-
-package models;
-
-import java.io.Serializable;
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
-
-@Document(collection = "inv_expense")
-public class Expense implements Serializable {
-    private static final long serialVersionUID = -7662008307295661236L;
-
-    @Id
-    private String id;
-
-    @Field(name = "expense_paymentDate")
-    private String expensePaymentDate;
-
-    @DBRef
-    @Field(name = "supplier_id")
-    private Supplier supplier;
-
-    @Field(name = "expense_paymentType")
-    private String expensePaymentType;
-
-    @Field(name = "expense_paymentAccount")
-    private String expensePaymentAccount;
-
-    @Field(name = "expense_amount")
-    private String expenseAmount;
-
-    @Field(name = "expense_details")
-    private String expenseDetails;
-
-    public Expense() {}
-
-    public Expense(
-        String expensePaymentDate,
-        Supplier supplier,
-        String expensePaymentType,
-        String expensePaymentAccount,
-        String expenseAmount,
-        String expenseDetails
-    ) {
-        this.expensePaymentDate = expensePaymentDate;
-        this.supplier = supplier;
-        this.expensePaymentType = expensePaymentType;
-        this.expensePaymentAccount = expensePaymentAccount;
-        this.expenseAmount = expenseAmount;
-        this.expenseDetails = expenseDetails;
-    }
-
-    // getters and setters
-
-    public String getId() {
-        return id;
-    }
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getExpensePaymentDate() {
-        return expensePaymentDate;
-    }
-    public void setExpensePaymentDate(String expensePaymentDate) {
-        this.expensePaymentDate = expensePaymentDate;
-    }
-
-    public Supplier getSupplier() {
-        return supplier;
-    }
-    public void setSupplier(Supplier supplier) {
-        this.supplier = supplier;
-    }
-
-    public String getExpensePaymentType() {
-        return expensePaymentType;
-    }
-    public void setExpensePaymentType(String expensePaymentType) {
-        this.expensePaymentType = expensePaymentType;
-    }
-
-    public String getExpensePaymentAccount() {
-        return expensePaymentAccount;
-    }
-    public void setExpensePaymentAccount(String expensePaymentAccount) {
-        this.expensePaymentAccount = expensePaymentAccount;
-    }
-
-    public String getExpenseAmount() {
-        return expenseAmount;
-    }
-    public void setExpenseAmount(String expenseAmount) {
-        this.expenseAmount = expenseAmount;
-    }	
-
-    public String getExpenseDetails() {
-        return expenseDetails;
-    }
-    public void setExpenseDetails(String expenseDetails) {
-        this.expenseDetails = expenseDetails;
-    }
-}
-
-
-package models;
-
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
-
-@Document(collection = "inv_category")
-public class Category implements Serializable {
-    
-    private static final long serialVersionUID = -3942285530464977887L;
-    
-    @Id
-    private String id;
-    private String category_name;
-    private String status_id;
-    private String category_details;
-
-    @JsonProperty(access = Access.WRITE_ONLY)
-    private Set<Buy> products = new HashSet<>();
-
-    public Category() {
-        
-    }
-
-    public Category(String category_name, String status_id, String category_details) {
-        this.category_name = category_name;
-        this.status_id = status_id;
-        this.category_details = category_details;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getCategory_name() {
-        return category_name;
-    }
-
-    public void setCategory_name(String category_name) {
-        this.category_name = category_name;
-    }
-
-    public String getStatus_id() {
-        return status_id;
-    }
-
-    public void setStatus_id(String status_id) {
-        this.status_id = status_id;
-    }
-
-    public String getCategory_details() {
-        return category_details;
-    }
-
-    public void setCategory_details(String category_details) {
-        this.category_details = category_details;
-    }
-  
-    public Set<Buy> getProducts() {
-        return products;
-    }
-
-    public void setProducts(Set<Buy> products) {
-        this.products = products;
-    }
 
-}
+Error: src/app/main/interfaces/Service.ts:2:5 - error TS7010: 'getAll', which lacks return-type annotation, implicitly has an 'any' return type.
 
-package models;
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
+2     getAll()
+      ~~~~~~~~
 
-import java.io.Serializable;
-import java.util.Date;
 
-@Document(collection = "inv_buy")
-public class Buy  {
+Error: src/app/main/interfaces/Service.ts:3:5 - error TS7010: 'get', which lacks return-type annotation, implicitly has an 'any' return type.
 
-//    private static final long serialVersionUID = 105253940174394025L;
+3     get(id)
+      ~~~~~~~
 
-    @Id
-    private String id;
 
-    @DBRef
-    private Supplier supplier;
+Error: src/app/main/interfaces/Service.ts:3:9 - error TS7006: Parameter 'id' implicitly has an 'any' type.        
 
-    @DBRef
-    private Products product;
+3     get(id)
+          ~~
 
-    private Date purchaseDate;
-    private String purchaseInvoiceNo;
-    private String purchaseStatus;
 
+Error: src/app/main/interfaces/Service.ts:4:5 - error TS7010: 'create', which lacks return-type annotation, implicitly has an 'any' return type.
 
+4     create(data)
+      ~~~~~~~~~~~~
 
-    public String getId() {
-        return id;
-    }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+Error: src/app/main/interfaces/Service.ts:4:12 - error TS7006: Parameter 'data' implicitly has an 'any' type.     
 
-    public Supplier getSupplier() {
-        return supplier;
-    }
+4     create(data)
+             ~~~~
 
-    public void setSupplier(Supplier supplier) {
-        this.supplier = supplier;
-    }
 
-    public Products getProduct() {
-        return product;
-    }
+Error: src/app/main/interfaces/Service.ts:5:5 - error TS7010: 'update', which lacks return-type annotation, implicitly has an 'any' return type.
 
-    public void setProduct(Products product) {
-        this.product = product;
-    }
-
-    public Date getPurchaseDate() {
-        return purchaseDate;
-    }
-
-    public void setPurchaseDate(Date purchaseDate) {
-        this.purchaseDate = purchaseDate;
-    }
-
-    public String getPurchaseInvoiceNo() {
-        return purchaseInvoiceNo;
-    }
-
-    public void setPurchaseInvoiceNo(String purchaseInvoiceNo) {
-        this.purchaseInvoiceNo = purchaseInvoiceNo;
-    }
-
-    public String getPurchaseStatus() {
-        return purchaseStatus;
-    }
-
-    public void setPurchaseStatus(String purchaseStatus) {
-        this.purchaseStatus = purchaseStatus;
-    }
-
-//	public static long getSerialversionuid() {
-//		return serialVersionUID;
-//	}
-
-    
-}
-
-
-package models;
-
-import java.util.HashSet;
-import java.util.Set;
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
-
-@Document(collection = "inv_supplier")
-public class Supplier {
-    @Id
-    private String id;
-
-    @Field(name = "supplier_name")
-    private String supplierName;
-
-    @Field(name = "supplier_phone")
-    private String supplierPhone;
-
-    @Field(name = "supplier_email")
-    private String supplierEmail;
-
-    @Field(name = "supplier_company")
-    private String supplierCompany;
-
-    @Field(name = "supplier_address")
-    private String supplierAddress;
-
-    @Field(name = "status_id")
-    private String statusId;
-
-    @Field(name = "supplier_description")
-    private String supplierDescription;
-
-    @Field(name = "buys")
-    @JsonProperty(access = Access.WRITE_ONLY)
-    private Set<Buy> buys = new HashSet<>();
-
-    @Field(name = "products")
-    @JsonProperty(access = Access.WRITE_ONLY)
-    private Set<Products> products = new HashSet<>();
-
-    @Field(name = "expenses")
-    @JsonProperty(access = Access.WRITE_ONLY)
-    private Set<Expense> expenses = new HashSet<>();
-
-    public Supplier() {}
-
-    public Supplier(
-        String supplierName,
-        String supplierPhone,
-        String supplierEmail,
-        String supplierCompany,
-        String supplierAddress,
-        String statusId,
-        String supplierDescription
-    ) {
-        this.supplierName = supplierName;
-        this.supplierPhone = supplierPhone;
-        this.supplierEmail = supplierEmail;
-        this.supplierCompany = supplierCompany;
-        this.supplierAddress = supplierAddress;
-        this.statusId = statusId;
-        this.supplierDescription = supplierDescription;
-    }
-
-    // getters and setters
-
-    public String getId() {
-        return id;
-    }
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getSupplierName() {
-        return supplierName;
-    }
-    public void setSupplierName(String supplierName) {
-        this.supplierName = supplierName;
-    }
-
-    public String getSupplierPhone() {
-        return supplierPhone;
-    }
-    public void setSupplierPhone(String supplierPhone) {
-        this.supplierPhone = supplierPhone;
-    }
-
-    public String getSupplierEmail() {
-        return supplierEmail;
-    }
-    public void setSupplierEmail(String supplierEmail) {
-        this.supplierEmail = supplierEmail;
-    }
-
-    public String getSupplierCompany() {
-        return supplierCompany;
-    }
-    public void setSupplierCompany(String supplierCompany) {
-        this.supplierCompany = supplierCompany;
-    }
-
-    public String getSupplierAddress() {
-        return supplierAddress;
-    }
-    public void setSupplierAddress(String supplierAddress) {
-        this.supplierAddress = supplierAddress;
-    }
-
-    public String getStatusId() {
-        return statusId;
-    }
-    public void setStatusId(String statusId) {
-        this.statusId = statusId;
-    }
-
-    public String getSupplierDescription() {
-        return supplierDescription;
-    }
-    public void setSupplierDescription(String supplierDescription) {
-        this.supplierDescription = supplierDescription;
-    }
-
-    public Set<Buy> getBuys() {
-        return buys;
-    }
-    public void setBuys(Set<Buy> buys) {
-        this.buys = buys;
-    }
-
-    public Set<Products> getProducts() {
-        return products;
-    }
-    public void setProducts(Set<Products> products) {
-        this.products = products;
-    }
-
-    public Set<Expense> getExpenses() {
-        return expenses;
-    }
-    public void setExpenses(Set<Expense> expenses) {
-        this.expenses = expenses;
-    }
-}
+5     update(old, data)
+      ~~~~~~~~~~~~~~~~~
+
+
+Error: src/app/main/interfaces/Service.ts:5:12 - error TS7006: Parameter 'old' implicitly has an 'any' type.      
+
+5     update(old, data)
+             ~~~
+
+
+Error: src/app/main/interfaces/Service.ts:5:17 - error TS7006: Parameter 'data' implicitly has an 'any' type.     
+
+5     update(old, data)
+                  ~~~~
+
+
+Error: src/app/main/interfaces/Service.ts:6:5 - error TS7010: 'remove', which lacks return-type annotation, implicitly has an 'any' return type.
+
+6     remove(id)
+      ~~~~~~~~~~
+
+
+Error: src/app/main/interfaces/Service.ts:6:12 - error TS7006: Parameter 'id' implicitly has an 'any' type.       
+
+6     remove(id)
+             ~~
+
+
+Error: src/app/main/mocks/ExpenseTestService.ts:9:45 - error TS2345: Argument of type 'null' is not assignable to 
+parameter of type 'string'.
+
+9     public ID = new BehaviorSubject<string>(null);
+                                              ~~~~
+
+
+Error: src/app/main/mocks/ExpenseTestService.ts:25:16 - error TS7006: Parameter 'id' implicitly has an 'any' type.
+25     public get(id) {
+                  ~~
+
+
+Error: src/app/main/mocks/ExpenseTestService.ts:29:19 - error TS7006: Parameter 'data' implicitly has an 'any' type.
+
+29     public create(data) {
+                     ~~~~
+
+
+Error: src/app/main/mocks/ExpenseTestService.ts:36:19 - error TS7006: Parameter 'data' implicitly has an 'any' type.
+
+36     public update(data) {
+                     ~~~~
+
+
+Error: src/app/main/mocks/ExpenseTestService.ts:42:19 - error TS7006: Parameter 'id' implicitly has an 'any' type.
+42     public remove(id) {
+                     ~~
+
+
+Error: src/app/main/services/HTTPService.ts:22:18 - error TS7006: Parameter 'url' implicitly has an 'any' type.   
+
+22     async update(url,data) {
+                    ~~~
+
+
+Error: src/app/main/services/HTTPService.ts:22:22 - error TS7006: Parameter 'data' implicitly has an 'any' type.  
+
+22     async update(url,data) {
+                        ~~~~
+
+
+Error: src/app/main/services/HTTPService.ts:32:18 - error TS7006: Parameter 'url' implicitly has an 'any' type.   
+
+32     async create(url,data) {
+                    ~~~
+
+
+Error: src/app/main/services/HTTPService.ts:32:22 - error TS7006: Parameter 'data' implicitly has an 'any' type.  
+
+32     async create(url,data) {
+                        ~~~~
+
+
+Error: src/app/main/services/HTTPService.ts:39:18 - error TS7006: Parameter 'url' implicitly has an 'any' type.   
+
+39     async remove(url) {
+                    ~~~
+
+
+Error: src/app/modules/expense/expense/expense.component.ts:35:9 - error TS7006: Parameter 'id' implicitly has an 
+'any' type.
+
+35   setId(id) {
+           ~~
+
+
+Error: src/app/modules/expense/expense/expense.component.ts:39:8 - error TS7006: Parameter 'id' implicitly has an 
+'any' type.
+
+39   edit(id) {
+          ~~
+
+
+Error: src/app/modules/expense/expense/expense.component.ts:44:10 - error TS7006: Parameter 'id' implicitly has an 'any' type.
+
+44   delete(id) {
+            ~~
+
+
+Error: src/app/modules/expense/expense/expense.component.ts:62:17 - error TS2345: Argument of type '(data: Expense[]) => void' is not assignable to parameter of type '(value: Object) => void'.
+  Types of parameters 'data' and 'value' are incompatible.
+    The 'Object' type is assignable to very few other types. Did you mean to use the 'any' type instead?
+      Type 'Object' is missing the following properties from type 'Expense[]': length, pop, push, concat, and 29 more.
+
+62      .subscribe((data:Expense[])=>{
+                   ~~~~~~~~~~~~~~~~~~~
+
+
+Error: src/app/modules/product/product/product.component.ts:33:13 - error NG2003: No suitable injection token for 
+parameter 'httpService' of class 'ProductComponent'.
+  Consider using the @Inject decorator to specify an injection token.
+
+33     private httpService:HTTPService,
+               ~~~~~~~~~~~
+
+  src/app/modules/product/product/product.component.ts:33:25
+    33     private httpService:HTTPService,
+                               ~~~~~~~~~~~
+    This type does not have a value, so it cannot be used as injection token.
+
+
+Error: src/app/modules/product/product/product.component.ts:33:25 - error TS2304: Cannot find name 'HTTPService'. 
+
+33     private httpService:HTTPService,
+                           ~~~~~~~~~~~
+
+
+Error: src/app/modules/product/product/product.component.ts:34:33 - error TS2304: Cannot find name 'ProductTestService'.
+
+34     private productTestService: ProductTestService,
+                                   ~~~~~~~~~~~~~~~~~~
+
+
+Error: src/app/modules/product/product/product.component.ts:35:29 - error TS2304: Cannot find name 'ProductMessage'.
+
+35     private messageService: ProductMessage) {
+                               ~~~~~~~~~~~~~~
+
+
+Error: src/app/modules/product/product/product.component.ts:40:9 - error TS7006: Parameter 'id' implicitly has an 
+'any' type.
+
+40   setId(id) {
+           ~~
+
+
+Error: src/app/modules/product/product/product.component.ts:44:8 - error TS7006: Parameter 'id' implicitly has an 
+'any' type.
+
+44   edit(id) {
+          ~~
+
+
+Error: src/app/modules/product/product/product.component.ts:49:10 - error TS7006: Parameter 'id' implicitly has an 'any' type.
+
+49   delete(id) {
+            ~~
+
+
+Error: src/app/modules/product/product/product.component.ts:54:31 - error TS2552: Cannot find name 'URLS'. Did you mean 'URL'?
+
+54       this.httpService.remove(URLS.URL_BASE+URLS.URL_PORT+"/stockbay/product/delete/"+id)
+                                 ~~~~
+
+  node_modules/typescript/lib/lib.dom.d.ts:22481:13
+    22481 declare var URL: {
+                      ~~~
+    'URL' is declared here.
+
+
+Error: src/app/modules/product/product/product.component.ts:54:45 - error TS2552: Cannot find name 'URLS'. Did you mean 'URL'?
+
+54       this.httpService.remove(URLS.URL_BASE+URLS.URL_PORT+"/stockbay/product/delete/"+id)
+                                               ~~~~
+
+  node_modules/typescript/lib/lib.dom.d.ts:22481:13
+    22481 declare var URL: {
+                      ~~~
+    'URL' is declared here.
+
+
+Error: src/app/modules/product/product/product.component.ts:67:30 - error TS2552: Cannot find name 'URLS'. Did you mean 'URL'?
+
+67      this.httpService.getAll(URLS.URL_BASE+URLS.URL_PORT+"/stockbay/product/all")
+                                ~~~~
+
+  node_modules/typescript/lib/lib.dom.d.ts:22481:13
+    22481 declare var URL: {
+                      ~~~
+    'URL' is declared here.
+
+
+Error: src/app/modules/product/product/product.component.ts:67:44 - error TS2552: Cannot find name 'URLS'. Did you mean 'URL'?
+
+67      this.httpService.getAll(URLS.URL_BASE+URLS.URL_PORT+"/stockbay/product/all")
+                                              ~~~~
+
+  node_modules/typescript/lib/lib.dom.d.ts:22481:13
+    22481 declare var URL: {
+                      ~~~
+    'URL' is declared here.
+
+
+Error: src/app/modules/product/product/product.component.ts:71:13 - error TS2304: Cannot find name 'HttpErrorResponse'.
+
+71      },(err:HttpErrorResponse)=>{
+               ~~~~~~~~~~~~~~~~~
+
+
+
+
+× Failed to compile.
+✔ Browser application bundle generation complete.
+
+Initial Chunk Files | Names   | Raw Size
+main.js             | main    | 49.96 kB |
+runtime.js          | runtime |  6.54 kB |
+
+3 unchanged chunks
+
+Build at: 2023-11-14T05:54:33.369Z - Hash: 896d60c77edff52e - Time: 2588ms
+
+Error: src/app/app.module.ts:20:5 - error NG6001: The class 'ProductComponent' is listed in the declarations of the NgModule 'AppModule', but is not a directive, a component, or a pipe. Either remove it from the NgModule's declarations, or add an appropriate Angular decorator.
+
+20     ProductComponent,
+       ~~~~~~~~~~~~~~~~
+
+  src/app/modules/product/product/product.component.ts:11:14
+    11 export class ProductComponent extends URLLoader implements OnInit {
+                    ~~~~~~~~~~~~~~~~
+    'ProductComponent' is declared here.
+
+
+Error: src/app/general/dashboard/dashboard.component.ts:112:21 - error TS2552: Cannot find name 'Chart'. Did you mean 'myChart'?
+
+112   var myChart = new Chart(ctx, {
+                        ~~~~~
+
+  src/app/general/dashboard/dashboard.component.ts:112:7
+    112   var myChart = new Chart(ctx, {
+              ~~~~~~~
+    'myChart' is declared here.
+
+
+Error: src/app/main/interfaces/Service.ts:2:5 - error TS7010: 'getAll', which lacks return-type annotation, implicitly has an 'any' return type.
+
+2     getAll()
+      ~~~~~~~~
+
+
+Error: src/app/main/interfaces/Service.ts:3:5 - error TS7010: 'get', which lacks return-type annotation, implicitly has an 'any' return type.
+
+3     get(id)
+      ~~~~~~~
+
+
+Error: src/app/main/interfaces/Service.ts:3:9 - error TS7006: Parameter 'id' implicitly has an 'any' type.        
+
+3     get(id)
+          ~~
+
+
+Error: src/app/main/interfaces/Service.ts:4:5 - error TS7010: 'create', which lacks return-type annotation, implicitly has an 'any' return type.
+
+4     create(data)
+      ~~~~~~~~~~~~
+
+
+Error: src/app/main/interfaces/Service.ts:4:12 - error TS7006: Parameter 'data' implicitly has an 'any' type.     
+
+4     create(data)
+             ~~~~
+
+
+Error: src/app/main/interfaces/Service.ts:5:5 - error TS7010: 'update', which lacks return-type annotation, implicitly has an 'any' return type.
+
+5     update(old, data)
+      ~~~~~~~~~~~~~~~~~
+
+
+Error: src/app/main/interfaces/Service.ts:5:12 - error TS7006: Parameter 'old' implicitly has an 'any' type.      
+
+5     update(old, data)
+             ~~~
+
+
+Error: src/app/main/interfaces/Service.ts:5:17 - error TS7006: Parameter 'data' implicitly has an 'any' type.     
+
+5     update(old, data)
+                  ~~~~
+
+
+Error: src/app/main/interfaces/Service.ts:6:5 - error TS7010: 'remove', which lacks return-type annotation, implicitly has an 'any' return type.
+
+6     remove(id)
+      ~~~~~~~~~~
+
+
+Error: src/app/main/interfaces/Service.ts:6:12 - error TS7006: Parameter 'id' implicitly has an 'any' type.       
+
+6     remove(id)
+             ~~
+
+
+Error: src/app/main/mocks/ExpenseTestService.ts:9:45 - error TS2345: Argument of type 'null' is not assignable to 
+parameter of type 'string'.
+
+9     public ID = new BehaviorSubject<string>(null);
+                                              ~~~~
+
+
+Error: src/app/main/mocks/ExpenseTestService.ts:25:16 - error TS7006: Parameter 'id' implicitly has an 'any' type.
+25     public get(id) {
+                  ~~
+
+
+Error: src/app/main/mocks/ExpenseTestService.ts:29:19 - error TS7006: Parameter 'data' implicitly has an 'any' type.
+
+29     public create(data) {
+                     ~~~~
+
+
+Error: src/app/main/mocks/ExpenseTestService.ts:36:19 - error TS7006: Parameter 'data' implicitly has an 'any' type.
+
+36     public update(data) {
+                     ~~~~
+
+
+Error: src/app/main/mocks/ExpenseTestService.ts:42:19 - error TS7006: Parameter 'id' implicitly has an 'any' type.
+42     public remove(id) {
+                     ~~
+
+
+Error: src/app/main/services/HTTPService.ts:22:18 - error TS7006: Parameter 'url' implicitly has an 'any' type.   
+
+22     async update(url,data) {
+                    ~~~
+
+
+Error: src/app/main/services/HTTPService.ts:22:22 - error TS7006: Parameter 'data' implicitly has an 'any' type.  
+
+22     async update(url,data) {
+                        ~~~~
+
+
+Error: src/app/main/services/HTTPService.ts:32:18 - error TS7006: Parameter 'url' implicitly has an 'any' type.   
+
+32     async create(url,data) {
+                    ~~~
+
+
+Error: src/app/main/services/HTTPService.ts:32:22 - error TS7006: Parameter 'data' implicitly has an 'any' type.  
+
+32     async create(url,data) {
+                        ~~~~
+
+
+Error: src/app/main/services/HTTPService.ts:39:18 - error TS7006: Parameter 'url' implicitly has an 'any' type.   
+
+39     async remove(url) {
+                    ~~~
+
+
+Error: src/app/modules/expense/expense/expense.component.ts:35:9 - error TS7006: Parameter 'id' implicitly has an 
+'any' type.
+
+35   setId(id) {
+           ~~
+
+
+Error: src/app/modules/expense/expense/expense.component.ts:39:8 - error TS7006: Parameter 'id' implicitly has an 
+'any' type.
+
+39   edit(id) {
+          ~~
+
+
+Error: src/app/modules/expense/expense/expense.component.ts:44:10 - error TS7006: Parameter 'id' implicitly has an 'any' type.
+
+44   delete(id) {
+            ~~
+
+
+Error: src/app/modules/expense/expense/expense.component.ts:62:17 - error TS2345: Argument of type '(data: Expense[]) => void' is not assignable to parameter of type '(value: Object) => void'.
+  Types of parameters 'data' and 'value' are incompatible.
+    The 'Object' type is assignable to very few other types. Did you mean to use the 'any' type instead?
+      Type 'Object' is missing the following properties from type 'Expense[]': length, pop, push, concat, and 29 more.
+
+62      .subscribe((data:Expense[])=>{
+                   ~~~~~~~~~~~~~~~~~~~
+
+
+Error: src/app/modules/product/product/product.component.ts:33:13 - error NG2003: No suitable injection token for 
+parameter 'httpService' of class 'ProductComponent'.
+  Consider using the @Inject decorator to specify an injection token.
+
+33     private httpService:HTTPService,
+               ~~~~~~~~~~~
+
+  src/app/modules/product/product/product.component.ts:33:25
+    33     private httpService:HTTPService,
+                               ~~~~~~~~~~~
+    This type does not have a value, so it cannot be used as injection token.
+
+
+Error: src/app/modules/product/product/product.component.ts:33:25 - error TS2304: Cannot find name 'HTTPService'. 
+
+33     private httpService:HTTPService,
+                           ~~~~~~~~~~~
+
+
+Error: src/app/modules/product/product/product.component.ts:34:33 - error TS2304: Cannot find name 'ProductTestService'.
+
+34     private productTestService: ProductTestService,
+                                   ~~~~~~~~~~~~~~~~~~
+
+
+Error: src/app/modules/product/product/product.component.ts:35:29 - error TS2304: Cannot find name 'ProductMessage'.
+
+35     private messageService: ProductMessage) {
+                               ~~~~~~~~~~~~~~
+
+
+Error: src/app/modules/product/product/product.component.ts:40:9 - error TS7006: Parameter 'id' implicitly has an 
+'any' type.
+
+40   setId(id) {
+           ~~
+
+
+Error: src/app/modules/product/product/product.component.ts:44:8 - error TS7006: Parameter 'id' implicitly has an 
+'any' type.
+
+44   edit(id) {
+          ~~
+
+
+Error: src/app/modules/product/product/product.component.ts:49:10 - error TS7006: Parameter 'id' implicitly has an 'any' type.
+
+49   delete(id) {
+            ~~
+
+
+Error: src/app/modules/product/product/product.component.ts:54:31 - error TS2552: Cannot find name 'URLS'. Did you mean 'URL'?
+
+54       this.httpService.remove(URLS.URL_BASE+URLS.URL_PORT+"/stockbay/product/delete/"+id)
+                                 ~~~~
+
+  node_modules/typescript/lib/lib.dom.d.ts:22481:13
+    22481 declare var URL: {
+                      ~~~
+    'URL' is declared here.
+
+
+Error: src/app/modules/product/product/product.component.ts:54:45 - error TS2552: Cannot find name 'URLS'. Did you mean 'URL'?
+
+54       this.httpService.remove(URLS.URL_BASE+URLS.URL_PORT+"/stockbay/product/delete/"+id)
+                                               ~~~~
+
+  node_modules/typescript/lib/lib.dom.d.ts:22481:13
+    22481 declare var URL: {
+                      ~~~
+    'URL' is declared here.
+
+
+Error: src/app/modules/product/product/product.component.ts:67:30 - error TS2552: Cannot find name 'URLS'. Did you mean 'URL'?
+
+67      this.httpService.getAll(URLS.URL_BASE+URLS.URL_PORT+"/stockbay/product/all")
+                                ~~~~
+
+  node_modules/typescript/lib/lib.dom.d.ts:22481:13
+    22481 declare var URL: {
+                      ~~~
+    'URL' is declared here.
+
+
+Error: src/app/modules/product/product/product.component.ts:67:44 - error TS2552: Cannot find name 'URLS'. Did you mean 'URL'?
+
+67      this.httpService.getAll(URLS.URL_BASE+URLS.URL_PORT+"/stockbay/product/all")
+                                              ~~~~
+
+  node_modules/typescript/lib/lib.dom.d.ts:22481:13
+    22481 declare var URL: {
+                      ~~~
+    'URL' is declared here.
+
+
+Error: src/app/modules/product/product/product.component.ts:71:13 - error TS2304: Cannot find name 'HttpErrorResponse'.
+
+71      },(err:HttpErrorResponse)=>{
+               ~~~~~~~~~~~~~~~~~
+
+
+
+
+× Failed to compile.
