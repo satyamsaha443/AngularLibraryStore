@@ -1,745 +1,435 @@
-Build at: 2023-11-14T08:40:19.566Z - Hash: af6e86aab3b2316b - Time: 499ms
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:9:69 - error TS2349: This expression is not callable.
-  Type 'AbstractControl<any, any>' has no call signatures.
-
-9                            [ngClass]="{'is-invalid': submitted && f.get('name')?.errors}"
-                                                                      ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:9:69 - error TS4111: Property 'get' comes from an index signature, so it must be accessed with ['get'].
-
-9                            [ngClass]="{'is-invalid': submitted && f.get('name')?.errors}"
-                                                                      ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:11:48 - error TS2349: This expression is 
-not callable.
-  Type 'AbstractControl<any, any>' has no call signatures.
-
-11                     <div *ngIf="submitted && f.get('name')?.errors" class="alert alert-danger">
-                                                  ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:11:48 - error TS4111: Property 'get' comes from an index signature, so it must be accessed with ['get'].
-
-11                     <div *ngIf="submitted && f.get('name')?.errors" class="alert alert-danger">
-                                                  ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:12:39 - error TS2349: This expression is 
-not callable.
-  Type 'AbstractControl<any, any>' has no call signatures.
-
-12                         <div *ngIf="f.get('name')?.errors?.required">
-                                         ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:12:39 - error TS4111: Property 'get' comes from an index signature, so it must be accessed with ['get'].
-
-12                         <div *ngIf="f.get('name')?.errors?.required">
-                                         ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:13:48 - error TS2339: Property 'name' does not exist on type '{ employee_fname: string; employee_email: string; employee_phone: string; employee_gender: string; employee_nid: string; status_id: string; employee_birthday: string; employee_address: string; employee_salary: string; }'.
-
-13                             {{ msg.validations.name }}
-                                                  ~~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:24:69 - error TS2349: This expression is 
-not callable.
-  Type 'AbstractControl<any, any>' has no call signatures.
-
-24                            [ngClass]="{'is-invalid': submitted && f.get('email')?.errors}"
-                                                                       ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:24:69 - error TS4111: Property 'get' comes from an index signature, so it must be accessed with ['get'].
-
-24                            [ngClass]="{'is-invalid': submitted && f.get('email')?.errors}"
-                                                                       ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:26:48 - error TS2349: This expression is 
-not callable.
-  Type 'AbstractControl<any, any>' has no call signatures.
-
-26                     <div *ngIf="submitted && f.get('email')?.errors" class="alert alert-danger">
-                                                  ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:26:48 - error TS4111: Property 'get' comes from an index signature, so it must be accessed with ['get'].
-
-26                     <div *ngIf="submitted && f.get('email')?.errors" class="alert alert-danger">
-                                                  ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:27:39 - error TS2349: This expression is 
-not callable.
-  Type 'AbstractControl<any, any>' has no call signatures.
-
-27                         <div *ngIf="f.get('email')?.errors?.required">
-                                         ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:27:39 - error TS4111: Property 'get' comes from an index signature, so it must be accessed with ['get'].
-
-27                         <div *ngIf="f.get('email')?.errors?.required">
-                                         ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:28:48 - error TS2339: Property 'email' does not exist on type '{ employee_fname: string; employee_email: string; employee_phone: string; employee_gender: string; employee_nid: string; status_id: string; employee_birthday: string; employee_address: string; employee_salary: string; }'.
-
-28                             {{ msg.validations.email }}
-                                                  ~~~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:39:69 - error TS2349: This expression is 
-not callable.
-  Type 'AbstractControl<any, any>' has no call signatures.
-
-39                            [ngClass]="{'is-invalid': submitted && f.get('phone')?.errors}"
-                                                                       ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:39:69 - error TS4111: Property 'get' comes from an index signature, so it must be accessed with ['get'].
-
-39                            [ngClass]="{'is-invalid': submitted && f.get('phone')?.errors}"
-                                                                       ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:41:48 - error TS2349: This expression is 
-not callable.
-  Type 'AbstractControl<any, any>' has no call signatures.
-
-41                     <div *ngIf="submitted && f.get('phone')?.errors" class="alert alert-danger">
-                                                  ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:41:48 - error TS4111: Property 'get' comes from an index signature, so it must be accessed with ['get'].
-
-41                     <div *ngIf="submitted && f.get('phone')?.errors" class="alert alert-danger">
-                                                  ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:42:39 - error TS2349: This expression is 
-not callable.
-  Type 'AbstractControl<any, any>' has no call signatures.
-
-42                         <div *ngIf="f.get('phone')?.errors?.required">
-                                         ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:42:39 - error TS4111: Property 'get' comes from an index signature, so it must be accessed with ['get'].
-
-42                         <div *ngIf="f.get('phone')?.errors?.required">
-                                         ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:43:48 - error TS2339: Property 'phone' does not exist on type '{ employee_fname: string; employee_email: string; employee_phone: string; employee_gender: string; employee_nid: string; status_id: string; employee_birthday: string; employee_address: string; employee_salary: string; }'.
-
-43                             {{ msg.validations.phone }}
-                                                  ~~~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:54:70 - error TS2349: This expression is 
-not callable.
-  Type 'AbstractControl<any, any>' has no call signatures.
-
-54                             [ngClass]="{'is-invalid': submitted && f.get('gender')?.errors}">
-                                                                        ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:54:70 - error TS4111: Property 'get' comes from an index signature, so it must be accessed with ['get'].
-
-54                             [ngClass]="{'is-invalid': submitted && f.get('gender')?.errors}">
-                                                                        ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:59:48 - error TS2349: This expression is 
-not callable.
-  Type 'AbstractControl<any, any>' has no call signatures.
-
-59                     <div *ngIf="submitted && f.get('gender')?.errors" class="alert alert-danger">
-                                                  ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:59:48 - error TS4111: Property 'get' comes from an index signature, so it must be accessed with ['get'].
-
-59                     <div *ngIf="submitted && f.get('gender')?.errors" class="alert alert-danger">
-                                                  ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:60:39 - error TS2349: This expression is 
-not callable.
-  Type 'AbstractControl<any, any>' has no call signatures.
-
-60                         <div *ngIf="f.get('gender')?.errors?.required">
-                                         ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:60:39 - error TS4111: Property 'get' comes from an index signature, so it must be accessed with ['get'].
-
-60                         <div *ngIf="f.get('gender')?.errors?.required">
-                                         ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:61:48 - error TS2339: Property 'gender' does not exist on type '{ employee_fname: string; employee_email: string; employee_phone: string; employee_gender: 
-string; employee_nid: string; status_id: string; employee_birthday: string; employee_address: string; employee_salary: string; }'.
-
-61                             {{ msg.validations.gender }}
-                                                  ~~~~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:72:69 - error TS2349: This expression is 
-not callable.
-  Type 'AbstractControl<any, any>' has no call signatures.
-
-72                            [ngClass]="{'is-invalid': submitted && f.get('nid')?.errors}"
-                                                                       ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:72:69 - error TS4111: Property 'get' comes from an index signature, so it must be accessed with ['get'].
-
-72                            [ngClass]="{'is-invalid': submitted && f.get('nid')?.errors}"
-                                                                       ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:74:48 - error TS2349: This expression is 
-not callable.
-  Type 'AbstractControl<any, any>' has no call signatures.
-
-74                     <div *ngIf="submitted && f.get('nid')?.errors" class="alert alert-danger">
-                                                  ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:74:48 - error TS4111: Property 'get' comes from an index signature, so it must be accessed with ['get'].
-
-74                     <div *ngIf="submitted && f.get('nid')?.errors" class="alert alert-danger">
-                                                  ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:75:39 - error TS2349: This expression is 
-not callable.
-  Type 'AbstractControl<any, any>' has no call signatures.
-
-75                         <div *ngIf="f.get('nid')?.errors?.required">
-                                         ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:75:39 - error TS4111: Property 'get' comes from an index signature, so it must be accessed with ['get'].
-
-75                         <div *ngIf="f.get('nid')?.errors?.required">
-                                         ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:76:48 - error TS2339: Property 'nid' does not exist on type '{ employee_fname: string; employee_email: string; employee_phone: string; employee_gender: string; employee_nid: string; status_id: string; employee_birthday: string; employee_address: string; employee_salary: string; }'.
-
-76                             {{ msg.validations.nid }}
-                                                  ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:88:70 - error TS2349: This expression is 
-not callable.
-  Type 'AbstractControl<any, any>' has no call signatures.
-
-88                             [ngClass]="{'is-invalid': submitted && f.get('status')?.errors}">
-                                                                        ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:88:70 - error TS4111: Property 'get' comes from an index signature, so it must be accessed with ['get'].
-
-88                             [ngClass]="{'is-invalid': submitted && f.get('status')?.errors}">
-                                                                        ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:93:48 - error TS2349: This expression is 
-not callable.
-  Type 'AbstractControl<any, any>' has no call signatures.
-
-93                     <div *ngIf="submitted && f.get('status')?.errors" class="alert alert-danger">
-                                                  ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:93:48 - error TS4111: Property 'get' comes from an index signature, so it must be accessed with ['get'].
-
-93                     <div *ngIf="submitted && f.get('status')?.errors" class="alert alert-danger">
-                                                  ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:94:39 - error TS2349: This expression is 
-not callable.
-  Type 'AbstractControl<any, any>' has no call signatures.
-
-94                         <div *ngIf="f.get('status')?.errors?.required">
-                                         ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:94:39 - error TS4111: Property 'get' comes from an index signature, so it must be accessed with ['get'].
-
-94                         <div *ngIf="f.get('status')?.errors?.required">
-                                         ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:95:48 - error TS2339: Property 'status' does not exist on type '{ employee_fname: string; employee_email: string; employee_phone: string; employee_gender: 
-string; employee_nid: string; status_id: string; employee_birthday: string; employee_address: string; employee_salary: string; }'.
-
-95                             {{ msg.validations.status }}
-                                                  ~~~~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:106:69 - error TS2349: This expression is not callable.
-  Type 'AbstractControl<any, any>' has no call signatures.
-
-106                            [ngClass]="{'is-invalid': submitted && f.get('birthday')?.errors}"
-                                                                        ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:106:69 - error TS4111: Property 'get' comes from an index signature, so it must be accessed with ['get'].
-
-106                            [ngClass]="{'is-invalid': submitted && f.get('birthday')?.errors}"
-                                                                        ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:108:48 - error TS2349: This expression is not callable.
-  Type 'AbstractControl<any, any>' has no call signatures.
-
-108                     <div *ngIf="submitted && f.get('birthday')?.errors" class="alert alert-danger">
-                                                   ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:108:48 - error TS4111: Property 'get' comes from an index signature, so it must be accessed with ['get'].
-
-108                     <div *ngIf="submitted && f.get('birthday')?.errors" class="alert alert-danger">
-                                                   ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:109:39 - error TS2349: This expression is not callable.
-  Type 'AbstractControl<any, any>' has no call signatures.
-
-109                         <div *ngIf="f.get('birthday')?.errors?.required">
-                                          ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:109:39 - error TS4111: Property 'get' comes from an index signature, so it must be accessed with ['get'].
-
-109                         <div *ngIf="f.get('birthday')?.errors?.required">
-                                          ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:110:48 - error TS2339: Property 'birthday' does not exist on type '{ employee_fname: string; employee_email: string; employee_phone: string; employee_gender: string; employee_nid: string; status_id: string; employee_birthday: string; employee_address: string; employee_salary: string; }'.
-
-110                             {{ msg.validations.birthday }}
-                                                   ~~~~~~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:121:72 - error TS2349: This expression is not callable.
-  Type 'AbstractControl<any, any>' has no call signatures.
-
-121                               [ngClass]="{'is-invalid': submitted && f.get('address')?.errors}"
-                                                                           ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:121:72 - error TS4111: Property 'get' comes from an index signature, so it must be accessed with ['get'].
-
-121                               [ngClass]="{'is-invalid': submitted && f.get('address')?.errors}"
-                                                                           ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:123:48 - error TS2349: This expression is not callable.
-  Type 'AbstractControl<any, any>' has no call signatures.
-
-123                     <div *ngIf="submitted && f.get('address')?.errors" class="alert alert-danger">
-                                                   ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:123:48 - error TS4111: Property 'get' comes from an index signature, so it must be accessed with ['get'].
-
-123                     <div *ngIf="submitted && f.get('address')?.errors" class="alert alert-danger">
-                                                   ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:124:39 - error TS2349: This expression is not callable.
-  Type 'AbstractControl<any, any>' has no call signatures.
-
-124                         <div *ngIf="f.get('address')?.errors?.required">
-                                          ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:124:39 - error TS4111: Property 'get' comes from an index signature, so it must be accessed with ['get'].
-
-124                         <div *ngIf="f.get('address')?.errors?.required">
-                                          ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:125:48 - error TS2339: Property 'address' does not exist on type '{ employee_fname: string; employee_email: string; employee_phone: string; employee_gender: string; employee_nid: string; status_id: string; employee_birthday: string; employee_address: string; employee_salary: string; }'.
-
-125                             {{ msg.validations.address }}
-                                                   ~~~~~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:136:69 - error TS2349: This expression is not callable.
-  Type 'AbstractControl<any, any>' has no call signatures.
-
-136                            [ngClass]="{'is-invalid': submitted && f.get('salary')?.errors}"
-                                                                        ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:136:69 - error TS4111: Property 'get' comes from an index signature, so it must be accessed with ['get'].
-
-136                            [ngClass]="{'is-invalid': submitted && f.get('salary')?.errors}"
-                                                                        ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:138:48 - error TS2349: This expression is not callable.
-  Type 'AbstractControl<any, any>' has no call signatures.
-
-138                     <div *ngIf="submitted && f.get('salary')?.errors" class="alert alert-danger">
-                                                   ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:138:48 - error TS4111: Property 'get' comes from an index signature, so it must be accessed with ['get'].
-
-138                     <div *ngIf="submitted && f.get('salary')?.errors" class="alert alert-danger">
-                                                   ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:139:39 - error TS2349: This expression is not callable.
-  Type 'AbstractControl<any, any>' has no call signatures.
-
-139                         <div *ngIf="f.get('salary')?.errors?.required">
-                                          ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:139:39 - error TS4111: Property 'get' comes from an index signature, so it must be accessed with ['get'].
-
-139                         <div *ngIf="f.get('salary')?.errors?.required">
-                                          ~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-Error: src/app/modules/employee/add-employee/add-employee.component.html:140:48 - error TS2339: Property 'salary' 
-does not exist on type '{ employee_fname: string; employee_email: string; employee_phone: string; employee_gender: string; employee_nid: string; status_id: string; employee_birthday: string; employee_address: string; employee_salary: string; }'.
-
-140                             {{ msg.validations.salary }}
-                                                   ~~~~~~
-
-  src/app/modules/employee/add-employee/add-employee.component.ts:11:16
-    11   templateUrl: './add-employee.component.html',
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Error occurs in the template of component AddEmployeeComponent.
-
-
-
-
-× Failed to compile.
+import { Injectable } from "@angular/core"
+
+@Injectable({
+    providedIn: 'root'
+})
+export default class ExpenseMessage {
+
+    confirmations = {
+        'title': 'Confirmation', 
+        'add': 'Expense has been added',
+        'edit': 'Expense has been successfully modified',
+        'delete': 'Expense has been removed'
+    }
+
+    validations = {
+        id: 1,
+        "expense_paymentDate": "Payment date is required",
+        "supplier_id": "Supplier is required",
+        "expense_paymentType": "Payment type is required",
+        "expense_paymentAccount": "Payment account is required",
+        "expense_amount": "Amount is required",
+        "expense_details": ""
+    }
+
+    constructor() {}
+}
+
+
+import { Injectable } from "@angular/core";
+import { BehaviorSubject } from "rxjs";
+import Service from "../interfaces/Service";
+
+@Injectable({
+    providedIn: 'root'
+})
+export default class ExpenseTestService implements Service {
+    public ID = new BehaviorSubject<string | null>(null);
+    static _stock = [{
+        id: 1,
+        "expense_paymentDate": "22/11/2020",
+        "supplier_id": "string",
+        "expense_paymentType": "virement",
+        "expense_paymentAccount": "FRA 3423 434 23423",
+        "expense_amount": "34234",
+        "expense_details": "string"
+    }]
+    static id = 0
+
+    public getAll() {
+        return ExpenseTestService._stock;
+    }
+
+    public get(id:any) {
+        return ExpenseTestService._stock.find(item => item.id === id);
+    };
+
+    public create(data:any) {
+        data["id"] = ExpenseTestService.id
+        ExpenseTestService._stock.push(data);
+        ExpenseTestService.id++
+        console.log(data)
+    };
+
+    public update(data:any) {
+
+        var foundIndex = ExpenseTestService._stock.findIndex(item => item.id === data.id);
+        ExpenseTestService._stock[foundIndex] = data;
+    };
+
+    public remove(id:any) {
+        ExpenseTestService._stock.splice(id, 1);
+    };
+
+
+}
+
+
+export default class Expense {
+    id: number
+    expense_paymentDate: string
+    supplier_id: string
+    expense_paymentType: string
+    expense_paymentAccount: string
+    expense_amount: string
+    expense_details: string
+
+
+    constructor(
+        id: number,
+        expense_paymentDate: string,
+        supplier_id: string,
+        expense_paymentType: string,
+        expense_paymentAccount: string,
+        expense_amount: string,
+        expense_details: string
+    ) {
+        this.id = id
+        this.expense_paymentDate = expense_paymentDate
+        this.supplier_id = supplier_id
+        this.expense_paymentType = expense_paymentType
+        this.expense_paymentAccount = expense_paymentAccount
+        this.expense_amount = expense_amount
+        this.expense_details = expense_details
+    }
+
+}
+
+<form class="form-horizontal" [formGroup]="expenseForm">
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="expense_paymentDate" class="col-sm-4 control-label">
+            <font style="vertical-align: inherit">
+              <font style="vertical-align: inherit">
+                Date of payment
+              </font> </font
+            ><i
+              aria-hidden="true"
+              data-toggle="tooltip"
+              data-placement="top"
+              title=""
+              class="fa fa-asterisk text-danger require"
+              data-original-title="Required"
+            ></i>
+          </label>
+          <div class="col-sm-8">
+            <div class="input-group date">
+              <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+              <input
+                type="date"
+                [ngClass]="{
+                  'is-invalid': submitted && f.expense_paymentDate.errors
+                }"
+                formControlName="expense_paymentDate"
+                name="expense_paymentDate"
+                id="expense_paymentDate"
+                placeholder="AAAA-MM-JJ"
+                class="form-control"
+              />
+            </div>
+            <div
+              *ngIf="submitted && f.expense_paymentDate.errors"
+              class="alert alert-danger"
+            >
+              <div *ngIf="submitted && f.expense_paymentDate.errors.required">
+                {{ msg.validations.expense_paymentDate }}
+              </div>
+            </div>
+            <!---->
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="supplier_id" class="col-sm-4 control-label">
+            <font style="vertical-align: inherit">
+              <font style="vertical-align: inherit"> Supplier </font> </font
+            ><i
+              aria-hidden="true"
+              data-toggle="tooltip"
+              data-placement="top"
+              title=""
+              class="fa fa-asterisk text-danger require"
+              data-original-title="Required"
+            ></i>
+          </label>
+          <div class="col-sm-8">
+            <select
+              id="supplier_id"
+              [ngClass]="{ 'is-invalid': submitted && f.supplier_id.errors }"
+              formControlName="supplier_id"
+              name="supplier_id"
+              class="form-control"
+            >
+              <option value="">
+                <font style="vertical-align: inherit">
+                  <font style="vertical-align: inherit">Select</font>
+                </font>
+              </option>
+              <option value="{{ c.id }}" *ngFor="let c of suppliers$">
+                <font style="vertical-align: inherit">
+                  <font style="vertical-align: inherit">{{
+                    c.supplier_name
+                  }}</font>
+                </font>
+              </option>
+            </select>
+            <!---->
+            <div
+              *ngIf="submitted && f.supplier_id.errors"
+              class="alert alert-danger"
+            >
+              <div *ngIf="submitted && f.supplier_id.errors.required">
+                {{ msg.validations.supplier_id }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="expense_paymentType" class="col-sm-4 control-label">
+            <font style="vertical-align: inherit">
+              <font style="vertical-align: inherit"> Type of payment </font>
+            </font>
+          </label>
+          <div class="col-sm-8">
+            <select
+              [ngClass]="{
+                'is-invalid': submitted && f.expense_paymentType.errors
+              }"
+              formControlName="expense_paymentType"
+              name="expense_paymentType"
+              id="expense_paymentType"
+              class="form-control"
+            >
+              <option value="">
+                <font style="vertical-align: inherit">
+                  <font style="vertical-align: inherit">Select</font>
+                </font>
+              </option>
+              <option>
+                <font style="vertical-align: inherit">
+                  <font style="vertical-align: inherit">Cash</font>
+                </font>
+              </option>
+              <option>
+                <font style="vertical-align: inherit">
+                  <font style="vertical-align: inherit">Credit Card</font>
+                </font>
+              </option>
+            </select>
+            <!---->
+            <div
+              *ngIf="submitted && f.expense_paymentType.errors"
+              class="alert alert-danger"
+            >
+              <div *ngIf="submitted && f.expense_paymentType.errors.required">
+                {{ msg.validations.expense_paymentType }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="expense_paymentAccount" class="col-sm-4 control-label">
+            <font style="vertical-align: inherit">
+              <font style="vertical-align: inherit"> Account </font>
+            </font>
+          </label>
+          <div class="col-sm-8">
+            <select
+              [ngClass]="{
+                'is-invalid': submitted && f.expense_paymentAccount.errors
+              }"
+              formControlName="expense_paymentAccount"
+              name="expense_paymentAccount"
+              id="expense_paymentAccount"
+              class="form-control"
+            >
+              <option value="">
+                <font style="vertical-align: inherit">
+                  <font style="vertical-align: inherit">Select</font>
+                </font>
+              </option>
+              <option>
+                <font style="vertical-align: inherit">
+                  <font style="vertical-align: inherit">Utility</font>
+                </font>
+              </option>
+              <option>
+                <font style="vertical-align: inherit">
+                  <font style="vertical-align: inherit">Service</font>
+                </font>
+              </option>
+              <option>
+                <font style="vertical-align: inherit">
+                  <font style="vertical-align: inherit">Product</font>
+                </font>
+              </option>
+            </select>
+            <!---->
+            <div
+              *ngIf="submitted && f.expense_paymentAccount.errors"
+              class="alert alert-danger"
+            >
+              <div *ngIf="submitted && f.expense_paymentAccount.errors.required">
+                {{ msg.validations.expense_paymentAccount }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="expense_amount" class="col-sm-4 control-label">
+            <font style="vertical-align: inherit">
+              <font style="vertical-align: inherit"> Amount </font> </font
+            ><i
+              aria-hidden="true"
+              data-toggle="tooltip"
+              data-placement="top"
+              title=""
+              class="fa fa-asterisk text-danger require"
+              data-original-title="Required"
+            ></i>
+          </label>
+          <div class="col-sm-8">
+            <input
+              type="number"
+              min="0"
+              max="10000000"
+              step="any"
+              [ngClass]="{ 'is-invalid': submitted && f.expense_amount.errors }"
+              formControlName="expense_amount"
+              name="expense_amount"
+              id="expense_amount"
+              placeholder="Montant"
+              class="form-control"
+            />
+            <!---->
+            <div
+              *ngIf="submitted && f.expense_amount.errors"
+              class="alert alert-danger"
+            >
+              <div *ngIf="submitted && f.expense_amount.errors.required">
+                {{ msg.validations.expense_amount }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="expense_details" class="col-sm-4 control-label">
+            <font style="vertical-align: inherit">
+              <font style="vertical-align: inherit"> Details </font>
+            </font>
+          </label>
+          <div class="col-sm-8">
+            <textarea
+              id="expense_details"
+              [ngClass]="{ 'is-invalid': submitted && f.expense_details.errors }"
+              formControlName="expense_details"
+              name="expense_details"
+              rows="5"
+              placeholder="Entrer ..."
+              class="form-control"
+            ></textarea>
+            <div
+              *ngIf="submitted && f.expense_details.errors"
+              class="alert alert-danger"
+            >
+              <div *ngIf="submitted && f.expense_details.errors.required">
+                {{ msg.validations.expense_details }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="form-group">
+          <button (click)="add()" type="button" class="btn btn-info">
+            <i class="fas fa-save"></i>
+            Save
+          </button>
+          <button (click)="reset()" type="button" class="btn btn-danger">
+            <i class="fas fa-times"></i>
+            Cancel
+          </button>
+        </div>
+      </div>
+      <div class="col-sm-6"></div>
+    </div>
+  </form>
+
+
+  import { Component, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { URLLoader } from 'src/app/main/configs/URLLoader';
+import ExpenseMessage from 'src/app/main/messages/ExpenseMessage';
+import Supplier from 'src/app/main/models/Supplier';
+import { HTTPService } from 'src/app/main/services/HTTPService';
+import ExpenseValidation from 'src/app/main/validations/ExpenseValidation';
+import ExpenseTestService from 'src/app/main/mocks/ExpenseTestService';
+import URLS from 'src/app/main/urls/urls';
+
+@Component({
+  selector: 'app-add-expense',
+  templateUrl: './add-expense.component.html',
+  styleUrls: ['./add-expense.component.css']
+})
+export class AddExpenseComponent extends URLLoader implements OnInit {
+
+  expenseForm: FormGroup
+  msg: ExpenseMessage
+  submitted = false
+  suppliers$:Supplier[]=[]
+
+  get f() { return this.expenseForm.controls; }
+
+  constructor(private httpService:HTTPService,
+    private validation: ExpenseValidation, 
+    private message: ExpenseMessage,
+    private ExpenseTestService: ExpenseTestService) {
+    super()
+    this.expenseForm = this.validation.formGroupInstance
+    this.msg = this.message
+
+  }
+
+  ngOnInit(): void {
+    this.getAllSuppliers()
+  }
+
+  reset() {
+    this.expenseForm.reset()
+  }
+
+  add() {
+    this.submitted = true;
+    this.expenseForm.value.supplier_id=this.suppliers$.filter(x => 
+    x.id == parseInt(this.expenseForm.value.supplier_id))[0]
+  
+   if (this.validation.checkValidation()) {
+     this.httpService.create(URLS.URL_BASE+URLS.URL_PORT+"/stockbay/expense/create",this.expenseForm.value)
+      super.show('Confirmation', this.msg.confirmations.add, 'success')
+      window.location.reload();
+    }
+  }
+
+    getAllSuppliers() {
+     this.httpService.getAll(URLS.URL_BASE+URLS.URL_PORT+"/stockbay/supplier/all")
+     .subscribe((data:object)=>{
+       this.suppliers$=data as Supplier[];
+      
+     })
+  }
+
+}
