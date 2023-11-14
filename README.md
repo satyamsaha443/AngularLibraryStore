@@ -1,80 +1,119 @@
-Error: src/app/main/services/HTTPService.ts:17:18 - error TS7006: Parameter 'url' implicitly has an 'any' type.   
-
-17     async update(url,data) {
-                    ~~~
-
-
-Error: src/app/main/services/HTTPService.ts:17:22 - error TS7006: Parameter 'data' implicitly has an 'any' type.  
-
-17     async update(url,data) {
-                        ~~~~
-
-
-Error: src/app/main/services/HTTPService.ts:27:18 - error TS7006: Parameter 'url' implicitly has an 'any' type.   
-
-27     async create(url,data) {
-                    ~~~
-
-
-Error: src/app/main/services/HTTPService.ts:27:22 - error TS7006: Parameter 'data' implicitly has an 'any' type.  
-
-27     async create(url,data) {
-                        ~~~~
-
-
-Error: src/app/main/services/HTTPService.ts:34:18 - error TS7006: Parameter 'url' implicitly has an 'any' type.   
-
-34     async remove(url) {
-                    ~~~
-
-
-
-
-** Angular Live Development Server is listening on localhost:4200, open your browser on http://localhost:4200/ ** 
-
-
-× Failed to compile.
-
-
-
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from "@angular/core";
+import { BehaviorSubject } from "rxjs";
+import Service from "../interfaces/Service";
 
 @Injectable({
     providedIn: 'root'
 })
+export default class EmployeeTestService implements Service {
+    public ID = new BehaviorSubject<string | null>(null);
+    static _employee = [{
+        "id": 1,
+        "employee_fname": "Eglantine Deschênes",
+        "employee_email": "EglantineDeschenes@teleworm.us",
+        "employee_phone": "01.50.38.11.50",
+        "employee_gender": "string",
+        "employee_nid": "string",
+        "status_id": "active",
+        "employee_birthday": "string",
+        "employee_address": "84, Quai des Belges 77100 MEAUX",
+        "employee_salary": "33.000"
+    }]
 
-export class HTTPService  {
 
-    
 
-    headers = { 'content-type': 'application/json' }
-    model = ''
-    constructor(private http: HttpClient) {
-    }
-    async update(url,data) {
-        await this.http.put(url,data)
-    }
-    getAll(url:string) {
-        const header=new HttpHeaders({ Authorization: 'Basic ' + btoa(sessionStorage.getItem('username') + ':' + sessionStorage.getItem('password')) });
-        return this.http.get(url,{headers:header});
-    }
-    get(id: string) {
-        return this.http.get(id);
-    }
-    async create(url,data) {
+    static id = 0
 
-        const body = JSON.stringify(data);
-        const headers = new HttpHeaders({ 'content-type': 'application/json',Authorization: 'Basic ' + btoa(sessionStorage.getItem('username') + ':' + sessionStorage.getItem('password')) } )
-        await this.http.post(url, body,
-            { 'headers': headers }).toPromise();
+    public getAll() {
+        return EmployeeTestService._employee;
     }
-    async remove(url) {
-         const headers = new HttpHeaders({ 'content-type': 'application/json',Authorization: 'Basic ' + btoa(sessionStorage.getItem('username') + ':' + sessionStorage.getItem('password')) } )
-        await this.http.delete(url, {
-            headers: headers
-        }).toPromise();
-    }
+
+    public get(id:any) {
+        return EmployeeTestService._employee.find(item => item.id === id);
+    };
+
+    public create(data:any) {
+        data["id"] = EmployeeTestService.id
+        EmployeeTestService._employee.push(data);
+        EmployeeTestService.id++
+        console.log(data)
+    };
+
+    public update(data:any) {
+
+        var foundIndex = EmployeeTestService._employee.findIndex(item => item.id === data.id);
+        EmployeeTestService._employee[foundIndex] = data;
+    };
+
+    public remove(id:any) {
+        EmployeeTestService._employee.splice(id, 1);
+    };
 
 
 }
+
+
+import { Component, OnInit } from '@angular/core';
+import { URLLoader } from 'src/app/main/configs/URLLoader';
+import EmployeeMessage from 'src/app/main/messages/EmployeeMessage';
+import EmployeeTestService from 'src/app/main/mocks/EmployeeTestService';
+import Employee from 'src/app/main/models/Employee';
+
+
+@Component({
+  selector: 'app-edit-employee',
+  templateUrl: './edit-employee.component.html',
+  styleUrls: ['./edit-employee.component.css']
+})
+export class EditEmployeeComponent extends URLLoader implements OnInit {
+
+  model : Employee
+
+
+  constructor(private employeeTestService: EmployeeTestService,
+    private message: EmployeeMessage) {
+    super()
+    this.model = this.create()
+  }
+
+
+  create() {
+    return new Employee(0, '', '', '', '', '', '', '', '', '')
+  }
+
+  ngOnInit(): void {
+
+    this.employeeTestService.ID.subscribe(idd =&gt; {
+
+      this.model = this.employeeTestService.get(parseInt(idd))
+      if (this.model == undefined) {
+        this.model = this.model = this.create()
+      }
+    })
+  }
+
+  edit() {
+    this.employeeTestService.update(this.model)
+    super.show('Confirmation', this.message.confirmations.edit, 'success')
+  }
+
+}
+
+Error: src/app/modules/employee/edit-employee/edit-employee.component.ts:33:7 - error TS2322: Type '{ id: number; 
+employee_fname: string; employee_email: string; employee_phone: string; employee_gender: string; employee_nid: string; status_id: string; employee_birthday: string; employee_address: string; employee_salary: string; } | undefined' is not assignable to type 'Employee'.
+  Type 'undefined' is not assignable to type 'Employee'.
+
+33       this.model = this.employeeTestService.get(parseInt(idd))
+         ~~~~~~~~~~
+
+
+Error: src/app/modules/employee/edit-employee/edit-employee.component.ts:33:58 - error TS2345: Argument of type 'string | null' is not assignable to parameter of type 'string'.
+  Type 'null' is not assignable to type 'string'.
+
+33       this.model = this.employeeTestService.get(parseInt(idd))
+                                                            ~~~
+
+
+
+
+× Failed to compile.
