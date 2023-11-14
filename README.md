@@ -1,401 +1,186 @@
-package com.Inv.models;
+// src/app/product.ts
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
+export interface Product {
+  id: string;
+  productName: string;
+  category: Category;
+  supplier: Supplier;
+  productUnit: string;
+  productAlertQuantity: string;
+  productSupplierPrice: string;
+  productSellPrice: string;
+  productCode: string;
+  productTax: string;
+  warehouseId: string;
+  productDetails: string;
+  productDetailsForInvoice: string;
+  buys: Buy[];
+}
 
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+export interface Category {
+  id: string;
+  category_name: string;
+  status_id: string;
+  category_details: string;
+}
 
-@Document(collection = "inv_products")
-public class Products implements Serializable {
+export interface Supplier {
+  id: string;
+  supplierName: string;
+  supplierPhone: string;
+  supplierEmail: string;
+  supplierCompany: string;
+  supplierAddress: string;
+  statusId: string;
+  supplierDescription: string;
+}
 
-    private static final long serialVersionUID = -8698757387767929675L;
-
-    @Id
-    private String id;
-    private String productName;
-
-    @DBRef
-    private Category category;
-
-    @DBRef
-    private Supplier supplier;
-
-    private String productUnit;
-    private String productAlertQuantity;
-    private String productSupplierPrice;
-    private String productSellPrice;
-    private String productCode;
-    private String productTax;
-    private String warehouseId;
-    private String productDetails;
-    private String productDetailsForInvoice;
-
-    private Set<Buy> buys = new HashSet<>();
-
-    public Products() {
-
-    }
-
-    public Products(String productName, Category category, Supplier supplier, String productUnit,
-                   String productAlertQuantity, String productSupplierPrice, String productSellPrice, String productCode,
-                   String productTax, String warehouseId, String productDetails, String productDetailsForInvoice) {
-        this.productName = productName;
-        this.category = category;
-        this.supplier = supplier;
-        this.productUnit = productUnit;
-        this.productAlertQuantity = productAlertQuantity;
-        this.productSupplierPrice = productSupplierPrice;
-        this.productSellPrice = productSellPrice;
-        this.productCode = productCode;
-        this.productTax = productTax;
-        this.warehouseId = warehouseId;
-        this.productDetails = productDetails;
-        this.productDetailsForInvoice = productDetailsForInvoice;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    public Supplier getSupplier() {
-        return supplier;
-    }
-
-    public void setSupplier(Supplier supplier) {
-        this.supplier = supplier;
-    }
-
-    public String getProductUnit() {
-        return productUnit;
-    }
-
-    public void setProductUnit(String productUnit) {
-        this.productUnit = productUnit;
-    }
-
-    public String getProductAlertQuantity() {
-        return productAlertQuantity;
-    }
-
-    public void setProductAlertQuantity(String productAlertQuantity) {
-        this.productAlertQuantity = productAlertQuantity;
-    }
-
-    public String getProductSupplierPrice() {
-        return productSupplierPrice;
-    }
-
-    public void setProductSupplierPrice(String productSupplierPrice) {
-        this.productSupplierPrice = productSupplierPrice;
-    }
-
-    public String getProductSellPrice() {
-        return productSellPrice;
-    }
-
-    public void setProductSellPrice(String productSellPrice) {
-        this.productSellPrice = productSellPrice;
-    }
-
-    public String getProductCode() {
-        return productCode;
-    }
-
-    public void setProductCode(String productCode) {
-        this.productCode = productCode;
-    }
-
-    public String getProductTax() {
-        return productTax;
-    }
-
-    public void setProductTax(String productTax) {
-        this.productTax = productTax;
-    }
-
-    public String getWarehouseId() {
-        return warehouseId;
-    }
-
-    public void setWarehouseId(String warehouseId) {
-        this.warehouseId = warehouseId;
-    }
-
-    public String getProductDetails() {
-        return productDetails;
-    }
-
-    public void setProductDetails(String productDetails) {
-        this.productDetails = productDetails;
-    }
-
-    public String getProductDetailsForInvoice() {
-        return productDetailsForInvoice;
-    }
-
-    public void setProductDetailsForInvoice(String productDetailsForInvoice) {
-        this.productDetailsForInvoice = productDetailsForInvoice;
-    }
-
-    public Set<Buy> getBuys() {
-        return buys;
-    }
-
-    public void setBuys(Set<Buy> buys) {
-        this.buys = buys;
-    }
+export interface Buy {
+  // Define the Buy properties here if needed.
 }
 
 
 
-package com.Inv.models;
 
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+// src/app/product.service.ts
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Product } from './product';
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
+@Injectable({
+  providedIn: 'root'
+})
+export class ProductService {
+  private baseUrl = 'YOUR_BACKEND_API_URL/products'; // Replace with your actual backend API URL
 
-@Document(collection = "inv_category")
-public class Category implements Serializable {
-    
-    private static final long serialVersionUID = -3942285530464977887L;
-    
-    @Id
-    private String id;
-    private String category_name;
-    private String status_id;
-    private String category_details;
+  constructor(private http: HttpClient) {}
 
-    @JsonProperty(access = Access.WRITE_ONLY)
-    private Set<Buy> products = new HashSet<>();
+  getAllProducts(): Observable<Product[]> {
+    return this.http.get<Product[]>(this.baseUrl);
+  }
 
-    public Category() {
-        
-    }
+  getProductById(id: string): Observable<Product> {
+    return this.http.get<Product>(`${this.baseUrl}/${id}`);
+  }
 
-    public Category(String category_name, String status_id, String category_details) {
-        this.category_name = category_name;
-        this.status_id = status_id;
-        this.category_details = category_details;
-    }
+  createProduct(product: Product): Observable<Product> {
+    return this.http.post<Product>(this.baseUrl, product);
+  }
 
-    public String getId() {
-        return id;
-    }
+  updateProduct(id: string, product: Product): Observable<Product> {
+    return this.http.put<Product>(`${this.baseUrl}/${id}`, product);
+  }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getCategory_name() {
-        return category_name;
-    }
-
-    public void setCategory_name(String category_name) {
-        this.category_name = category_name;
-    }
-
-    public String getStatus_id() {
-        return status_id;
-    }
-
-    public void setStatus_id(String status_id) {
-        this.status_id = status_id;
-    }
-
-    public String getCategory_details() {
-        return category_details;
-    }
-
-    public void setCategory_details(String category_details) {
-        this.category_details = category_details;
-    }
-  
-    public Set<Buy> getProducts() {
-        return products;
-    }
-
-    public void setProducts(Set<Buy> products) {
-        this.products = products;
-    }
+  deleteProduct(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
 }
 
 
 
-package com.Inv.models;
+// src/app/product-management/product-management.component.ts
 
-import java.util.HashSet;
-import java.util.Set;
+import { Component, OnInit } from '@angular/core';
+import { ProductService } from '../product.service';
+import { Product } from '../product';
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+@Component({
+  selector: 'app-product-management',
+  templateUrl: './product-management.component.html',
+  styleUrls: ['./product-management.component.css']
+})
+export class ProductManagementComponent implements OnInit {
+  products: Product[] = [];
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
+  constructor(private productService: ProductService) {}
 
-@Document(collection = "inv_supplier")
-public class Supplier {
-    @Id
-    private String id;
+  ngOnInit(): void {
+    this.loadProducts();
+  }
 
-    @Field(name = "supplier_name")
-    private String supplierName;
+  loadProducts() {
+    this.productService.getAllProducts().subscribe((data) => {
+      this.products = data;
+    });
+  }
 
-    @Field(name = "supplier_phone")
-    private String supplierPhone;
-
-    @Field(name = "supplier_email")
-    private String supplierEmail;
-
-    @Field(name = "supplier_company")
-    private String supplierCompany;
-
-    @Field(name = "supplier_address")
-    private String supplierAddress;
-
-    @Field(name = "status_id")
-    private String statusId;
-
-    @Field(name = "supplier_description")
-    private String supplierDescription;
-
-    @Field(name = "buys")
-    @JsonProperty(access = Access.WRITE_ONLY)
-    private Set<Buy> buys = new HashSet<>();
-
-    @Field(name = "products")
-    @JsonProperty(access = Access.WRITE_ONLY)
-    private Set<Products> products = new HashSet<>();
-
-    @Field(name = "expenses")
-    @JsonProperty(access = Access.WRITE_ONLY)
-    private Set<Expense> expenses = new HashSet<>();
-
-    public Supplier() {}
-
-    public Supplier(
-        String supplierName,
-        String supplierPhone,
-        String supplierEmail,
-        String supplierCompany,
-        String supplierAddress,
-        String statusId,
-        String supplierDescription
-    ) {
-        this.supplierName = supplierName;
-        this.supplierPhone = supplierPhone;
-        this.supplierEmail = supplierEmail;
-        this.supplierCompany = supplierCompany;
-        this.supplierAddress = supplierAddress;
-        this.statusId = statusId;
-        this.supplierDescription = supplierDescription;
-    }
-
-    // getters and setters
-
-    public String getId() {
-        return id;
-    }
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getSupplierName() {
-        return supplierName;
-    }
-    public void setSupplierName(String supplierName) {
-        this.supplierName = supplierName;
-    }
-
-    public String getSupplierPhone() {
-        return supplierPhone;
-    }
-    public void setSupplierPhone(String supplierPhone) {
-        this.supplierPhone = supplierPhone;
-    }
-
-    public String getSupplierEmail() {
-        return supplierEmail;
-    }
-    public void setSupplierEmail(String supplierEmail) {
-        this.supplierEmail = supplierEmail;
-    }
-
-    public String getSupplierCompany() {
-        return supplierCompany;
-    }
-    public void setSupplierCompany(String supplierCompany) {
-        this.supplierCompany = supplierCompany;
-    }
-
-    public String getSupplierAddress() {
-        return supplierAddress;
-    }
-    public void setSupplierAddress(String supplierAddress) {
-        this.supplierAddress = supplierAddress;
-    }
-
-    public String getStatusId() {
-        return statusId;
-    }
-    public void setStatusId(String statusId) {
-        this.statusId = statusId;
-    }
-
-    public String getSupplierDescription() {
-        return supplierDescription;
-    }
-    public void setSupplierDescription(String supplierDescription) {
-        this.supplierDescription = supplierDescription;
-    }
-
-    public Set<Buy> getBuys() {
-        return buys;
-    }
-    public void setBuys(Set<Buy> buys) {
-        this.buys = buys;
-    }
-
-    public Set<Products> getProducts() {
-        return products;
-    }
-    public void setProducts(Set<Products> products) {
-        this.products = products;
-    }
-
-    public Set<Expense> getExpenses() {
-        return expenses;
-    }
-    public void setExpenses(Set<Expense> expenses) {
-        this.expenses = expenses;
-    }
+  // Implement other product management functions here (create, update, delete).
 }
+
+
+
+<!-- src/app/product-management/product-management.component.html -->
+
+<div class="container">
+  <h2>Product Management</h2>
+
+  <!-- Button to add a new product -->
+  <button class="btn btn-primary" (click)="openCreateProductModal()">Add Product</button>
+
+  <!-- Product list table -->
+  <table class="table mt-3">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Product Name</th>
+        <th>Category</th>
+        <th>Supplier</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let product of products">
+        <td>{{ product.id }}</td>
+        <td>{{ product.productName }}</td>
+        <td>{{ product.category.category_name }}</td>
+        <td>{{ product.supplier.supplierName }}</td>
+        <td>
+          <button class="btn btn-sm btn-info" (click)="editProduct(product)">Edit</button>
+          <button class="btn btn-sm btn-danger" (click)="deleteProduct(product.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Create/Edit Product Modal (You can create a separate component for the modal if needed) -->
+  <div class="modal" [ngClass]="{'is-active': isModalOpen}">
+    <div class="modal-background" (click)="closeModal()"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">{{ isEditing ? 'Edit Product' : 'Create Product' }}</p>
+        <button class="delete" aria-label="close" (click)="closeModal()"></button>
+      </header>
+      <section class="modal-card-body">
+        <!-- Form for creating/editing products -->
+        <!-- You can create a separate component for the form if needed -->
+        <form (submit)="isEditing ? updateProduct() : createProduct()">
+          <!-- Input fields for product properties -->
+          <div class="field">
+            <label class="label">Product Name</label>
+            <input class="input" type="text" [(ngModel)]="formData.productName" name="productName" required>
+          </div>
+          <div class="field">
+            <label class="label">Category</label>
+            <select class="select" [(ngModel)]="formData.category" name="category" required>
+              <option *ngFor="let category of categories" [ngValue]="category">{{ category.category_name }}</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="label">Supplier</label>
+            <select class="select" [(ngModel)]="formData.supplier" name="supplier" required>
+              <option *ngFor="let supplier of suppliers" [ngValue]="supplier">{{ supplier.supplierName }}</option>
+            </select>
+          </div>
+          <!-- Add more input fields for other product properties -->
+
+          <!-- Submit button -->
+          <div class="field">
+            <button class="button is-primary" type="submit">{{ isEditing ? 'Update' : 'Create' }}</button>
+          </div>
+        </form>
+      </section>
+    </div>
+  </div>
+</div>
