@@ -1,135 +1,80 @@
-Error: src/app/modules/buy/add-buy/add-buy.component.ts:64:17 - error TS2769: No overload matches this call.      
-  Overload 1 of 2, '(observerOrNext?: Partial<Observer<Object>> | ((value: Object) => void) | undefined): Subscription', gave the following error.
-    Argument of type '(data: Supplier[]) => void' is not assignable to parameter of type 'Partial<Observer<Object>> | ((value: Object) => void) | undefined'.
-      Type '(data: Supplier[]) => void' is not assignable to type '(value: Object) => void'.
-        Types of parameters 'data' and 'value' are incompatible.
-          The 'Object' type is assignable to very few other types. Did you mean to use the 'any' type instead?    
-            Type 'Object' is missing the following properties from type 'Supplier[]': length, pop, push, concat, and 29 more.
-  Overload 2 of 2, '(next?: ((value: Object) => void) | null | undefined, error?: ((error: any) => void) | null | 
-undefined, complete?: (() => void) | null | undefined): Subscription', gave the following error.
-    Argument of type '(data: Supplier[]) => void' is not assignable to parameter of type '(value: Object) => void'.
-      Types of parameters 'data' and 'value' are incompatible.
-        Type 'Object' is not assignable to type 'Supplier[]'.
-          The 'Object' type is assignable to very few other types. Did you mean to use the 'any' type instead?    
+Error: src/app/main/services/HTTPService.ts:17:18 - error TS7006: Parameter 'url' implicitly has an 'any' type.   
 
-64      .subscribe((data:Supplier[])=>{
-                   ~~~~~~~~~~~~~~~~~~~~
+17     async update(url,data) {
+                    ~~~
 
 
+Error: src/app/main/services/HTTPService.ts:17:22 - error TS7006: Parameter 'data' implicitly has an 'any' type.  
 
+17     async update(url,data) {
+                        ~~~~
+
+
+Error: src/app/main/services/HTTPService.ts:27:18 - error TS7006: Parameter 'url' implicitly has an 'any' type.   
+
+27     async create(url,data) {
+                    ~~~
+
+
+Error: src/app/main/services/HTTPService.ts:27:22 - error TS7006: Parameter 'data' implicitly has an 'any' type.  
+
+27     async create(url,data) {
+                        ~~~~
+
+
+Error: src/app/main/services/HTTPService.ts:34:18 - error TS7006: Parameter 'url' implicitly has an 'any' type.   
+
+34     async remove(url) {
+                    ~~~
+
+
+
+
+** Angular Live Development Server is listening on localhost:4200, open your browser on http://localhost:4200/ ** 
 
 
 × Failed to compile.
 
 
-import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { URLLoader } from 'src/app/main/configs/URLLoader';
-import BuyMessage from 'src/app/main/messages/BuyMessage';
-import BuyTestService from 'src/app/main/mocks/BuyTestService';
-import Product from 'src/app/main/models/Product';
-import Supplier from 'src/app/main/models/Supplier';
-import { HTTPService } from 'src/app/main/services/HTTPService';
-import URLS from 'src/app/main/urls/urls';
-import BuyValidation from 'src/app/main/validations/BuyValidation';
 
-@Component({
-  selector: 'app-add-buy',
-  templateUrl: './add-buy.component.html',
-  styleUrls: ['./add-buy.component.css']
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
+@Injectable({
+    providedIn: 'root'
 })
-export class AddBuyComponent extends URLLoader implements OnInit {
 
-  buyForm: FormGroup
-  msg: BuyMessage
-  submitted = false
-  suppliers$:Supplier[]=[]
-  products$:Product[]=[]
+export class HTTPService  {
 
-  get f() { return this.buyForm.controls; }
-
-  constructor(private httpService:HTTPService ,
-    private validation: BuyValidation, 
-    private message: BuyMessage, 
-    private buyTestService: BuyTestService) {
-    super()
-    this.buyForm = this.validation.formGroupInstance
-    this.msg = this.message
-
-  }
-
-  ngOnInit(): void {
-    this.getAllProducts()
-    this.getAllSuppliers()
-  }
-
-  reset() {
-    this.buyForm.reset()
-  }
-
-  add() {
     
-    this.submitted = true;
-    this.buyForm.value.supplier=this.suppliers$.filter(x => 
-    x.id == parseInt(this.buyForm.value.supplier))[0]
-    this.buyForm.value.product_id=this.products$.filter(x => 
-    x.id == parseInt(this.buyForm.value.product_id))[0]
 
-    if (this.validation.checkValidation()) {
-      this.httpService.create(URLS.URL_BASE+URLS.URL_PORT+"/stockbay/buy/create",this.buyForm.value)    
-      super.show('Confirmation', this.msg.confirmations.add, 'success')
-       window.location.reload();
-     
+    headers = { 'content-type': 'application/json' }
+    model = ''
+    constructor(private http: HttpClient) {
     }
-  }
-
-  getAllSuppliers() {
-     this.httpService.getAll(URLS.URL_BASE+URLS.URL_PORT+"/stockbay/supplier/all")
-     .subscribe((data:Supplier[])=>{
-       this.suppliers$=data
-     })
-  }
-
-
-  getAllProducts() {
-     this.httpService.getAll(URLS.URL_BASE+URLS.URL_PORT+"/stockbay/product/all")
-     .subscribe((data:any)=>{
-       this.products$=data as Product[];   
-     })
-  }
-
-}
-
-
-export default class Supplier {
-    id: number
-    supplier_name: string
-    supplier_phone: string
-    supplier_email: string
-    supplier_company: string
-    supplier_address: string
-    status_id: string
-    supplier_description: string
-
-
-    constructor(
-        id: number,
-        supplier_name: string,
-        supplier_phone: string,
-        supplier_email: string,
-        supplier_company: string,
-        supplier_address: string,
-        status_id: string,
-        supplier_description: string
-    ) {
-        this.id = id
-        this.supplier_name = supplier_name
-        this.supplier_phone = supplier_phone
-        this.supplier_email = supplier_email
-        this.supplier_company = supplier_company
-        this.supplier_address = supplier_address
-        this.status_id = status_id
-        this.supplier_description = supplier_description
+    async update(url,data) {
+        await this.http.put(url,data)
     }
+    getAll(url:string) {
+        const header=new HttpHeaders({ Authorization: 'Basic ' + btoa(sessionStorage.getItem('username') + ':' + sessionStorage.getItem('password')) });
+        return this.http.get(url,{headers:header});
+    }
+    get(id: string) {
+        return this.http.get(id);
+    }
+    async create(url,data) {
+
+        const body = JSON.stringify(data);
+        const headers = new HttpHeaders({ 'content-type': 'application/json',Authorization: 'Basic ' + btoa(sessionStorage.getItem('username') + ':' + sessionStorage.getItem('password')) } )
+        await this.http.post(url, body,
+            { 'headers': headers }).toPromise();
+    }
+    async remove(url) {
+         const headers = new HttpHeaders({ 'content-type': 'application/json',Authorization: 'Basic ' + btoa(sessionStorage.getItem('username') + ':' + sessionStorage.getItem('password')) } )
+        await this.http.delete(url, {
+            headers: headers
+        }).toPromise();
+    }
+
 
 }
