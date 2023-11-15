@@ -1,170 +1,88 @@
-package com.Main.models;
+package com.Main.repository;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
+import com.Main.models.Products;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+public interface ProductsRepository extends MongoRepository<Products, String> {
+    // Custom query methods can be added here
+}
 
-@Document(collection = "inv_products")
-public class Products implements Serializable {
+package com.Main.service;
 
-    private static final long serialVersionUID = -8698757387767929675L;
+import com.Main.models.Products;
+import com.Main.repository.ProductsRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-    @Id
-    private String id;
-    private String productName;
+import java.util.List;
 
-    @DBRef
-    private Category category;
+@Service
+public class ProductsService {
 
-    @DBRef
-    private Supplier supplier;
+    @Autowired
+    private ProductsRepository productsRepository;
 
-    private String productUnit;
-    private String productAlertQuantity;
-    private String productSupplierPrice;
-    private String productSellPrice;
-    private String productCode;
-    private String productTax;
-    private String warehouseId;
-    private String productDetails;
-    private String productDetailsForInvoice;
-
-    private Set<Buy> buys = new HashSet<>();
-
-    public Products() {
-
+    public List<Products> findAll() {
+        return productsRepository.findAll();
     }
 
-    public Products(String productName, Category category, Supplier supplier, String productUnit,
-                   String productAlertQuantity, String productSupplierPrice, String productSellPrice, String productCode,
-                   String productTax, String warehouseId, String productDetails, String productDetailsForInvoice) {
-        this.productName = productName;
-        this.category = category;
-        this.supplier = supplier;
-        this.productUnit = productUnit;
-        this.productAlertQuantity = productAlertQuantity;
-        this.productSupplierPrice = productSupplierPrice;
-        this.productSellPrice = productSellPrice;
-        this.productCode = productCode;
-        this.productTax = productTax;
-        this.warehouseId = warehouseId;
-        this.productDetails = productDetails;
-        this.productDetailsForInvoice = productDetailsForInvoice;
+    public Products findById(String id) {
+        return productsRepository.findById(id).orElse(null);
     }
 
-    public String getId() {
-        return id;
+    public Products save(Products product) {
+        return productsRepository.save(product);
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void deleteById(String id) {
+        productsRepository.deleteById(id);
     }
 
-    public String getProductName() {
-        return productName;
+    // Additional business logic methods can be added here
+}
+
+
+package com.Main.controller;
+
+import com.Main.models.Products;
+import com.Main.service.ProductsService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/products")
+public class ProductsController {
+
+    @Autowired
+    private ProductsService productsService;
+
+    @GetMapping
+    public List<Products> getAllProducts() {
+        return productsService.findAll();
     }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
+    @GetMapping("/{id}")
+    public Products getProductById(@PathVariable String id) {
+        return productsService.findById(id);
     }
 
-    public Category getCategory() {
-        return category;
+    @PostMapping
+    public Products createProduct(@RequestBody Products product) {
+        return productsService.save(product);
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
+    @PutMapping("/{id}")
+    public Products updateProduct(@PathVariable String id, @RequestBody Products product) {
+        product.setId(id);
+        return productsService.save(product);
     }
 
-    public Supplier getSupplier() {
-        return supplier;
+    @DeleteMapping("/{id}")
+    public void deleteProduct(@PathVariable String id) {
+        productsService.deleteById(id);
     }
 
-    public void setSupplier(Supplier supplier) {
-        this.supplier = supplier;
-    }
-
-    public String getProductUnit() {
-        return productUnit;
-    }
-
-    public void setProductUnit(String productUnit) {
-        this.productUnit = productUnit;
-    }
-
-    public String getProductAlertQuantity() {
-        return productAlertQuantity;
-    }
-
-    public void setProductAlertQuantity(String productAlertQuantity) {
-        this.productAlertQuantity = productAlertQuantity;
-    }
-
-    public String getProductSupplierPrice() {
-        return productSupplierPrice;
-    }
-
-    public void setProductSupplierPrice(String productSupplierPrice) {
-        this.productSupplierPrice = productSupplierPrice;
-    }
-
-    public String getProductSellPrice() {
-        return productSellPrice;
-    }
-
-    public void setProductSellPrice(String productSellPrice) {
-        this.productSellPrice = productSellPrice;
-    }
-
-    public String getProductCode() {
-        return productCode;
-    }
-
-    public void setProductCode(String productCode) {
-        this.productCode = productCode;
-    }
-
-    public String getProductTax() {
-        return productTax;
-    }
-
-    public void setProductTax(String productTax) {
-        this.productTax = productTax;
-    }
-
-    public String getWarehouseId() {
-        return warehouseId;
-    }
-
-    public void setWarehouseId(String warehouseId) {
-        this.warehouseId = warehouseId;
-    }
-
-    public String getProductDetails() {
-        return productDetails;
-    }
-
-    public void setProductDetails(String productDetails) {
-        this.productDetails = productDetails;
-    }
-
-    public String getProductDetailsForInvoice() {
-        return productDetailsForInvoice;
-    }
-
-    public void setProductDetailsForInvoice(String productDetailsForInvoice) {
-        this.productDetailsForInvoice = productDetailsForInvoice;
-    }
-
-    public Set<Buy> getBuys() {
-        return buys;
-    }
-
-    public void setBuys(Set<Buy> buys) {
-        this.buys = buys;
-    }
+    // Additional RESTful endpoints can be added here
 }
