@@ -1,68 +1,45 @@
 package com.youtube.jwt.util;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+package com.Main.Controllers;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
+import com.Main.Services.UserService;
+import com.Main.models.User;
 
-import com.youtube.jwt.repository.JwtTokenRepository; // Import your MongoDB repository for JWT tokens
+import javax.annotation.PostConstruct;
 
-@Component
-public class JwtUtil {
-
-    private static final String SECRET_KEY = "learn_programming_yourself";
-
-    private static final int TOKEN_VALIDITY = 3600 * 5;
+@RestController
+public class UserController {
 
     @Autowired
-    private JwtTokenRepository jwtTokenRepository; // Inject your MongoDB repository here
+    private UserService userService;
 
-    public String getUsernameFromToken(String token) {
-        return getClaimFromToken(token, Claims::getSubject);
+    @PostConstruct
+    public void initRoleAndUser() {
+        userService.initRoleAndUser();
     }
 
-    public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = getAllClaimsFromToken(token);
-        return claimsResolver.apply(claims);
+    @PostMapping({"/registerNewUser"})
+    public User registerNewUser(@RequestBody User user) {
+        return userService.registerNewUser(user);
     }
 
-    private Claims getAllClaimsFromToken(String token) {
-        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+    @GetMapping({"/forAdmin"})
+    @PreAuthorize("hasRole('Admin')")
+    public String forAdmin(){
+        return "This URL is only accessible to the admin";
     }
 
-    public Boolean validateToken(String token, UserDetails userDetails) {
-        final String username = getUsernameFromToken(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
-    }
-
-    private Boolean isTokenExpired(String token) {
-        final Date expiration = getExpirationDateFromToken(token);
-        return expiration.before(new Date());
-    }
-
-    public Date getExpirationDateFromToken(String token) {
-        return getClaimFromToken(token, Claims::getExpiration);
-    }
-
-    public String generateToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>();
-        String token = Jwts.builder()
-                .setClaims(claims)
-                .setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + TOKEN_VALIDITY * 1000))
-                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
-                .compact();
-        
-        // Save the generated token to MongoDB
-        jwtTokenRepository.saveToken(userDetails.getUsername(), token);
-        
-        return token;
+    @GetMapping({"/forUser"})
+    @PreAuthorize("hasRole('User')")
+    public String forUser(){
+        return "This URL is only accessible to the user";
     }
 }
