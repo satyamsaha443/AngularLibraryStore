@@ -1,160 +1,151 @@
-package com.youtube.jwt.entity;
+package com.youtube.jwt.service;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import com.youtube.jwt.entity.Role;
+import com.youtube.jwt.entity.User;
+import com.youtube.jwt.repository.UserRepository; // Import your Spring Data MongoDB repository
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
-@Document
-public class Role {
-
-    @Id
-    private String roleName;
-    private String roleDescription;
-
-    // Getters and setters
-    public String getRoleName() {
-        return roleName;
-    }
-
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
-    }
-
-    public String getRoleDescription() {
-        return roleDescription;
-    }
-
-    public void setRoleDescription(String roleDescription) {
-        this.roleDescription = roleDescription;
-    }
-}
-
-
-package com.youtube.jwt.entity;
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
+import java.util.HashSet;
 import java.util.Set;
 
-@Document
-public class User {
-
-    @Id
-    private String userName;
-    private String userFirstName;
-    private String userLastName;
-    private String userPassword;
-    @DBRef
-    private Set<Role> role;
-
-    // Getters and setters
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getUserFirstName() {
-        return userFirstName;
-    }
-
-    public void setUserFirstName(String userFirstName) {
-        this.userFirstName = userFirstName;
-    }
-
-    public String getUserLastName() {
-        return userLastName;
-    }
-
-    public void setUserLastName(String userLastName) {
-        this.userLastName = userLastName;
-    }
-
-    public String getUserPassword() {
-        return userPassword;
-    }
-
-    public void setUserPassword(String userPassword) {
-        this.userPassword = userPassword;
-    }
-
-    public Set<Role> getRole() {
-        return role;
-    }
-
-    public void setRole(Set<Role> role) {
-        this.role = role;
-    }
-}
-
-
-package com.youtube.jwt.util;
-
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
-
-import com.youtube.jwt.repository.JwtTokenRepository; // Import your MongoDB repository for JWT tokens
-
-@Component
-public class JwtUtil {
-
-    private static final String SECRET_KEY = "learn_programming_yourself";
-
-    private static final int TOKEN_VALIDITY = 3600 * 5;
+@Service
+public class UserService {
 
     @Autowired
-    private JwtTokenRepository jwtTokenRepository; // Inject your MongoDB repository here
+    private UserRepository userRepository; // Inject your Spring Data MongoDB repository
 
-    public String getUsernameFromToken(String token) {
-        return getClaimFromToken(token, Claims::getSubject);
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    public void initRoleAndUser() {
+
+        Role adminRole = new Role();
+        adminRole.setRoleName("Admin");
+        adminRole.setRoleDescription("Admin role");
+
+        Role userRole = new Role();
+        userRole.setRoleName("User");
+        userRole.setRoleDescription("Default role for newly created record");
+
+        // Save roles to MongoDB
+        // You can create a separate repository for roles if needed
+        // roleRepository.save(adminRole);
+        // roleRepository.save(userRole);
+
+        User adminUser = new User();
+        adminUser.setUserName("admin123");
+        adminUser.setUserPassword(getEncodedPassword("admin@pass"));
+        adminUser.setUserFirstName("admin");
+        adminUser.setUserLastName("admin");
+        Set<Role> adminRoles = new HashSet<>();
+        adminRoles.add(adminRole);
+        adminUser.setRole(adminRoles);
+
+        // Save adminUser to MongoDB
+        userRepository.save(adminUser);
     }
 
-    public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = getAllClaimsFromToken(token);
-        return claimsResolver.apply(claims);
+    public User registerNewUser(User user) {
+        Role role = new Role();
+        role.setRoleName("User");
+        role.setRoleDescription("Default role for newly created record");
+
+        Set<Role> userRoles = new HashSet<>();
+        userRoles.add(role);
+        user.setRole(userRoles);
+        user.setUserPassword(getEncodedPassword(user.getUserPassword()));
+
+        // Save the user to MongoDB
+        return userRepository.save(user);
     }
 
-    private Claims getAllClaimsFromToken(String token) {
-        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
-    }
-
-    public Boolean validateToken(String token, UserDetails userDetails) {
-        final String username = getUsernameFromToken(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
-    }
-
-    private Boolean isTokenExpired(String token) {
-        final Date expiration = getExpirationDateFromToken(token);
-        return expiration.before(new Date());
-    }
-
-    public Date getExpirationDateFromToken(String token) {
-        return getClaimFromToken(token, Claims::getExpiration);
-    }
-
-    public String generateToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>();
-        String token = Jwts.builder()
-                .setClaims(claims)
-                .setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + TOKEN_VALIDITY * 1000))
-                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
-                .compact();
-        
-        // Save the generated token to MongoDB
-        jwtTokenRepository.saveToken(userDetails.getUsername(), token);
-        
-        return token;
+    public String getEncodedPassword(String password) {
+        return passwordEncoder.encode(password);
     }
 }
+
+
+package com.youtube.jwt.service;
+
+import com.youtube.jwt.entity.Role;
+import com.youtube.jwt.repository.RoleRepository; // Import your Spring Data MongoDB repository
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class RoleService {
+
+    @Autowired
+    private RoleRepository roleRepository; // Inject your Spring Data MongoDB repository
+
+    public Role createNewRole(Role role) {
+        // Save the role to MongoDB
+        return roleRepository.save(role);
+    }
+}
+
+
+package com.youtube.jwt.service;
+
+import com.youtube.jwt.entity.JwtRequest;
+import com.youtube.jwt.entity.JwtResponse;
+import com.youtube.jwt.entity.User;
+import com.youtube.jwt.repository.UserRepository; // Import your Spring Data MongoDB repository
+import com.youtube.jwt.util.JwtUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+@Service
+public class JwtService implements UserDetailsService {
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @Autowired
+    private UserRepository userRepository; // Inject your Spring Data MongoDB repository
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    public JwtResponse createJwtToken(JwtRequest jwtRequest) throws Exception {
+        String userName = jwtRequest.getUserName();
+        String userPassword = jwtRequest.getUserPassword();
+        authenticate(userName, userPassword);
+
+        UserDetails userDetails = loadUserByUsername(userName);
+        String newGeneratedToken = jwtUtil.generateToken(userDetails);
+
+        return new JwtResponse(userDetails, newGeneratedToken);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUserName(username);
+
+        if (user != null) {
+            return user; // Your User class should implement UserDetails
+        } else {
+            throw new UsernameNotFoundException("User not found with username: " + username);
+        }
+    }
+
+    private void authenticate(String userName, String userPassword) throws Exception {
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userName, userPassword));
+        } catch (DisabledException e) {
+            throw new Exception("USER_DISABLED", e);
+        } catch (BadCredentialsException e) {
+            throw new Exception("INVALID_CREDENTIALS", e);
+        }
+    }
+}
+
