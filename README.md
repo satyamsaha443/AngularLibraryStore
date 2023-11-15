@@ -1,174 +1,160 @@
-package com.Main.models;
-
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+package com.youtube.jwt.entity;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
+@Document
+public class Role {
 
-@Document(collection = "inv_products")
-public class Products implements Serializable {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -8698757387767929675L;
     @Id
-    String id;
-    String product_name;
+    private String roleName;
+    private String roleDescription;
 
-    Category category_id;
-
-    Supplier supplier_id;
-
-    String product_unit;
-    String product_alertquantity;
-    String product_supplierPrice;
-    String product_sellPrice;
-    String product_code;
-    String product_tax;
-    String warehouse_id;
-    String product_details;
-    String product_detailsforinvoice;
-
-    @JsonProperty(access = Access.WRITE_ONLY)
-    private Set<Buy> buys = new HashSet<Buy>();
-
-    public Products() {
-        // TODO Auto-generated constructor stub
+    // Getters and setters
+    public String getRoleName() {
+        return roleName;
     }
 
-    public Products(String product_name, Category category_id, Supplier supplier_id, String product_unit,
-            String product_alertquantity, String product_supplierPrice, String product_sellPrice, String product_code,
-            String product_tax, String warehouse_id, String product_details, String product_detailsforinvoice) {
-        super();
-        this.product_name = product_name;
-        this.category_id = category_id;
-        this.supplier_id = supplier_id;
-        this.product_unit = product_unit;
-        this.product_alertquantity = product_alertquantity;
-        this.product_supplierPrice = product_supplierPrice;
-        this.product_sellPrice = product_sellPrice;
-        this.product_code = product_code;
-        this.product_tax = product_tax;
-        this.warehouse_id = warehouse_id;
-        this.product_details = product_details;
-        this.product_detailsforinvoice = product_detailsforinvoice;
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
     }
 
-    public String getId() {
-        return id;
+    public String getRoleDescription() {
+        return roleDescription;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setRoleDescription(String roleDescription) {
+        this.roleDescription = roleDescription;
+    }
+}
+
+
+package com.youtube.jwt.entity;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+import java.util.Set;
+
+@Document
+public class User {
+
+    @Id
+    private String userName;
+    private String userFirstName;
+    private String userLastName;
+    private String userPassword;
+    @DBRef
+    private Set<Role> role;
+
+    // Getters and setters
+    public String getUserName() {
+        return userName;
     }
 
-    public String getProduct_name() {
-        return product_name;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public void setProduct_name(String product_name) {
-        this.product_name = product_name;
+    public String getUserFirstName() {
+        return userFirstName;
     }
 
-    public Category getCategory_id() {
-        return category_id;
+    public void setUserFirstName(String userFirstName) {
+        this.userFirstName = userFirstName;
     }
 
-    public void setCategory_id(Category category_id) {
-        this.category_id = category_id;
+    public String getUserLastName() {
+        return userLastName;
     }
 
-    public Supplier getSupplier_id() {
-        return supplier_id;
+    public void setUserLastName(String userLastName) {
+        this.userLastName = userLastName;
     }
 
-    public void setSupplier_id(Supplier supplier_id) {
-        this.supplier_id = supplier_id;
+    public String getUserPassword() {
+        return userPassword;
     }
 
-    public String getProduct_unit() {
-        return product_unit;
+    public void setUserPassword(String userPassword) {
+        this.userPassword = userPassword;
     }
 
-    public void setProduct_unit(String product_unit) {
-        this.product_unit = product_unit;
+    public Set<Role> getRole() {
+        return role;
     }
 
-    public String getProduct_alertquantity() {
-        return product_alertquantity;
+    public void setRole(Set<Role> role) {
+        this.role = role;
+    }
+}
+
+
+package com.youtube.jwt.util;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+
+import com.youtube.jwt.repository.JwtTokenRepository; // Import your MongoDB repository for JWT tokens
+
+@Component
+public class JwtUtil {
+
+    private static final String SECRET_KEY = "learn_programming_yourself";
+
+    private static final int TOKEN_VALIDITY = 3600 * 5;
+
+    @Autowired
+    private JwtTokenRepository jwtTokenRepository; // Inject your MongoDB repository here
+
+    public String getUsernameFromToken(String token) {
+        return getClaimFromToken(token, Claims::getSubject);
     }
 
-    public void setProduct_alertquantity(String product_alertquantity) {
-        this.product_alertquantity = product_alertquantity;
+    public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = getAllClaimsFromToken(token);
+        return claimsResolver.apply(claims);
     }
 
-    public String getProduct_supplierPrice() {
-        return product_supplierPrice;
+    private Claims getAllClaimsFromToken(String token) {
+        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
     }
 
-    public void setProduct_supplierPrice(String product_supplierPrice) {
-        this.product_supplierPrice = product_supplierPrice;
+    public Boolean validateToken(String token, UserDetails userDetails) {
+        final String username = getUsernameFromToken(token);
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    public String getProduct_sellPrice() {
-        return product_sellPrice;
+    private Boolean isTokenExpired(String token) {
+        final Date expiration = getExpirationDateFromToken(token);
+        return expiration.before(new Date());
     }
 
-    public void setProduct_sellPrice(String product_sellPrice) {
-        this.product_sellPrice = product_sellPrice;
+    public Date getExpirationDateFromToken(String token) {
+        return getClaimFromToken(token, Claims::getExpiration);
     }
 
-    public String getProduct_code() {
-        return product_code;
+    public String generateToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        String token = Jwts.builder()
+                .setClaims(claims)
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + TOKEN_VALIDITY * 1000))
+                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
+                .compact();
+        
+        // Save the generated token to MongoDB
+        jwtTokenRepository.saveToken(userDetails.getUsername(), token);
+        
+        return token;
     }
-
-    public void setProduct_code(String product_code) {
-        this.product_code = product_code;
-    }
-
-    public String getProduct_tax() {
-        return product_tax;
-    }
-
-    public void setProduct_tax(String product_tax) {
-        this.product_tax = product_tax;
-    }
-
-    public String getWarehouse_id() {
-        return warehouse_id;
-    }
-
-    public void setWarehouse_id(String warehouse_id) {
-        this.warehouse_id = warehouse_id;
-    }
-
-    public String getProduct_details() {
-        return product_details;
-    }
-
-    public void setProduct_details(String product_details) {
-        this.product_details = product_details;
-    }
-
-    public String getProduct_detailsforinvoice() {
-        return product_detailsforinvoice;
-    }
-
-    public void setProduct_detailsforinvoice(String product_detailsforinvoice) {
-        this.product_detailsforinvoice = product_detailsforinvoice;
-    }
-
-    public Set<Buy> getBuys() {
-        return buys;
-    }
-
-    public void setBuys(Set<Buy> buys) {
-        this.buys = buys;
-    }
-
 }
