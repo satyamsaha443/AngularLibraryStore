@@ -1,32 +1,37 @@
-<div class="container-fluid">
-    <!-- ... other elements ... -->
-    <zxing-scanner [formats]="['EAN_13', 'CODE_128', 'QR_CODE']" (scanSuccess)="handleBarcode($event)"></zxing-scanner>
-    <!-- ... other elements ... -->
-</div>
 
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+Error: src/app/modules/barcode-scan/barcode-scan.component.html:25:32 - error TS2322: Type 'string' is not assignable to type 'BarcodeFormat'.
 
-@Component({
-  // ... selector, templateUrl, styleUrls ...
-})
-export class BarcodeScanComponent implements OnInit {
-    sku: string | undefined;
+25     <zxing-scanner [formats]="['EAN_13', 'CODE_128', 'QR_CODE']" (scanSuccess)="handleBarcode($event)"></zxing-scanner>
+                                  ~~~~~~~~
 
-    constructor(private router: Router) { }
+  src/app/modules/barcode-scan/barcode-scan.component.ts:8:16
+    8   templateUrl: './barcode-scan.component.html',
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component BarcodeScanComponent.
 
-    ngOnInit() { }
 
-    handleBarcode(result: string) {
-        this.sku = result;
-        this.navToProduct();
-    }
+Error: src/app/modules/barcode-scan/barcode-scan.component.html:25:42 - error TS2322: Type 'string' is not assignable to type 'BarcodeFormat'.
 
-    navToInventory(){
-        this.router.navigate(['/dashboard'])
-    }
+25     <zxing-scanner [formats]="['EAN_13', 'CODE_128', 'QR_CODE']" (scanSuccess)="handleBarcode($event)"></zxing-scanner>
+                                            ~~~~~~~~~~
 
-    navToProduct(){
-        this.router.navigate(['/product/' + this.sku])
-    }
-}
+  src/app/modules/barcode-scan/barcode-scan.component.ts:8:16
+    8   templateUrl: './barcode-scan.component.html',
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component BarcodeScanComponent.
+
+
+Error: src/app/modules/barcode-scan/barcode-scan.component.html:25:54 - error TS2322: Type 'string' is not assignable to type 'BarcodeFormat'.
+
+25     <zxing-scanner [formats]="['EAN_13', 'CODE_128', 'QR_CODE']" (scanSuccess)="handleBarcode($event)"></zxing-scanner>
+                                                        ~~~~~~~~~
+
+  src/app/modules/barcode-scan/barcode-scan.component.ts:8:16
+    8   templateUrl: './barcode-scan.component.html',
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component BarcodeScanComponent.
+
+
+
+
+× Failed to compile.
