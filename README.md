@@ -1,53 +1,32 @@
+<div class="container-fluid">
+    <!-- ... other elements ... -->
+    <zxing-scanner [formats]="['EAN_13', 'CODE_128', 'QR_CODE']" (scanSuccess)="handleBarcode($event)"></zxing-scanner>
+    <!-- ... other elements ... -->
+</div>
+
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import Quagga from 'quagga'; // Importing QuaggaJS
 
 @Component({
-  selector: 'app-barcode-scan',
-  templateUrl: './barcode-scan.component.html',
-  styleUrls: ['./barcode-scan.component.css']
+  // ... selector, templateUrl, styleUrls ...
 })
 export class BarcodeScanComponent implements OnInit {
     sku: string | undefined;
 
     constructor(private router: Router) { }
 
-    ngOnInit() {
+    ngOnInit() { }
+
+    handleBarcode(result: string) {
+        this.sku = result;
+        this.navToProduct();
     }
 
     navToInventory(){
-      this.router.navigate(['/dashboard'])
+        this.router.navigate(['/dashboard'])
     }
 
     navToProduct(){
-      this.router.navigate(['/product/' + this.sku])
-    }
-
-    scanBarcode() {
-      Quagga.init({
-        inputStream: {
-          name: "Live",
-          type: "LiveStream",
-          target: document.querySelector('#camera') // Pass the camera viewfinder element here
-        },
-        decoder: {
-          readers: ["code_128_reader"] // Specify the barcode format
-        }
-      }, (err) => {
-        if (err) {
-          console.error(err);
-          return;
-        }
-        Quagga.start();
-      });
-
-      Quagga.onDetected((data) => {
-        this.sku = data.codeResult.code;
-        this.navToProduct(); // Navigate to product with the scanned SKU
-        Quagga.stop(); // Stop the scanner
-      });
+        this.router.navigate(['/product/' + this.sku])
     }
 }
-
-
-<div id="camera" style="width: 100%; height: 300px;"></div>
