@@ -1,45 +1,60 @@
-package com.youtube.jwt.util;
+<div class="row ml-1 mr-1 mt-5" style="text-align: center;">
+    <div id="home">
+      <a routerLink="/product"><i class="fa fa-3x fa-arrow-left"></i></a>
+    </div>
+    <div id="profile">
+      <h1>SCAN</h1>
+    </div>
+    <div id="check">
+    </div>
+  </div>
+  
+  <div class="container-fluid">
+    <form class="border-dark">
+      <div class="form-group">
+        <label style="text-align: center">SKU</label>
+        <input style="align-content: center" type="text" class="form-control" [(ngModel)]="sku"
+               [ngModelOptions]="{standalone: true}"/>
+      </div>
+    </form>
+  
+    <button type="button" class="btn btn-primary btn-lg btn-block" (click)="navToProduct()">SCAN</button>
+    <button type="button" class="btn btn-danger btn-lg btn-block" (click)="navToInventory()">CANCEL</button>
+  
+  </div>
 
-package com.Main.Controllers;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+  import { Component, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 
-import com.Main.Services.UserService;
-import com.Main.models.User;
 
-import javax.annotation.PostConstruct;
+@Component({
+  selector: 'app-barcode-scan',
+  templateUrl: './barcode-scan.component.html',
+  styleUrls: ['./barcode-scan.component.css']
+})
+export class BarcodeScanComponent implements OnInit {
+    sku: string | undefined;
 
-@RestController
-public class UserController {
+ 
 
-    @Autowired
-    private UserService userService;
-
-    @PostConstruct
-    public void initRoleAndUser() {
-        userService.initRoleAndUser();
+    constructor(private router: Router) { }
+  
+   
+  
+    ngOnInit() {
+  
+    }
+  
+    navToInventory(){
+      this.router.navigate(['/dashboard'])
+    }
+  
+    navToProduct(){
+      this.router.navigate(['/product/' + this.sku])
     }
 
-    @PostMapping({"/registerNewUser"})
-    public User registerNewUser(@RequestBody User user) {
-        return userService.registerNewUser(user);
-    }
-
-    @GetMapping({"/forAdmin"})
-    @PreAuthorize("hasRole('Admin')")
-    public String forAdmin(){
-        return "This URL is only accessible to the admin";
-    }
-
-    @GetMapping({"/forUser"})
-    @PreAuthorize("hasRole('User')")
-    public String forUser(){
-        return "This URL is only accessible to the user";
-    }
+  
+  
 }
