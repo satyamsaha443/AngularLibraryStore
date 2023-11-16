@@ -1,116 +1,76 @@
-<div class="container mt--8 pb-5">
-    <div class="row justify-content-center">
-      <div class="col-lg-5 col-md-7">
-        <div class="card bg-secondary border-0 mb-0">
-          <div class="card-header bg-transparent pb-5">
-            <div class="text-muted text-center mt-2 mb-3">
-              <small>Sign in with</small>
-            </div>
-            <br /><br />
-            <div class="btn-wrapper text-center">
-              <img
-                src="assets/img/logo.png"
-                style="max-height: 80px"
-                class="navbar-brand-img"
-                alt="..."
-              />
-            </div>
-          </div>
-          <div class="card-body px-lg-5 py-lg-5">
-            <form #loginForm="ngForm" (ngSubmit)="doLogin(loginForm)">
-              <div class="text-center text-muted mb-4"></div>
-              <div class="form-group mb-3">
-                <div
-                  class="input-group input-group-merge input-group-alternative"
-                >
-                  <div class="input-group-prepend">
-                    <span class="input-group-text"
-                      ><i class="ni ni-email-83"></i
-                    ></span>
-                  </div>
-                  <input
-                    name="username"
-                    ngModel="{{ username }}"
-                    class="form-control"
-                    placeholder="Email"
-                    type="text"
-                    value="admin"
-                  />
-                </div>
-              </div>
-              <div class="form-group">
-                <div
-                  class="input-group input-group-merge input-group-alternative"
-                >
-                  <div class="input-group-prepend">
-                    <span class="input-group-text"
-                      ><i class="ni ni-lock-circle-open"></i
-                    ></span>
-                  </div>
-                  <input
-                    name="password"
-                    ngModel="{{ password }}"
-                    class="form-control"
-                    placeholder="Password"
-                    type="password"
-                    value="admin"
-                  />
-                </div>
-              </div>
-              <div class="text-center">
-                <button type="submit" class="btn btn-primary my-4">Login</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 
-
-  import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { Router } from '@angular/router';
-import { URLLoader } from 'src/app/main/configs/URLLoader';
-import { AuthenticationService } from 'src/app/main/security/authentication.service';
-
-@Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+@Injectable({
+  providedIn: 'root'
 })
-export class LoginComponent extends URLLoader  implements OnInit {
+export class AuthenticationService {
 
-  username = 'admin'
-  password = 'admin'
-  invalidLogin = false
-  errorMessage=''
-
-  constructor(private router: Router,
-    private loginservice: AuthenticationService) {
-      super()
-     }
-  
-  ngOnInit() {
-    
+  constructor(private httpClient:HttpClient) 
+  { 
   }
 
-  doLogin(loginform:NgForm) {
-    (this.loginservice.authenticate(loginform.value.username, loginform.value.password).subscribe(
-      data => {
-        super.show('Inventoryy', 'Welcome !', 'success')
-        super.loadScripts()
-        this.router.navigate(['/dashboard']) 
-        this.invalidLogin = false
-      },
-      error => {
-        this.invalidLogin = true
-        this.errorMessage=error.message
-        super.show('Inventoryy', this.errorMessage, 'error')
+  authenticate(username: string, password: string) {
+    console.log(username)
+   const headers = new HttpHeaders({ Authorization: 'Basic ' + btoa(username + ':' + password) });
+   return this.httpClient.get('http://localhost:8080/api/suppliers/all',{headers}).pipe((
+      userData => {
+       sessionStorage.setItem('username',username);
+       sessionStorage.setItem('password',password)
+       console.log(userData)
+       return userData;
       }
     )
-    );
 
+   );
+ }
+
+
+isUserLoggedIn() {
+ let user = sessionStorage.getItem('username')
+ console.log(user)
+  if(user == null)
+  {
+    return false
+  }else
+  {
+     return true
   }
+}
 
+logOut() {
+ sessionStorage.removeItem('username')
+ sessionStorage.removeItem('password')
+}
+
+
+apiurl='http://localhost:3000/user';
+
+RegisterUser(inputdata:any){
+  return this.httpClient.post(this.apiurl,inputdata)
+}
+GetUserbyCode(id:any){
+  return this.httpClient.get(this.apiurl+'/'+id);
+}
+Getall(){
+  return this.httpClient.get(this.apiurl);
+}
+updateuser(id:any,inputdata:any){
+  return this.httpClient.put(this.apiurl+'/'+id,inputdata);
+}
+getuserrole(){
+  return this.httpClient.get('http://localhost:3000/role');
+}
+isloggedin(){
+  return sessionStorage.getItem('username')!=null;
+}
+getrole(){
+  return sessionStorage.getItem('role')!=null?sessionStorage.getItem('role')?.toString():'';
+}
+GetAllCustomer(){
+  return this.httpClient.get('http://localhost:3000/customer');
+}
+Getaccessbyrole(role:any,menu:any){
+  return this.httpClient.get('http://localhost:3000/roleaccess?role='+role+'&menu='+menu)
+}
 }
