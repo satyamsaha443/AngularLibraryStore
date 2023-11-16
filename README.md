@@ -1,47 +1,38 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@Injectable({
-  providedIn: 'root'
-})
-export class AuthenticationService {
+@RestController
+@RequestMapping("/api/auth")
+public class AuthenticationController {
 
-  constructor(private httpClient:HttpClient) 
-  { 
-  }
+    @Autowired
+    private AuthenticationService authenticationService;
 
-  authenticate(username: string, password: string) {
-    console.log(username)
-   const headers = new HttpHeaders({ Authorization: 'Basic ' + btoa(username + ':' + password) });
-   return this.httpClient.get('http://localhost:8080/api/suppliers/all',{headers}).pipe((
-      userData => {
-       sessionStorage.setItem('username',username);
-       sessionStorage.setItem('password',password)
-       console.log(userData)
-       return userData;
-      }
-    )
-
-   );
- }
-
-
-isUserLoggedIn() {
- let user = sessionStorage.getItem('username')
- console.log(user)
-  if(user == null)
-  {
-    return false
-  }else
-  {
-     return true
-  }
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody User user) {
+        User authenticatedUser = authenticationService.authenticate(user.getUsername(), user.getPassword(), user.getRole());
+        if (authenticatedUser != null) {
+            return ResponseEntity.ok().body("User authenticated");
+        } else {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+    }
 }
 
-logOut() {
- sessionStorage.removeItem('username')
- sessionStorage.removeItem('password')
-}
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.context.annotation.Configuration;
 
+@Configuration
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+            .csrf().disable()
+            .authorizeRequests()
+            .antMatchers("/api/auth/**").permitAll()
+            .anyRequest().authenticated();
+    }
 }
