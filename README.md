@@ -44,33 +44,4 @@ logOut() {
 }
 
 
-apiurl='http://localhost:3000/user';
-
-RegisterUser(inputdata:any){
-  return this.httpClient.post(this.apiurl,inputdata)
-}
-GetUserbyCode(id:any){
-  return this.httpClient.get(this.apiurl+'/'+id);
-}
-Getall(){
-  return this.httpClient.get(this.apiurl);
-}
-updateuser(id:any,inputdata:any){
-  return this.httpClient.put(this.apiurl+'/'+id,inputdata);
-}
-getuserrole(){
-  return this.httpClient.get('http://localhost:3000/role');
-}
-isloggedin(){
-  return sessionStorage.getItem('username')!=null;
-}
-getrole(){
-  return sessionStorage.getItem('role')!=null?sessionStorage.getItem('role')?.toString():'';
-}
-GetAllCustomer(){
-  return this.httpClient.get('http://localhost:3000/customer');
-}
-Getaccessbyrole(role:any,menu:any){
-  return this.httpClient.get('http://localhost:3000/roleaccess?role='+role+'&menu='+menu)
-}
 }
