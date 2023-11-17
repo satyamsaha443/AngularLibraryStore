@@ -204,6 +204,201 @@ public class Client {
 
 
 
+package dev.delta.stockbay.controllers;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import dev.delta.stockbay.entities.Sell;
+import dev.delta.stockbay.services.SellService;
+
+@RestController
+@RequestMapping("/stockbay/sell")
+@CrossOrigin
+public class SellController {
+	@Autowired
+	SellService sellService;
+
+	@PostMapping("/create")
+	public ResponseEntity<?> addPTToBoard(@Validated @RequestBody Sell projectSell, BindingResult result) {
+
+		if (result.hasErrors()) {
+			Map<String, String> errorMap = new HashMap<String, String>();
+
+			for (FieldError error : result.getFieldErrors()) {
+				errorMap.put(error.getField(), error.getDefaultMessage());
+			}
+			return new ResponseEntity<Map<String, String>>(errorMap, HttpStatus.BAD_REQUEST);
+		}
+
+		Sell newPT = sellService.saveOrUpdate(projectSell);
+
+		return new ResponseEntity<Sell>(newPT, HttpStatus.CREATED);
+	}
+
+	@GetMapping("/all")
+	public Iterable<Sell> getAllSells() {
+		return sellService.findAll();
+	}
+
+	@GetMapping("/{id}")
+	public ResponseEntity<Sell> getSellById(@PathVariable Long id) {
+		Sell sell = sellService.findById(id);
+		return new ResponseEntity<Sell>(sell, HttpStatus.OK);
+	}
+
+	@DeleteMapping("/delete/{id}")
+	public ResponseEntity<String> deleteSell(@PathVariable Long id) {
+		sellService.delete(id);
+		return new ResponseEntity<String>("sell was deleted", HttpStatus.OK);
+	}
+}
+
+package dev.delta.stockbay.controllers;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import dev.delta.stockbay.entities.Client;
+import dev.delta.stockbay.services.ClientService;
+
+@RestController
+@RequestMapping("/stockbay/client")
+@CrossOrigin
+public class ClientController {
+	@Autowired
+	ClientService clientService;
+
+	@PostMapping("/create")
+	public ResponseEntity<?> addPTToBoard(@Validated @RequestBody Client projectClient, BindingResult result) {
+
+		if (result.hasErrors()) {
+			Map<String, String> errorMap = new HashMap<String, String>();
+
+			for (FieldError error : result.getFieldErrors()) {
+				errorMap.put(error.getField(), error.getDefaultMessage());
+			}
+			return new ResponseEntity<Map<String, String>>(errorMap, HttpStatus.BAD_REQUEST);
+		}
+
+		Client newPT = clientService.saveOrUpdate(projectClient);
+
+		return new ResponseEntity<Client>(newPT, HttpStatus.CREATED);
+	}
+
+	@GetMapping("/all")
+	public Iterable<Client> getAllClients() {
+		return clientService.findAll();
+	}
+
+	@GetMapping("/{id}")
+	public ResponseEntity<Client> getClientById(@PathVariable Long id) {
+		Client client = clientService.findById(id);
+		return new ResponseEntity<Client>(client, HttpStatus.OK);
+	}
+
+	@DeleteMapping("/delete/{id}")
+	public ResponseEntity<String> deleteClient(@PathVariable Long id) {
+		clientService.delete(id);
+		return new ResponseEntity<String>("client was deleted", HttpStatus.OK);
+	}
+}
+
+package dev.delta.stockbay.services;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import dev.delta.stockbay.entities.Sell;
+import dev.delta.stockbay.repositories.SellRepository;
+
+@Service
+public class SellService {
+	@Autowired
+	SellRepository sellRepository;
+
+	public Sell saveOrUpdate(Sell sell) {
+
+		return sellRepository.save(sell);
+	}
+
+	public Iterable<Sell> findAll() {
+		return sellRepository.findAll();
+	}
+
+	public Sell findById(Long id) {
+		return sellRepository.getById(id);
+	}
+
+	public void delete(Long id) {
+		Sell sell = findById(id);
+		sellRepository.delete(sell);
+	}
+}
+
+
+package dev.delta.stockbay.services;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import dev.delta.stockbay.entities.Client;
+import dev.delta.stockbay.repositories.ClientRepository;
+
+@Service
+public class ClientService {
+	@Autowired
+	ClientRepository clientRepository;
+
+	public Client saveOrUpdate(Client client) {
+
+		return clientRepository.save(client);
+	}
+
+	public Iterable<Client> findAll() {
+		return clientRepository.findAll();
+	}
+
+	public Client findById(Long id) {
+		return clientRepository.getById(id);
+	}
+
+	public void delete(Long id) {
+		Client client = findById(id);
+		clientRepository.delete(client);
+	}
+}
+
 export default class Sell {
     id: number
     customer_id: string
