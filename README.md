@@ -1,72 +1,111 @@
-package com.Main.Security;
+package com.Main.models;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.cors.CorsConfigurationSource;
+import java.io.Serializable;
 
-import java.util.Arrays;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Configuration
-@EnableWebSecurity
-public class WebSecurityConfig {
+//import io.swagger.annotations.ApiModelProperty;
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .cors().and() // Enable CORS and integrate with HttpSecurity
-            .csrf(csrf -> csrf.disable())
-            .authorizeRequests(auth -> auth
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .anyRequest().authenticated()
-            )
-            .httpBasic();
-        return http.build();
+@Document(collection = "inv_revenue")
+public class Revenue implements Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 5934032785346540901L;
+    
+    @Id
+//    @ApiModelProperty(notes = "The database generated revenue ID")
+    private String id;
+    
+   // @ApiModelProperty(notes = "The date of the payment")
+    private String income_paymentDate;
+
+    @DBRef
+  //  @ApiModelProperty(notes = "The customer who made the payment")
+    private Client customer;
+
+  //  @ApiModelProperty(notes = "The payment type")
+    private String income_paymentType;
+    
+  //  @ApiModelProperty(notes = "The payment account")
+    private String income_paymentAccount;
+    
+  //  @ApiModelProperty(notes = "The amount of the payment")
+    private String income_amount;
+    
+   // @ApiModelProperty(notes = "Details about the payment")
+    private String income_details;
+
+    public Revenue() {
+        // TODO Auto-generated constructor stub
     }
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200")); // or your frontend's URL
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("X-Requested-With", "Origin", "Content-Type", "Accept", "Authorization"));
-        configuration.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
+    public Revenue(String income_paymentDate, Client customer, String income_paymentType,
+                   String income_paymentAccount, String income_amount, String income_details) {
+        super();
+        this.income_paymentDate = income_paymentDate;
+        this.customer = customer;
+        this.income_paymentType = income_paymentType;
+        this.income_paymentAccount = income_paymentAccount;
+        this.income_amount = income_amount;
+        this.income_details = income_details;
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(10);
+    public String getId() {
+        return id;
     }
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails user1 = User.builder()
-                                .username("emp")
-                                .password(passwordEncoder().encode("123"))
-                                .roles("employee")
-                                .build();
+    public void setId(String id) {
+        this.id = id;
+    }
 
-        UserDetails user2 = User.builder()
-                                .username("admin")
-                                .password(passwordEncoder().encode("admin"))
-                                .roles("admin")
-                                .build();
+    public String getIncome_paymentDate() {
+        return income_paymentDate;
+    }
 
-        return new InMemoryUserDetailsManager(user1, user2);
+    public void setIncome_paymentDate(String income_paymentDate) {
+        this.income_paymentDate = income_paymentDate;
+    }
+
+    public Client getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Client customer) {
+        this.customer = customer;
+    }
+
+    public String getIncome_paymentType() {
+        return income_paymentType;
+    }
+
+    public void setIncome_paymentType(String income_paymentType) {
+        this.income_paymentType = income_paymentType;
+    }
+
+    public String getIncome_paymentAccount() {
+        return income_paymentAccount;
+    }
+
+    public void setIncome_paymentAccount(String income_paymentAccount) {
+        this.income_paymentAccount = income_paymentAccount;
+    }
+
+    public String getIncome_amount() {
+        return income_amount;
+    }
+
+    public void setIncome_amount(String income_amount) {
+        this.income_amount = income_amount;
+    }
+
+    public String getIncome_details() {
+        return income_details;
+    }
+
+    public void setIncome_details(String income_details) {
+        this.income_details = income_details;
     }
 }
