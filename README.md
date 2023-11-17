@@ -9,14 +9,20 @@ public ResponseEntity<?> createSellWithClient(@Validated @RequestBody Sell sell,
         return new ResponseEntity<>(errorMap, HttpStatus.BAD_REQUEST);
     }
 
-    // Create a new client object from the data in the Sell object
-    Client client = new Client(sell.getCustomer().getName(), sell.getCustomer().getEmail(), sell.getCustomer().getPhone());
+    Client clientFromSell = sell.getCustomer(); // Get the client object from the sell
+    if (clientFromSell != null) {
+        // Create a new client object from the data in the Sell object
+        // Assuming these methods exist in your Client class
+        Client client = new Client(clientFromSell.getCustomer_name(), clientFromSell.getCustomer_phone(),
+                                   clientFromSell.getCustomer_address(), clientFromSell.getCustomer_email(),
+                                   clientFromSell.getStatus_id(), clientFromSell.getCustomer_description());
 
-    // Save the new client object to the database
-    clientRepository.save(client);
+        // Save the new client object to the database
+        client = clientRepository.save(client);
 
-    // Associate the new client object with the sell object
-    sell.setCustomer(client);
+        // Associate the new client object with the sell object
+        sell.setCustomer(client);
+    }
 
     // Save the new sell object to the database
     Sell newSell = sellService.saveOrUpdate(sell);
