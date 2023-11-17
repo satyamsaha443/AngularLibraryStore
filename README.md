@@ -1,56 +1,73 @@
-package com.Main.models;
+<form (ngSubmit)="onRegister()">
+  <input type="email" [(ngModel)]="user.email" name="email" placeholder="Email" required>
+  <input type="text" [(ngModel)]="user.username" name="username" placeholder="Username" required>
+  <input type="password" [(ngModel)]="user.password" name="password" placeholder="Password" required>
+  <select [(ngModel)]="user.role" name="role">
+    <option value="user">User</option>
+    <option value="admin">Admin</option>
+  </select>
+  <button type="submit">Register</button>
+</form>
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection="users")
-public class User {
-	
-	@Id
-	private String id;
-	private String email;
-	private String username;
-	private String password;
-	private String role;
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
-	public String getUsername() {
-		return username;
-	}
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	public String getRole() {
-		return role;
-	}
-	public void setRole(String role) {
-		this.role = role;
-	}
-	
-	public String getEmail() {
-		return email;
-	}
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	@Override
-	public String toString() {
-		return "User [id=" + id + ", email=" + email + ", username=" + username + ", password=" + password + ", role="
-				+ role + "]";
-	}
-	
-	
-	
+export class RegisterComponent {
+  user = { email: '', username: '', password: '', role: 'user' };
 
-	
+  constructor(private authService: AuthService) {}
+
+  onRegister() {
+    this.authService.register(this.user).subscribe(
+      response => {
+        console.log('User registered', response);
+      },
+      error => {
+        console.error('Error registering', error);
+      }
+    );
+  }
 }
+
+
+<form (ngSubmit)="onLogin()">
+  <input type="text" [(ngModel)]="user.username" name="username" placeholder="Username" required>
+  <input type="password" [(ngModel)]="user.password" name="password" placeholder="Password" required>
+  <button type="submit">Login</button>
+</form>
+
+
+export class LoginComponent {
+  user = { username: '', password: '' };
+
+  constructor(private authService: AuthService) {}
+
+  onLogin() {
+    this.authService.login(this.user).subscribe(
+      response => {
+        console.log('User logged in', response);
+        // Handle login based on response, such as redirecting to different pages based on roles
+      },
+      error => {
+        console.error('Error logging in', error);
+      }
+    );
+  }
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthService {
+
+  constructor(private http: HttpClient) {}
+
+  register(user: any): Observable<any> {
+    return this.http.post('/api/register', user);
+  }
+
+  login(user: any): Observable<any> {
+    return this.http.post('/api/login', user);
+  }
+
+  // Other auth related methods
+}
+
