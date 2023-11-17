@@ -1,412 +1,399 @@
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>Stackfindover: Sign in</title>
-  <link rel="stylesheet" type="text/css" href="style.css">
-</head>
+package com.Main.models;
 
-<body>
-  <div class="login-root">
-    <div class="box-root flex-flex flex-direction--column" style="min-height: 100vh;flex-grow: 1;">
-      <div class="loginbackground box-background--white padding-top--64">
-        <div class="loginbackground-gridContainer">
-          <div class="box-root flex-flex" style="grid-area: top / start / 8 / end;">
-            <div class="box-root" style="background-image: linear-gradient(white 0%, rgb(247, 250, 252) 33%); flex-grow: 1;">
-            </div>
-          </div>
-          <div class="box-root flex-flex" style="grid-area: 4 / 2 / auto / 5;">
-            <div class="box-root box-divider--light-all-2 animationLeftRight tans3s" style="flex-grow: 1;"></div>
-          </div>
-          <div class="box-root flex-flex" style="grid-area: 6 / start / auto / 2;">
-            <div class="box-root box-background--blue800" style="flex-grow: 1;"></div>
-          </div>
-          <div class="box-root flex-flex" style="grid-area: 7 / start / auto / 4;">
-            <div class="box-root box-background--blue animationLeftRight" style="flex-grow: 1;"></div>
-          </div>
-          <div class="box-root flex-flex" style="grid-area: 8 / 4 / auto / 6;">
-            <div class="box-root box-background--gray100 animationLeftRight tans3s" style="flex-grow: 1;"></div>
-          </div>
-          <div class="box-root flex-flex" style="grid-area: 2 / 15 / auto / end;">
-            <div class="box-root box-background--cyan200 animationRightLeft tans4s" style="flex-grow: 1;"></div>
-          </div>
-          <div class="box-root flex-flex" style="grid-area: 3 / 14 / auto / end;">
-            <div class="box-root box-background--blue animationRightLeft" style="flex-grow: 1;"></div>
-          </div>
-          <div class="box-root flex-flex" style="grid-area: 4 / 17 / auto / 20;">
-            <div class="box-root box-background--gray100 animationRightLeft tans4s" style="flex-grow: 1;"></div>
-          </div>
-          <div class="box-root flex-flex" style="grid-area: 5 / 14 / auto / 17;">
-            <div class="box-root box-divider--light-all-2 animationRightLeft tans3s" style="flex-grow: 1;"></div>
-          </div>
-        </div>
-      </div>
-      <div class="box-root padding-top--24 flex-flex flex-direction--column" style="flex-grow: 1; z-index: 9;">
-        <div class="box-root padding-top--48 padding-bottom--24 flex-flex flex-justifyContent--center">
-          <h1><a href="http://blog.stackfindover.com/" rel="dofollow">Stackfindover</a></h1>
-        </div>
-        <div class="formbg-outer">
-          <div class="formbg">
-            <div class="formbg-inner padding-horizontal--48">
-              <span class="padding-bottom--15">Sign in to your account</span>
-              <form id="stripe-login">
-                <div class="field padding-bottom--24">
-                  <label for="email">Email</label>
-                  <input type="email" name="email">
-                </div>
-                <div class="field padding-bottom--24">
-                  <div class="grid--50-50">
-                    <label for="password">Password</label>
-                    <div class="reset-pass">
-                      <a href="#">Forgot your password?</a>
-                    </div>
-                  </div>
-                  <input type="password" name="password">
-                </div>
-                <div class="field field-checkbox padding-bottom--24 flex-flex align-center">
-                  <label for="checkbox">
-                    <input type="checkbox" name="checkbox"> Stay signed in for a week
-                  </label>
-                </div>
-                <div class="field padding-bottom--24">
-                  <input type="submit" name="submit" value="Continue">
-                </div>
-                <div class="field">
-                  <a class="ssolink" href="#">Use single sign-on (Google) instead</a>
-                </div>
-              </form>
-            </div>
-          </div>
-          <div class="footer-link padding-top--24">
-            <span>Don't have an account? <a href="">Sign up</a></span>
-            <div class="listing padding-top--24 padding-bottom--24 flex-flex center-center">
-              <span><a href="#">© Stackfindover</a></span>
-              <span><a href="#">Contact</a></span>
-              <span><a href="#">Privacy & terms</a></span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+import java.io.Serializable;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+
+
+@Document(collection = "inv_sell")
+public class Sell implements Serializable {
+    
+    private static final long serialVersionUID = -4497992680923909136L;
+    
+    @Id
+    private String id;
+
+    @DBRef @Field(name = "customer_id")
+    private Client customer_id;
+
+    private String sale_date;
+    private String sale_status;
+    private String sale_invoiceNo;
+
+    public Sell() {
+
+    }
+
+    public Sell(Client customer_id, String sale_date, String sale_status, String sale_invoiceNo) {
+        this.customer_id = customer_id;
+        this.sale_date = sale_date;
+        this.sale_status = sale_status;
+        this.sale_invoiceNo = sale_invoiceNo;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Client getCustomer_id() {
+        return customer_id;
+    }
+
+    public void setCustomer_id(Client customer_id) {
+        this.customer_id = customer_id;
+    }
+
+    public String getSale_date() {
+        return sale_date;
+    }
+
+    public void setSale_date(String sale_date) {
+        this.sale_date = sale_date;
+    }
+
+    public String getSale_status() {
+        return sale_status;
+    }
+
+    public void setSale_status(String sale_status) {
+        this.sale_status = sale_status;
+    }
+
+    public String getSale_invoiceNo() {
+        return sale_invoiceNo;
+    }
+
+    public void setSale_invoiceNo(String sale_invoiceNo) {
+        this.sale_invoiceNo = sale_invoiceNo;
+    }
+    
+
+}
+
+
+package com.Main.models;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
+@Document("inv_client")
+public class Client {
+    @Id
+    @Field("_id")
+    private String id;
+    private String customer_name;
+    private String customer_phone;
+    private String customer_address;
+    private String customer_email;
+    private String status_id;
+    private String customer_description;
+
+    @DBRef
+//    @JsonProperty(access = Access.WRITE_ONLY)
+    private Set<Sell> sells = new HashSet<Sell>();
+
+    @DBRef
+    @JsonProperty(access = Access.WRITE_ONLY)
+    private Set<Revenue> employees = new HashSet<Revenue>();
+
+    public Client() {
+        // TODO Auto-generated constructor stub
+    }
+
+    public Client(String customer_name, String customer_phone, String customer_address, String customer_email,
+            String status_id, String customer_description) {
+        super();
+        this.customer_name = customer_name;
+        this.customer_phone = customer_phone;
+        this.customer_address = customer_address;
+        this.customer_email = customer_email;
+        this.status_id = status_id;
+        this.customer_description = customer_description;
+        this.id = ObjectId.get().toString();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getCustomer_name() {
+        return customer_name;
+    }
+
+    public void setCustomer_name(String customer_name) {
+        this.customer_name = customer_name;
+    }
+
+    public String getCustomer_phone() {
+        return customer_phone;
+    }
+
+    public void setCustomer_phone(String customer_phone) {
+        this.customer_phone = customer_phone;
+    }
+
+    public String getCustomer_address() {
+        return customer_address;
+    }
+
+    public void setCustomer_address(String customer_address) {
+        this.customer_address = customer_address;
+    }
+
+    public String getCustomer_email() {
+        return customer_email;
+    }
+
+    public void setCustomer_email(String customer_email) {
+        this.customer_email = customer_email;
+    }
+
+    public String getStatus_id() {
+        return status_id;
+    }
+
+    public void setStatus_id(String status_id) {
+        this.status_id = status_id;
+    }
+
+    public String getCustomer_description() {
+        return customer_description;
+    }
+
+    public void setCustomer_description(String customer_description) {
+        this.customer_description = customer_description;
+    }
+
+    public Set<Sell> getSells() {
+        return sells;
+    }
+
+    public void setSells(Set<Sell> sells) {
+        this.sells = sells;
+    }
+
+    public Set<Revenue> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(Set<Revenue> employees) {
+        this.employees = employees;
+    }
+
+}
+
+
+
+export default class Sell {
+    id: number
+    customer_id: string
+    sale_date: string
+    sale_status: string
+    sale_invoiceNo: string
+
+
+    constructor(
+        id: number,
+        customer_id: string,
+        sale_date: string,
+        sale_status: string,
+        sale_invoiceNo: string
+    ) {
+        this.id = id
+        this.customer_id = customer_id
+        this.sale_date = sale_date
+        this.sale_status = sale_status
+        this.sale_invoiceNo = sale_invoiceNo
+    }
+
+}
+
+
+export default class Client {
+    id: number
+    customer_name: string
+    customer_phone: string
+    customer_address: string
+    customer_email: string
+    status_id: string
+    customer_description: string
+
+
+    constructor(
+        id: number,
+        customer_name: string,
+        customer_phone: string,
+        customer_address: string,
+        customer_email: string,
+        status_id: string,
+        customer_description: string
+    ) {
+        this.id = id
+        this.customer_name = customer_name
+        this.customer_phone = customer_phone
+        this.customer_address = customer_address
+        this.customer_email = customer_email
+        this.status_id = status_id
+        this.customer_description = customer_description
+    }
+
+}
+
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { URLLoader } from 'src/app/main/configs/URLLoader';
+import SellMessage from 'src/app/main/messages/SellMessage';
+import SaleTestService from 'src/app/main/mocks/SaleTestService';
+import Sell from 'src/app/main/models/Sell';
+import { HTTPService } from 'src/app/main/services/HTTPService';
+import URLS from 'src/app/main/urls/urls';
+
+@Component({
+  selector: 'app-sale',
+  templateUrl: './sale.component.html',
+  styleUrls: ['./sale.component.css']
+})
+export class SaleComponent extends URLLoader implements OnInit {
+
+
+  
+  sells$:Sell[]=[{
+   "id": 1,
+        "customer_id": "",
+        "sale_date": "",
+        "sale_status": "",
+        "sale_invoiceNo": ""
+  }]
+
+  id: any;
+
+
+
+  constructor(private httpService:HTTPService,private sellTestService: SaleTestService, private messageService: SellMessage) {
+    super()
+
+  }
+
+  setId(id:any) {
+    this.id = id
+  }
+
+  edit(id:any) {
+    this.setId(id)
+    this.sellTestService.ID.next(id.toString())
+  }
+
+  delete(id:any) {
+    var r = confirm("Are you you want remove this record ?");
+    if (r) {
+      this.setId(id)
+       this.httpService.remove(URLS.URL_BASE+URLS.URL_PORT+"/api/sells/delete/"+id)
+      super.show('Confirmation', this.messageService.confirmations.delete, 'success')
+     window.location.reload();
+    }
+
+  }
+
+  ngOnInit() {
+    super.loadScripts();
+    this.getAll()
+  }
+
+  getAll() {
+     this.httpService.getAll(URLS.URL_BASE+URLS.URL_PORT+"/api/sells/all")
+     .subscribe((data:any)=>{
+       this.sells$=data
+       
+     },(err:HttpErrorResponse)=>{
+       super.show("Error",err.message,"error")
+     })
+  }
+
+
+
+
+
+}
+
+<div class="card">
+  <!-- Card header -->
+  <div class="card-header border-0">
+    <h3 class="mb-0">Sales</h3>
   </div>
-</body>
+  <!-- Light table -->
+  <div class="table-responsive">
+    <table class="table align-items-center table-flush">
+      <thead class="thead-light">
+        <tr>
+          <th scope="col" class="sort" data-sort="budget">Client</th>
+          <th scope="col" class="sort" data-sort="status">Status</th>
+          <th scope="col">Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody class="list">
+        <tr *ngFor="let s of sells$">
+          <td scope="col" class="sort" data-sort="budget">
+            {{ s.customer_id }}
 
-</html>
+            {{s | json}}
+          </td>
+          <td scope="col" class="sort" data-sort="status">
+            {{ s.sale_status }}
+          </td>
+          <td scope="col">{{ s.sale_date }}</td>
+          <td>
+            <!--  <button (click)="edit(s.id)" type="button" data-toggle="modal" data-target="#editSale"
+              class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></button>-->
+            <button
+              type="button"
+              class="btn btn-danger btn-sm"
+              (click)="delete(s.id)"
+            >
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+      <tfoot class="thead-light">
+        <tr>
+          <th scope="col" class="sort" data-sort="budget">Client</th>
+          <th scope="col" class="sort" data-sort="status">Status</th>
+          <th scope="col">Date</th>
+          <th>Actions</th>
+        </tr>
+      </tfoot>
+    </table>
+    <button
+      type="button"
+      data-toggle="modal"
+      data-target="#addSale"
+      class="btn btn-success btn-sm"
+    >
+      <i class="fas fa-plus-circle"></i> Create
+    </button>
 
-
-* {
-  padding: 0;
-  margin: 0;
-  color: #1a1f36;
-  box-sizing: border-box;
-  word-wrap: break-word;
-  font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Ubuntu,sans-serif;
-}
-body {
-    min-height: 100%;
-    background-color: #ffffff;
-}
-h1 {
-    letter-spacing: -1px;
-}
-a {
-  color: #5469d4;
-  text-decoration: unset;
-}
-.login-root {
-    background: #fff;
-    display: flex;
-    width: 100%;
-    min-height: 100vh;
-    overflow: hidden;
-}
-.loginbackground {
-    min-height: 692px;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    top: 0;
-    z-index: 0;
-    overflow: hidden;
-}
-.flex-flex {
-    display: flex;
-}
-.align-center {
-  align-items: center; 
-}
-.center-center {
-  align-items: center;
-  justify-content: center;
-}
-.box-root {
-    box-sizing: border-box;
-}
-.flex-direction--column {
-    -ms-flex-direction: column;
-    flex-direction: column;
-}
-.loginbackground-gridContainer {
-    display: -ms-grid;
-    display: grid;
-    -ms-grid-columns: [start] 1fr [left-gutter] (86.6px)[16] [left-gutter] 1fr [end];
-    grid-template-columns: [start] 1fr [left-gutter] repeat(16,86.6px) [left-gutter] 1fr [end];
-    -ms-grid-rows: [top] 1fr [top-gutter] (64px)[8] [bottom-gutter] 1fr [bottom];
-    grid-template-rows: [top] 1fr [top-gutter] repeat(8,64px) [bottom-gutter] 1fr [bottom];
-    justify-content: center;
-    margin: 0 -2%;
-    transform: rotate(-12deg) skew(-12deg);
-}
-.box-divider--light-all-2 {
-    box-shadow: inset 0 0 0 2px #e3e8ee;
-}
-.box-background--blue {
-    background-color: #5469d4;
-}
-.box-background--white {
-  background-color: #ffffff; 
-}
-.box-background--blue800 {
-    background-color: #212d63;
-}
-.box-background--gray100 {
-    background-color: #e3e8ee;
-}
-.box-background--cyan200 {
-    background-color: #7fd3ed;
-}
-.padding-top--64 {
-  padding-top: 64px;
-}
-.padding-top--24 {
-  padding-top: 24px;
-}
-.padding-top--48 {
-  padding-top: 48px;
-}
-.padding-bottom--24 {
-  padding-bottom: 24px;
-}
-.padding-horizontal--48 {
-  padding: 48px;
-}
-.padding-bottom--15 {
-  padding-bottom: 15px;
-}
-
-
-.flex-justifyContent--center {
-  -ms-flex-pack: center;
-  justify-content: center;
-}
-
-.formbg {
-    margin: 0px auto;
-    width: 100%;
-    max-width: 448px;
-    background: white;
-    border-radius: 4px;
-    box-shadow: rgba(60, 66, 87, 0.12) 0px 7px 14px 0px, rgba(0, 0, 0, 0.12) 0px 3px 6px 0px;
-}
-span {
-    display: block;
-    font-size: 20px;
-    line-height: 28px;
-    color: #1a1f36;
-}
-label {
-    margin-bottom: 10px;
-}
-.reset-pass a,label {
-    font-size: 14px;
-    font-weight: 600;
-    display: block;
-}
-.reset-pass > a {
-    text-align: right;
-    margin-bottom: 10px;
-}
-.grid--50-50 {
-    display: grid;
-    grid-template-columns: 50% 50%;
-    align-items: center;
-}
-
-.field input {
-    font-size: 16px;
-    line-height: 28px;
-    padding: 8px 16px;
-    width: 100%;
-    min-height: 44px;
-    border: unset;
-    border-radius: 4px;
-    outline-color: rgb(84 105 212 / 0.5);
-    background-color: rgb(255, 255, 255);
-    box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, 
-                rgba(0, 0, 0, 0) 0px 0px 0px 0px, 
-                rgba(0, 0, 0, 0) 0px 0px 0px 0px, 
-                rgba(60, 66, 87, 0.16) 0px 0px 0px 1px, 
-                rgba(0, 0, 0, 0) 0px 0px 0px 0px, 
-                rgba(0, 0, 0, 0) 0px 0px 0px 0px, 
-                rgba(0, 0, 0, 0) 0px 0px 0px 0px;
-}
-
-input[type="submit"] {
-    background-color: rgb(84, 105, 212);
-    box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, 
-                rgba(0, 0, 0, 0) 0px 0px 0px 0px, 
-                rgba(0, 0, 0, 0.12) 0px 1px 1px 0px, 
-                rgb(84, 105, 212) 0px 0px 0px 1px, 
-                rgba(0, 0, 0, 0) 0px 0px 0px 0px, 
-                rgba(0, 0, 0, 0) 0px 0px 0px 0px, 
-                rgba(60, 66, 87, 0.08) 0px 2px 5px 0px;
-    color: #fff;
-    font-weight: 600;
-    cursor: pointer;
-}
-.field-checkbox input {
-    width: 20px;
-    height: 15px;
-    margin-right: 5px; 
-    box-shadow: unset;
-    min-height: unset;
-}
-.field-checkbox label {
-    display: flex;
-    align-items: center;
-    margin: 0;
-}
-a.ssolink {
-    display: block;
-    text-align: center;
-    font-weight: 600;
-}
-.footer-link span {
-    font-size: 14px;
-    text-align: center;
-}
-.listing a {
-    color: #697386;
-    font-weight: 600;
-    margin: 0 10px;
-}
-
-.animationRightLeft {
-  animation: animationRightLeft 2s ease-in-out infinite;
-}
-.animationLeftRight {
-  animation: animationLeftRight 2s ease-in-out infinite;
-}
-.tans3s {
-  animation: animationLeftRight 3s ease-in-out infinite;
-}
-.tans4s {
-  animation: animationLeftRight 4s ease-in-out infinite;
-}
-
-@keyframes animationLeftRight {
-  0% {
-    transform: translateX(0px);
-  }
-  50% {
-    transform: translateX(1000px);
-  }
-  100% {
-    transform: translateX(0px);
-  }
-} 
-
-@keyframes animationRightLeft {
-  0% {
-    transform: translateX(0px);
-  }
-  50% {
-    transform: translateX(-1000px);
-  }
-  100% {
-    transform: translateX(0px);
-  }
-} 
-
-
-
-
-
-<div class="container mt--8 pb-5">
-    <div class="row justify-content-center">
-      <div class="col-lg-5 col-md-7">
-        <div class="card bg-secondary border-0 mb-0">
-          <div class="card-header bg-transparent pb-5">
-            <div class="text-muted text-center mt-2 mb-3">
-              <small>Sign in with</small>
-            </div>
-            <br /><br />
-            <div class="btn-wrapper text-center">
-              <img
-                src="assets/img/logo.png"
-                style="max-height: 80px"
-                class="navbar-brand-img"
-                alt="..."
-              />
-            </div>
-          </div>
-          <div class="card-body px-lg-5 py-lg-5">
-            <form #loginForm="ngForm" (ngSubmit)="doLogin(loginForm)">
-              <div class="text-center text-muted mb-4"></div>
-              <div class="form-group mb-3">
-                <div
-                  class="input-group input-group-merge input-group-alternative"
-                >
-                  <div class="input-group-prepend">
-                    <span class="input-group-text"
-                      ><i class="ni ni-email-83"></i
-                    ></span>
-                  </div>
-                  <input
-                    name="username"
-                    ngModel="{{ username }}"
-                    class="form-control"
-                    placeholder="Email"
-                    type="text"
-                    value="admin"
-                  />
-                </div>
-              </div>
-              <div class="form-group">
-                <div
-                  class="input-group input-group-merge input-group-alternative"
-                >
-                  <div class="input-group-prepend">
-                    <span class="input-group-text"
-                      ><i class="ni ni-lock-circle-open"></i
-                    ></span>
-                  </div>
-                  <input
-                    name="password"
-                    ngModel="{{ password }}"
-                    class="form-control"
-                    placeholder="Password"
-                    type="password"
-                    value="admin"
-                  />
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="role">Role</label>
-                <select class="form-control" name="role" ngModel>
-                  <option value="admin">Admin</option>
-                  <option value="manager">Manager</option>
-                  <option value="staff">Staff</option>
-
-                </select>
-
-              </div>
-              <div class="text-center">
-                <button type="submit" class="btn btn-primary my-4">Login</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
+    <app-modal-sell></app-modal-sell>
   </div>
+  <!-- Card footer -->
+</div>
