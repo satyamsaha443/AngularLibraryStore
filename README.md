@@ -16,9 +16,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @Configuration
 @EnableWebSecurity
+@CrossOrigin(origins = "http://localhost:4200")
 public class WebSecurityConfig {
 
     @Bean
@@ -55,12 +57,3 @@ public class WebSecurityConfig {
         return new InMemoryUserDetailsManager(user1, user2);
     }
 }
-
-Description:
-
-The bean 'passwordEncoder', defined in class path resource [com/Main/Security/WebSecurityConfig.class], could not be registered. A bean with that name has already been defined in class path resource [com/Main/Security/PasswordConfig.class] and overriding is disabled.
-
-Action:
-
-Consider renaming one of the beans or enabling overriding by setting spring.main.allow-bean-definition-overriding=true
-
