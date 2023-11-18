@@ -1,8 +1,13 @@
-\Error: src/app/general/login/login.component.ts:36:29 - error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{ admin: { username: string; password: string; }; manager: 
-{ username: string; password: string; }; staff: { username: string; password: string; }; }'.
+Error: src/app/general/login/login.component.ts:1:22 - error TS2306: File 'C:/Users/SASAHA3/Desktop/Angular/InventoryCapstoneFrontend/inventorycapstonefront/src/app/main/models/Pass.ts' is not a module.
 
-36     const roleCredentials = this.credentials[loginform.value.role];
-                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1 import { Pass } from 'src/app/main/models/Pass.ts';
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+Error: src/app/general/login/login.component.ts:1:22 - error TS5097: An import path can only end with a '.ts' extension when 'allowImportingTsExtensions' is enabled.
+
+1 import { Pass } from 'src/app/main/models/Pass.ts';
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 
