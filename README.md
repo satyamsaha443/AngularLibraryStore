@@ -1,9 +1,22 @@
-doLogin(loginform: NgForm) {
-  this.loginservice.authenticate(loginform.value.username, loginform.value.password).subscribe(
-    data => {
-      super.show('Inventory', 'Welcome !', 'success');
-      super.loadScripts();
-      // Based on the role, navigate to the appropriate route
+export class LoginComponent extends URLLoader implements OnInit {
+
+  // Define role-based credentials (For testing only, not for production)
+  private credentials = {
+    admin: { username: 'admin', password: 'adminpass' },
+    manager: { username: 'manager', password: 'managerpass' },
+    staff: { username: 'staff', password: 'staffpass' }
+  };
+
+  role = '';
+  invalidLogin = false;
+  errorMessage = '';
+
+  // ... rest of your component code
+
+  doLogin(loginform: NgForm) {
+    const roleCredentials = this.credentials[loginform.value.role];
+    if (loginform.value.username === roleCredentials.username && loginform.value.password === roleCredentials.password) {
+      // Proceed with role-based redirection
       switch (loginform.value.role) {
         case 'admin':
           this.router.navigate(['/dashboard']);
@@ -15,16 +28,16 @@ doLogin(loginform: NgForm) {
           this.router.navigate(['/client']);
           break;
         default:
-          // Handle unknown roles or redirect to a default route
           this.router.navigate(['/default-route']);
           break;
       }
       this.invalidLogin = false;
-    },
-    error => {
+    } else {
       this.invalidLogin = true;
-      this.errorMessage = error.message;
-      super.show('Inventory', this.errorMessage, 'error');
+      this.errorMessage = 'Invalid credentials';
+      // Display error message
     }
-  );
+  }
+
+  // ... rest of your component code
 }
