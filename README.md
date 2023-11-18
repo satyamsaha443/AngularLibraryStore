@@ -41,3 +41,46 @@ export class LoginComponent extends URLLoader implements OnInit {
 
   // ... rest of your component code
 }
+
+
+<form #loginForm="ngForm" (ngSubmit)="doLogin(loginForm)">
+  <!-- Removed the ngModel and value bindings for username and password -->
+  <div class="form-group mb-3">
+    <div class="input-group input-group-merge input-group-alternative">
+      <div class="input-group-prepend">
+        <span class="input-group-text"><i class="ni ni-email-83"></i></span>
+      </div>
+      <input
+        name="username"
+        class="form-control"
+        placeholder="Email"
+        type="text"
+        required
+      />
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="input-group input-group-merge input-group-alternative">
+      <div class="input-group-prepend">
+        <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
+      </div>
+      <input
+        name="password"
+        class="form-control"
+        placeholder="Password"
+        type="password"
+        required
+      />
+    </div>
+    <label for="role">Role</label>
+    <select class="form-control" name="role" ngModel required>
+      <option value="" disabled selected>Select your role</option>
+      <option value="admin">Admin</option>
+      <option value="manager">Manager</option>
+      <option value="staff">Staff</option>
+    </select>
+  </div>
+  <div class="text-center">
+    <button type="submit" class="btn btn-primary my-4">Login</button>
+  </div>
+</form>
