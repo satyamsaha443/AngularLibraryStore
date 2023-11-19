@@ -1,11 +1,21 @@
+createChart(chartId: string, data: number[], bgColor: string): void {
+  const canvas = document.getElementById(chartId) as HTMLCanvasElement;
+  const ctx = canvas.getContext('2d');
 
-Error: src/app/general/dashboard/dashboard.component.ts:46:13 - error TS2345: Argument of type 'CanvasRenderingContext2D | null' is not assignable to parameter of type 'ChartItem'.
-  Type 'null' is not assignable to type 'ChartItem'.
-
-46   new Chart(ctx,  {
-               ~~~
-
-
-
-
-× Failed to compile.
+  if (ctx) {
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        datasets: [{
+          label: '',
+          data: data,
+          backgroundColor: bgColor,
+          borderColor: bgColor,
+        }]
+      }
+    });
+  } else {
+    console.error('Could not get context for chart with id:', chartId);
+  }
+}
