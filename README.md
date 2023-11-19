@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthenticationService } from 'src/app/main/security/authentication.service';
 
 @Component({
   selector: 'app-login',
@@ -12,7 +11,14 @@ export class LoginComponent implements OnInit {
   invalidLogin = false;
   errorMessage = '';
 
-  constructor(private router: Router, private authService: AuthenticationService) { }
+  // Hardcoded credentials for each role
+  private readonly credentials = {
+    admin: { username: 'adminUser', password: 'adminPass' },
+    manager: { username: 'managerUser', password: 'managerPass' },
+    staff: { username: 'staffUser', password: 'staffPass' }
+  };
+
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
   }
@@ -24,23 +30,21 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    const username = form.value.username;
-    const password = form.value.password;
-    const role = form.value.role;
+    const { username, password, role } = form.value;
 
-    this.authService.authenticate(username, password).subscribe(
-      data => {
-        this.redirectUser(role);
-        this.invalidLogin = false;
-      },
-      error => {
-        this.invalidLogin = true;
-        this.errorMessage = "Login Failed: " + error.message;
-      }
-    );
+    // Credential verification
+    if (this.credentials[role] &&
+        this.credentials[role].username === username &&
+        this.credentials[role].password === password) {
+      this.redirectUserBasedOnRole(role);
+      this.invalidLogin = false;
+    } else {
+      this.invalidLogin = true;
+      this.errorMessage = "Invalid credentials";
+    }
   }
 
-  private redirectUser(role: string) {
+  private redirectUserBasedOnRole(role: string) {
     switch (role) {
       case 'admin':
         this.router.navigate(['/admin-dashboard']);
