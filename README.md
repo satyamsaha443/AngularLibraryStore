@@ -1,44 +1,48 @@
 <div class="container mt--8 pb-5">
-    <!-- Animation section -->
-    <div class="login-root">
-        <div class="box-root flex-flex flex-direction--column" style="min-height: 100vh;flex-grow: 1;">
-            <div class="loginbackground box-background--white padding-top--64">
-                <div class="loginbackground-gridContainer">
-                    <!-- Animation blocks -->
-                    <div class="box-root flex-flex" style="grid-area: top / start / 8 / end;">
-                        <div class="box-root" style="background-image: linear-gradient(white 0%, rgb(247, 250, 252) 33%); flex-grow: 1;"></div>
-                    </div>
-                    <div class="box-root flex-flex" style="grid-area: 4 / 2 / auto / 5;">
-                        <div class="box-root box-divider--light-all-2 animationLeftRight tans3s" style="flex-grow: 1;"></div>
-                    </div>
-                    <!-- More animation blocks -->
-                    <!-- ... -->
-                </div>
-            </div>
-            <div class="box-root padding-top--24 flex-flex flex-direction--column" style="flex-grow: 1; z-index: 9;">
-                <div class="box-root padding-top--48 padding-bottom--24 flex-flex flex-justifyContent--center">
-                    <h1><a href="http://blog.stackfindover.com/" rel="dofollow">InvEntorYYY</a></h1>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main login page -->
     <div class="row justify-content-center">
-        <div class="col-lg-5 col-md-7">
-            <div class="card bg-secondary border-0 mb-0">
-                <!-- ... -->
-                <div class="card-header bg-transparent pb-5">
-                    <!-- ... -->
-                </div>
-                <div class="login-container">
-                    <!-- Login form -->
-                    <form #loginForm="ngForm" (ngSubmit)="doLogin(loginForm)">
-                        <!-- Form fields -->
-                        <!-- ... -->
-                    </form>
-                </div>
+      <div class="col-lg-5 col-md-7">
+        <div class="card bg-secondary border-0 mb-0">
+          <div class="card-header bg-transparent pb-5">
+            <div class="text-muted text-center mt-2 mb-3">
+              <small>Sign in with</small>
             </div>
+            <br /><br />
+            <div class="btn-wrapper text-center">
+              <img
+                src="assets/img/logo.png"
+                style="max-height: 80px"
+                class="navbar-brand-img"
+                alt="..."
+              />
+            </div>
+          </div>
+          <div class="login-container">
+            <form #loginForm="ngForm" (ngSubmit)="doLogin(loginForm)">
+              <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" name="username" ngModel required>
+              </div>
+              <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password" ngModel required>
+              </div>
+              <div class="form-group">
+                <label for="role">Role</label>
+                <select class="form-control" id="role" name="role" ngModel required>
+                  <option value="admin">Admin</option>
+                  <option value="manager">Manager</option>
+                  <option value="staff">Staff</option>
+                </select>
+              </div>
+              <div class="text-center">
+                <button type="submit" class="btn btn-primary my-4">Login</button>
+              </div>
+              <div *ngIf="invalidLogin" class="alert alert-danger">
+                {{ errorMessage }}
+              </div>
+            </form>
+          </div>
         </div>
+      </div>
     </div>
-</div>
+  </div>
