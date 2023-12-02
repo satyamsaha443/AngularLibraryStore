@@ -1,37 +1,43 @@
-// authguard.service.ts
-
-import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
-
-@Injectable({
-  providedIn: 'root'
-})
-export class AuthguardService implements CanActivate {
-
-  constructor(private router: Router) { }
-
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
-    const requiredRole = route.data['role'];
-
-    if (user && user.role) {
-      if (requiredRole && user.role !== requiredRole) {
-        this.router.navigate(['/login']);
-        return false;
+onSubmit() {
+  if (this.credentials.password && this.credentials.email) {
+    this.loginService.generateToken(this.credentials).subscribe(
+      (response: any) => {
+        console.log("Login Response:", response);
+        this.loginService.loginUser(response.token);
+        localStorage.setItem('currentUser', JSON.stringify({
+          token: response.token,
+          role: this.credentials.role  // Ensure this is being set correctly
+        }));
+        this.redirectBasedOnRole(this.credentials.role);
+      },
+      error => {
+        console.log("Login Error:", error);
       }
-      return true;
-    } else {
-      this.router.navigate(['/login']);
-      return false;
-    }
+    );
+  } else {
+    console.log("Credentials empty");
+  }
+}
+
+private redirectBasedOnRole(role: string) {
+  switch (role) {
+    case 'admin':
+      this.router.navigate(['/dashboard']);
+      break;
+    case 'manager':
+      this.router.navigate(['/supplier']);
+      break;
+    case 'staff':
+      this.router.navigate(['/client']);
+      break;
+    default:
+      this.router.navigate(['/default-route']);
+      break;
   }
 }
 
 
-// app-routing.module.ts
-
-const routes: Routes = [
-  // ... other routes ...
-  { path: 'supplier', component: SupplierComponent, pathMatch: 'full', canActivate: [AuthguardService], data: { role: 'manager' } },
-  // ... other routes ...
-];
+localStorage.setItem('currentUser', JSON.stringify({
+  token: response.token,
+  role: this.credentials.role
+}));
