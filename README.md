@@ -1,12 +1,7 @@
-<div class="container text-center mt">
-                        <button type="submit" mat-raised-button color="primary">Register</button>
-                        <button style="margin-left: 10px;" type="reset" mat-raised-button color="accent">Reset</button>
-                    </div
-
-
-                      import { Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { User } from 'src/app/main/models/User';
 import { LoginService } from 'src/app/main/services/login.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-register',
@@ -14,23 +9,28 @@ import { LoginService } from 'src/app/main/services/login.service';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
+  user: User = new User();
 
-  saveUser(){
+  constructor(
+    private loginService: LoginService,
+    private snackBar: MatSnackBar // Inject MatSnackBar
+  ) {}
+
+  saveUser() {
     this.loginService.createUser(this.user).subscribe(
-      data=>{
-
-      console.log(data);
-      window.location.href="/dashboard"
-    },
-    error => console.log(error));
+      data => {
+        console.log(data);
+        this.snackBar.open('User registered', 'Close', { duration: 3000 }); // Show snackbar
+      },
+      error => {
+        console.log(error);
+        this.snackBar.open('Registration failed', 'Close', { duration: 3000 }); // Show error snackbar
+      }
+    );
   }
 
-  onSubmit(){
+  onSubmit() {
     console.log(this.user);
     this.saveUser();
   }
-  user:User=new User();
-  constructor(private loginService:LoginService){}
-
-
 }
