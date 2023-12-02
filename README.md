@@ -1,41 +1,74 @@
-![image](https://github.com/satyamsaha443/AngularLibraryStore/assets/52621047/2ad8b947-a655-4108-b665-f9a517012d2a)problem statement
-The absence of a comprehensive and integrated inventory management system leads to issues such as stock discrepancies, inefficient product data handling, and difficulties in monitoring stock levels, impacting our operational efficiency and bottom line. To address these challenges, I came up with the idea of developing  a robust inventory management application. This solution will feature secure user authentication with admin authentication, a centralized database for all product information, barcode scanning for easy product updates, and advanced search and filter capabilities. The application will also facilitate the creation and management of purchase and sales orders and offer detailed reporting and analytics. Additionally, it will support data import and export in various formats .
-The aim is to streamline our inventory processes, enhance data accuracy, and improve overall decision-making in inventory management.
 
+<div class="login-root">
+    <div class="box-root flex-flex flex-direction--column" style="min-height: 100vh;flex-grow: 1;">
+      <div class="loginbackground box-background--white padding-top--64">
+        <div class="loginbackground-gridContainer">
+          <div class="box-root flex-flex" style="grid-area: top / start / 8 / end;">
+            <div class="box-root" style="background-image: linear-gradient(white 0%, rgb(247, 250, 252) 33%); flex-grow: 1;">
+            </div>
+          </div>
+          <div class="box-root flex-flex" style="grid-area: 4 / 2 / auto / 5;">
+            <div class="box-root box-divider--light-all-2 animationLeftRight tans3s" style="flex-grow: 1;"></div>
+          </div>
+          <div class="box-root flex-flex" style="grid-area: 6 / start / auto / 2;">
+            <div class="box-root box-background--blue800" style="flex-grow: 1;"></div>
+          </div>
+          <div class="box-root flex-flex" style="grid-area: 7 / start / auto / 4;">
+            <div class="box-root box-background--blue animationLeftRight" style="flex-grow: 1;"></div>
+          </div>
+          <div class="box-root flex-flex" style="grid-area: 8 / 4 / auto / 6;">
+            <div class="box-root box-background--gray100 animationLeftRight tans3s" style="flex-grow: 1;"></div>
+          </div>
+          <div class="box-root flex-flex" style="grid-area: 2 / 15 / auto / end;">
+            <div class="box-root box-background--cyan200 animationRightLeft tans4s" style="flex-grow: 1;"></div>
+          </div>
+          <div class="box-root flex-flex" style="grid-area: 3 / 14 / auto / end;">
+            <div class="box-root box-background--blue animationRightLeft" style="flex-grow: 1;"></div>
+          </div>
+          <div class="box-root flex-flex" style="grid-area: 4 / 17 / auto / 20;">
+            <div class="box-root box-background--gray100 animationRightLeft tans4s" style="flex-grow: 1;"></div>
+          </div>
+          <div class="box-root flex-flex" style="grid-area: 5 / 14 / auto / 17;">
+            <div class="box-root box-divider--light-all-2 animationRightLeft tans3s" style="flex-grow: 1;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="box-root padding-top--24 flex-flex flex-direction--column" style="flex-grow: 1; z-index: 9;">
+        <div class="box-root padding-top--48 padding-bottom--24 flex-flex flex-justifyContent--center">
+          <h1><a href="http://blog.stackfindover.com/" rel="dofollow">InvEntorYYY</a></h1>
+        </div>
+        <div class="formbg-outer">
+          <div class="form-container"> <!-- New container for centering -->
+            <form (ngSubmit)="onSubmit()">
+                <mat-form-field class="full-width mt">
+                    <mat-label>Username</mat-label>
+                    <input [(ngModel)]="user.userName"
+                    name="username" required type="text" matInput>
+                </mat-form-field>
+                
+                <mat-form-field class="full-width mt">
+                    <mat-label>Email</mat-label>
+                    <input [(ngModel)]="user.email"
+                    name="username" required type="text" matInput>
+                </mat-form-field>
+                <mat-form-field class="full-width mt">
+                    <mat-label>Password</mat-label>
+                    <input [(ngModel)]="user.password"
+                    name="password" required type="password" matInput>
+                </mat-form-field> 
 
-use cases 
+                
 
-Securely register and log in using authentication
-Store and manage detailed product information in a centralized database, including name, description , category, manufacturer, price, and quantity.
-Quickly add new products or update existing product details by scanning barcodes, streamlining the inventory input process.
-Enable users to efficiently locate products using robust search and filter tools based on criteria like name, category, etc.
-Keep a detailed list of suppliers, including contact details and pricing agreements, to manage supplier relationships efficiently.
-Create and manage purchase orders for inventory restocking; include options to print these orders.
- Generate and manage sales orders to track customer purchases.
-Generate comprehensive reports on inventory levels, product sales, and supplier performance.
-Facilitate the import and export of inventory data in various formats like CSV and Excel for data migration and integration.
+                <div class="container text-center mt">
+                    <button type="submit" mat-raised-button color="primary">Submit</button>
 
-
-business insights
-
-Efficiency and Time Savings:  Automated inventory processes significantly reduce the time spent on manual stock management, leading to increased operational efficiency.
-Accuracy and Reduced Errors: Digital tracking minimizes human error in inventory management, resulting in more accurate stock levels and financial records.
-Cost Reduction: Efficient stock management can lower holding costs and reduce losses from overstocking or stockouts , optimizing inventory levels.
-Data-Driven Decisions: The analytics and reporting capabilities provide valuable insights for informed decision-making regarding stock management, purchasing and sales strategies.
-Scalability: A robust system can adapt to growing business needs, making it suitable for businesses planning to scale.
-Compliance and Auditing: Enhanced record-keeping aids in regulatory compliance and simplifies auditing processes.
-Enhanced Customer Satisfaction: Accurate stock information and efficient order processing can lead to improved customer service and satisfaction.
-
-
-target audience
-
-Retail Businesses: Retailers, especially those with multiple locations, require efficient stock management to ensure product availability and manage diverse product lines.
-E-commerce platforms:  With the rise of online shopping, e-commerce businesses need sophisticated inventory systems to manage large and varied stock efficiently.
-Manufacturing Companies: Manufacturers can benefit from real-time tracking of raw materials and finished goods, aiding in production planning and control.
-Warehouse and Logistics Firms: These businesses need efficient inventory systems to manage and track large quantities of varied items stored in their facilities.
-Small and Medium Enterprises(SMEs): SMEs looking to streamline their operations and reduce costs can greatly benefit from an affordable, scalable inventory management solution.
-Supply Chain and Distribution Networks: Companies involved in supply chain and distribution require robust systems for tracking and managing inventory across various stages and locations.
-
-
-
-
+                    <button style="margin-left: 10px;" type="reset" mat-raised-button color="accent">Reset</button>
+                </div>    
+            </form>
+        </div>
+        
+            
+        </div>
+      </div>
+    </div>
+  </div>
