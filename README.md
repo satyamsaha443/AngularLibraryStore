@@ -1,35 +1,240 @@
-For the inventory management application, the business insights and target audience justifications revolve around understanding the key benefits it offers and identifying the sectors and types of businesses that would most benefit from its implementation. 
+  
+<div class="bootstrap-wrapper">
+  <div class="container mt">
+      <div class="row" >
+          <div class="col-md-6 offset-md-3">
+              <div class="contaier text-center">
+                  <img class="img-fluid" style="width: 100px;" src="/assets/password.png">
+              </div>
+              <h1 class="text-center">Login here</h1>
+              <form (ngSubmit)="onSubmit()">
+                  <mat-form-field class="full-width mt">
+                      <mat-label>Email</mat-label>
+                      <input [(ngModel)]="credentials.email"
+                      name="username" required type="text" matInput>
+                  </mat-form-field>
 
-**Business Insights:**
+                  <mat-form-field class="full-width mt">
+                      <mat-label>Password</mat-label>
+                      <input [(ngModel)]="credentials.password"
+                      name="password" required type="password" matInput>
+                  </mat-form-field>
 
-1. **Efficiency and Time Savings:** Automated inventory processes significantly reduce the time spent on manual stock management, leading to increased operational efficiency.
+                  <label for="role">Role</label>
+                  <select class="form-control" name="role" ngModel>
+                    <option value="admin">Admin</option>
+                    <option value="manager">Manager</option>
+                    <option value="staff">Staff</option>
+  
+                  </select>
 
-2. **Accuracy and Reduced Errors:** Digital tracking minimizes human error in inventory management, resulting in more accurate stock levels and financial records.
+                  <div class="container text-center mt">
+                      <button type="submit" mat-raised-button color="primary">Submit</button>
 
-3. **Cost Reduction:** Efficient stock management can lower holding costs and reduce losses from overstocking or stockouts, optimizing inventory levels.
+                      <button style="margin-left: 10px;" type="reset" mat-raised-button color="accent">Reset</button>
+                  </div>    
+              </form>
+          </div>
+      </div>
+  </div>
+</div>
 
-4. **Data-Driven Decisions:** The analytics and reporting capabilities provide valuable insights for informed decision-making regarding stock management, purchasing, and sales strategies.
 
-5. **Scalability:** A robust system can adapt to growing business needs, making it suitable for businesses planning to scale.
+import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
+import { URLLoader } from 'src/app/main/configs/URLLoader';
+import { AuthenticationService } from 'src/app/main/security/authentication.service';
+import { LoginService } from 'src/app/main/services/login.service';
 
-6. **Compliance and Auditing:** Enhanced record-keeping aids in regulatory compliance and simplifies auditing processes.
+@Component({
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  animations:[],
+  styleUrls: ['./login.component.css']
+})
+export class LoginComponent extends URLLoader  implements OnInit {
 
-7. **Enhanced Customer Satisfaction:** Accurate stock information and efficient order processing can lead to improved customer service and satisfaction.
+  // username = 'admin'
+  // password = 'admin'
+  // invalidLogin = false
+  // errorMessage=''
 
-**Target Audience Justifications:**
+  // constructor(private router: Router,
+  //   private loginservice: AuthenticationService) {
+  //     super()
+  //    }
+  
+  // ngOnInit() {
+    
+  // }
 
-1. **Retail Businesses:** Retailers, especially those with multiple locations, require efficient stock management to ensure product availability and manage diverse product lines.
+  // doLogin(form: NgForm) {
+  //   if (!form.valid) {
+  //     this.invalidLogin = true;
+  //     this.errorMessage = "Form is not valid";
+  //     return;
+  //   }
 
-2. **E-commerce Platforms:** With the rise of online shopping, e-commerce businesses need sophisticated inventory systems to manage large and varied stock efficiently.
+  //   const { username, password, role } = form.value;
 
-3. **Manufacturing Companies:** Manufacturers can benefit from real-time tracking of raw materials and finished goods, aiding in production planning and control.
+  //   this.loginservice.authenticate(username, password).subscribe(
+  //     data => {
+  //       this.redirectBasedOnRole(role);
+  //       this.invalidLogin = false;
+  //     },
+  //     error => {
+  //       this.invalidLogin = true
+  //       this.errorMessage=error.message
+  //       super.show('Inventoryy', this.errorMessage, 'error')
+  //     }
+  //   )
+    
 
-4. **Healthcare Providers:** Hospitals and pharmacies require precise inventory management for critical medical supplies and drugs.
+  // }
 
-5. **Warehousing and Logistics Firms:** These businesses need efficient inventory systems to manage and track large quantities of varied items stored in their facilities.
 
-6. **Small and Medium Enterprises (SMEs):** SMEs looking to streamline their operations and reduce costs can greatly benefit from an affordable, scalable inventory management solution.
 
-7. **Supply Chain and Distribution Networks:** Companies involved in supply chain and distribution require robust systems for tracking and managing inventory across various stages and locations.
 
-By targeting these sectors, the application can address specific pain points such as stock discrepancies, manual inventory tracking, and inefficient order processing, offering a comprehensive solution that caters to the nuanced needs of these diverse businesses.
+  credentials={
+    email:'',
+    password:''
+  }
+
+  constructor(private loginService:LoginService, private router: Router){
+    super();
+  }
+
+  onSubmit() {
+    if (this.credentials.password && this.credentials.email) {
+      this.loginService.generateToken(this.credentials).subscribe(
+        (response: any) => {
+          if (response.token) {
+            // set token and role in the local storage
+            localStorage.setItem('currentUser', JSON.stringify({ 
+              token: response.token,
+              role: response.role
+            }));
+            // redirect to the appropriate page based on the user's role
+            this.redirectBasedOnRole(response.role);
+          }
+        },
+        error => {
+          console.log(error);
+        }
+      );
+    }
+  }
+  ngOnInit(): void {
+    
+  }
+  private redirectBasedOnRole(role: string) {
+    switch (role) {
+      case 'admin':
+        this.router.navigate(['/dashboard']);
+        break;
+      case 'manager':
+        this.router.navigate(['/supplier']);
+        break;
+      case 'staff':
+        this.router.navigate(['/client']);
+        break;
+      default:
+        // Optionally handle unknown roles
+        this.router.navigate(['/default-route']);
+        break;
+    }
+  }
+
+ 
+}
+
+
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+
+import { Observable } from 'rxjs';
+import { User } from '../models/User';
+
+
+@Injectable({
+  providedIn: 'root'
+})
+export class LoginService {
+
+  url="http://localhost:8080"
+
+  constructor(private http:HttpClient) {}
+    //calling the server to generate the token using a class from HttpClientModule
+    generateToken(credentials:any){
+      //generate token
+      return this.http.post(`${this.url}/auth/login`,credentials);
+
+    }
+
+    createUser(user:User){
+      return this.http.post(`${this.url}/auth/create-user`,user);
+
+    }
+
+    //for login user->send the token to local storage
+    loginUser(token: string){
+      localStorage.setItem("token",token);
+      return true;
+    }
+
+    //function to check if a person is logged in
+    isLoggedIn(){
+      let token=localStorage.getItem("token");
+      if(token==undefined || token==null|| token=='')
+      {
+        return false;
+      }else
+      {
+        return true;
+      }
+    }
+
+    logout(){
+      localStorage.removeItem("token");
+      return true;
+    }
+
+    //to get the token
+    getToken(){
+      return localStorage.getItem("token")
+    }
+
+    
+}
+
+
+
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { AuthenticationService } from './authentication.service';
+import { ToastrService } from 'ngx-toastr';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthguardService  implements CanActivate{
+
+    constructor(private router: Router,
+    private authService: AuthenticationService) { }
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    if (this.authService.isUserLoggedIn())
+     {
+       return true
+     }else
+     {
+       this.router.navigate(['login']);
+       return false;
+     }
+
+    
+
+  }
+}
