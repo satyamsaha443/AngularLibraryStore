@@ -265,3 +265,49 @@
 <script src="assets/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js"></script>
 <!-- Argon JS -->
 <script src="assets/js/argon.js?v=1.2.0"></script>
+
+
+
+<div class="bootstrap-wrapper">
+    <div class="container mt">
+        <div class="row" >
+            <div class="col-md-6 offset-md-3">
+                <div class="contaier text-center">
+                    <img class="img-fluid" style="width: 100px;" src="/assets/profile.png">
+                </div>
+                <h1 class="text-center">Register here</h1>
+
+                
+
+                
+
+                <form (ngSubmit)="onSubmit()">
+                    <mat-form-field class="full-width mt">
+                        <mat-label>Username</mat-label>
+                        <input [(ngModel)]="user.userName"
+                        name="username" required type="text" matInput>
+                    </mat-form-field>
+                    
+                    <mat-form-field class="full-width mt">
+                        <mat-label>Email</mat-label>
+                        <input [(ngModel)]="user.email"
+                        name="username" required type="text" matInput>
+                    </mat-form-field>
+                    <mat-form-field class="full-width mt">
+                        <mat-label>Password</mat-label>
+                        <input [(ngModel)]="user.password"
+                        name="password" required type="password" matInput>
+                    </mat-form-field> 
+
+                    
+
+                    <div class="container text-center mt">
+                        <button type="submit" mat-raised-button color="primary">Submit</button>
+
+                        <button style="margin-left: 10px;" type="reset" mat-raised-button color="accent">Reset</button>
+                    </div>    
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
