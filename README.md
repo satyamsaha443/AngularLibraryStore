@@ -1,273 +1,41 @@
-<!-- Sidenav -->
-<nav
-  *ngIf="!hasRoute('login')"
-  class="
-    sidenav
-    navbar navbar-vertical
-    fixed-left
-    navbar-expand-xs navbar-light
-    bg-white
-  "
-  id="sidenav-main"
->
-  <div class="scrollbar-inner">
-    <!-- Brand -->
-    <div class="sidenav-header align-items-center">
-      <a class="navbar-brand" href="javascript:void(0)">
-        <img
-          width="70"
-          height="70"
-          src="assets/img/logo.png"
-          style="max-height: 80px"
-          class="navbar-brand-img"
-          alt="..."
-        />
-      </a>
-    </div>
-    <div class="navbar-inner">
-      <!-- Collapse -->
-      <div class="collapse navbar-collapse" id="sidenav-collapse-main">
-        <!-- Nav items -->
-        <app-navigation></app-navigation>
-      </div>
-    </div>
-  </div>
-</nav>
-<!-- Main content -->
-<div class="main-content" id="panel" *ngIf="!hasRoute('login')">
-  <!-- Topnav -->
-  <nav class="navbar navbar-top navbar-expand navbar-dark bg-lightgray border-bottom">
+![image](https://github.com/satyamsaha443/AngularLibraryStore/assets/52621047/2ad8b947-a655-4108-b665-f9a517012d2a)problem statement
+The absence of a comprehensive and integrated inventory management system leads to issues such as stock discrepancies, inefficient product data handling, and difficulties in monitoring stock levels, impacting our operational efficiency and bottom line. To address these challenges, I came up with the idea of developing  a robust inventory management application. This solution will feature secure user authentication with admin authentication, a centralized database for all product information, barcode scanning for easy product updates, and advanced search and filter capabilities. The application will also facilitate the creation and management of purchase and sales orders and offer detailed reporting and analytics. Additionally, it will support data import and export in various formats .
+The aim is to streamline our inventory processes, enhance data accuracy, and improve overall decision-making in inventory management.
 
-    <div class="container-fluid">
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <!-- Search form -->
-        <!-- <form
-          class="navbar-search navbar-search-light form-inline mr-sm-3"
-          id="navbar-search-main"
-        >
-          <div class="form-group mb-0">
-            <div class="input-group input-group-alternative input-group-merge">
-              <div class="input-group-prepend">
-                <span class="input-group-text"
-                  ><i class="fas fa-search"></i
-                ></span>
-              </div>
-              <input
-                class="form-control"
-                placeholder="Search ..."
-                type="text"
-              /> -->
-            <!-- </div>
-          </div>
-          <button
-            type="button"
-            class="close"
-            data-action="search-close"
-            data-target="#navbar-search-main"
-            aria-label="Close"
-          >
-            <span aria-hidden="true">×</span>
-          </button>
-        </form> -->
-        <!-- Navbar links -->
-        <button mat-icon-button (click)="toggleSidenav()">
-          <mat-icon>menu</mat-icon>
-        </button>
-        <ul class="navbar-nav align-items-center ml-md-auto">
-          <li class="nav-item d-xl-none">
-            <!-- Sidenav toggler -->
-            <div
-              class="pr-3 sidenav-toggler sidenav-toggler-dark"
-              data-action="sidenav-pin"
-              data-target="#sidenav-main"
-            >
-              <div class="sidenav-toggler-inner">
-                <i class="sidenav-toggler-line"></i>
-                <i class="sidenav-toggler-line"></i>
-                <i class="sidenav-toggler-line"></i>
-              </div>
-            </div>
-          </li>
-          <li class="nav-item d-sm-none">
-            <a
-              class="nav-link"
-              href="#"
-              data-action="search-show"
-              data-target="#navbar-search-main"
-            >
-              <i class="ni ni-zoom-split-in"></i>
-            </a>
-          </li>
-          <!--
-          <li class="nav-item dropdown">
-            <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
-              aria-expanded="false">
-              <i class="ni ni-bell-55"></i>
-            </a>
-            <div class="dropdown-menu dropdown-menu-xl  dropdown-menu-right  py-0 overflow-hidden">
-             
-              <div class="px-3 py-3">
-                <h6 class="text-sm text-muted m-0">You have <strong class="text-primary">13</strong> notifications.</h6>
-              </div>
-            
-              <div class="list-group list-group-flush">
-                <a href="#!" class="list-group-item list-group-item-action">
-                  <div class="row align-items-center">
-                    <div class="col-auto">
-                     
-                      <img alt="Image placeholder" src="assets/img/theme/team-1.jpg" class="avatar rounded-circle">
-                    </div>
-                    <div class="col ml--2">
-                      <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                          <h4 class="mb-0 text-sm">Admin</h4>
-                        </div>
-                        <div class="text-right text-muted">
-                          <small>2 hrs ago</small>
-                        </div>
-                      </div>
-                      <p class="text-sm mb-0">Let's meet at Starbucks at 11:30. Wdyt?</p>
-                    </div>
-                  </div>
-                </a>
-                <a href="#!" class="list-group-item list-group-item-action">
-                  <div class="row align-items-center">
-                    <div class="col-auto">
-                    
-                      <img alt="Image placeholder" src="assets/img/theme/team-2.jpg" class="avatar rounded-circle">
-                    </div>
-                    <div class="col ml--2">
-                      <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                          <h4 class="mb-0 text-sm">John Snow</h4>
-                        </div>
-                        <div class="text-right text-muted">
-                          <small>3 hrs ago</small>
-                        </div>
-                      </div>
-                      <p class="text-sm mb-0">........</p>
-                    </div>
-                  </div>
-                </a>
 
-              </div>
-            
-              <a href="#!" class="dropdown-item text-center text-primary font-weight-bold py-3">View all</a>
-            </div>
-          </li>
-        -->
-          <!--
-          <li class="nav-item dropdown">
-            <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
-              aria-expanded="false">
-              <i class="ni ni-ungroup"></i>
-            </a>
-            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-dark bg-default  dropdown-menu-right ">
-              <div class="row shortcuts px-4">
+use cases 
 
-              </div>
-            </div>
-          </li> -->
-        </ul>
-        <ul class="navbar-nav align-items-center ml-auto ml-md-0">
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link pr-0"
-              href="#"
-              role="button"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >
-              <div class="media align-items-center">
-                <span class="avatar avatar-sm rounded-circle">
-                  <img
-                    alt="Image placeholder"
-                    src="assets/img/theme/team-4.jpg"
-                  />
-                </span>
-                <div class="media-body ml-2 d-none d-lg-block">
-                  <span class="mb-0 text-sm font-weight-bold">Admin</span>
-                </div>
-              </div>
-            </a>
-            <div class="dropdown-menu dropdown-menu-right">
-              <div class="dropdown-header noti-title">
-                <h6 class="text-overflow m-0">Welcome!</h6>
-              </div>
-              <a routerLink="/profile" class="dropdown-item">
-                <i class="ni ni-single-02"></i>
-                <span>My profile</span>
-              </a>
-              <a disabled routerLink="/editprofile" class="dropdown-item">
-                <i class="ni ni-single-02"></i>
-                <span>Edit my profile</span>
-              </a>
-              <a routerLink="/configuration" class="dropdown-item">
-                <i class="ni ni-settings-gear-65"></i>
-                <span>Settings</span>
-              </a>
-              <div class="dropdown-divider"></div>
-              <a routerLink="/" class="dropdown-item">
-                <i class="ni ni-user-run"></i>
-                <span>Log out</span>
-              </a>
-              <a routerLink="/register" class="dropdown-item">
-                <i class="ni ni-user-register"></i>
-                <span>Register</span>
-              </a>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+Securely register and log in using authentication
+Store and manage detailed product information in a centralized database, including name, description , category, manufacturer, price, and quantity.
+Quickly add new products or update existing product details by scanning barcodes, streamlining the inventory input process.
+Enable users to efficiently locate products using robust search and filter tools based on criteria like name, category, etc.
+Keep a detailed list of suppliers, including contact details and pricing agreements, to manage supplier relationships efficiently.
+Create and manage purchase orders for inventory restocking; include options to print these orders.
+ Generate and manage sales orders to track customer purchases.
+Generate comprehensive reports on inventory levels, product sales, and supplier performance.
+Facilitate the import and export of inventory data in various formats like CSV and Excel for data migration and integration.
 
-  <!-- container -->
-  <div class="header bg-lightgray pb-6">
-    <div class="container-fluid">
-      <div class="header-body">
-        <div class="row align-items-center py-4"></div>
-      </div>
-    </div>
-  </div>
-  <div class="container-fluid mt--6">
-    <div class="row">
-      <div class="col">
-        <router-outlet></router-outlet>
-      </div>
-    </div>
-    <footer class="footer pt-0">
-      <div class="row align-items-center justify-content-lg-between">
-        <div class="col-lg-6">
-          <div class="copyright text-center text-lg-left text-muted"></div>
-        </div>
-        <div class="col-lg-6">
-          <ul
-            class="nav nav-footer justify-content-center justify-content-lg-end"
-          ></ul>
-        </div>
-      </div>
-    </footer>
-  </div>
-</div>
-<!-- sign-in-->
+
+business insights
+
+Efficiency and Time Savings:  Automated inventory processes significantly reduce the time spent on manual stock management, leading to increased operational efficiency.
+Accuracy and Reduced Errors: Digital tracking minimizes human error in inventory management, resulting in more accurate stock levels and financial records.
+Cost Reduction: Efficient stock management can lower holding costs and reduce losses from overstocking or stockouts , optimizing inventory levels.
+Data-Driven Decisions: The analytics and reporting capabilities provide valuable insights for informed decision-making regarding stock management, purchasing and sales strategies.
+Scalability: A robust system can adapt to growing business needs, making it suitable for businesses planning to scale.
+Compliance and Auditing: Enhanced record-keeping aids in regulatory compliance and simplifies auditing processes.
+Enhanced Customer Satisfaction: Accurate stock information and efficient order processing can lead to improved customer service and satisfaction.
+
+
+target audience
+
+Retail Businesses: Retailers, especially those with multiple locations, require efficient stock management to ensure product availability and manage diverse product lines.
+E-commerce platforms:  With the rise of online shopping, e-commerce businesses need sophisticated inventory systems to manage large and varied stock efficiently.
+Manufacturing Companies: Manufacturers can benefit from real-time tracking of raw materials and finished goods, aiding in production planning and control.
+Warehouse and Logistics Firms: These businesses need efficient inventory systems to manage and track large quantities of varied items stored in their facilities.
+Small and Medium Enterprises(SMEs): SMEs looking to streamline their operations and reduce costs can greatly benefit from an affordable, scalable inventory management solution.
+Supply Chain and Distribution Networks: Companies involved in supply chain and distribution require robust systems for tracking and managing inventory across various stages and locations.
 
 
 
-<br /><br />
-<div *ngIf="hasRoute('login')">
-  <app-login></app-login>
-</div>
 
-
-
-<!-- Argon Scripts -->
-<!-- Core -->
-<script src="assets/vendor/jquery/dist/jquery.min.js"></script>
-<script src="assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="assets/vendor/js-cookie/js.cookie.js"></script>
-<script src="assets/vendor/jquery.scrollbar/jquery.scrollbar.min.js"></script>
-<script src="assets/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js"></script>
-<!-- Argon JS -->
-<script src="assets/js/argon.js?v=1.2.0"></script>
