@@ -1,124 +1,207 @@
+$searchO="OU=people,O=the chubb corporation"
+$LDSServer="NAUSP-WAPP0338.aceins.com"
+#$filedate=Get-Date -Format "yyyyMMdd"
+#add one day to account for job starting day before file delivered.
 
-$data = Import-CSV -Path "C:\Users\SASAHA3\Desktop\WindowsPowershell\powershellcommands\ACEINSExportAll.csv"
+###\\rtpnas\JAMS\Q\Test\ 
+$filedate=(get-date).AddDays(1).ToString("yyyyMMdd")
+$extractfile="\\rtpnas\JAMS\Q\Test\LDSUserExtract_"+$filedate+".csv"
+#$filedate=Get-Date -Format "MMddyyyy"
+$filedate=(get-date).AddDays(1).ToString("MMddyyyy")
+# $FTPFileName="LDSUsers_"+$filedate+".csv"
 
-function Resolve-UserAccountControl {
-    param (
-        [Parameter(Mandatory)]
-        [int]
-        $UAC
-    )
+Write-Host "SubmitPath = \\rtpnas\JAMS\Q\Test\NewFold"
 
-    $UACPropertyFlags = @(
-        "SCRIPT",
-        "ACCOUNTDISABLE",
-        "RESERVED",
-        "HOMEDIR_REQUIRED",
-        "LOCKOUT",
-        "PASSWD_NOTREQD",
-        "PASSWD_CANT_CHANGE",
-        "ENCRYPTED_TEXT_PWD_ALLOWED",
-        "TEMP_DUPLICATE_ACCOUNT",
-        "NORMAL_ACCOUNT",
-        "RESERVED",
-        "INTERDOMAIN_TRUST_ACCOUNT",
-        "WORKSTATION_TRUST_ACCOUNT",
-        "SERVER_TRUST_ACCOUNT",
-        "RESERVED",
-        "RESERVED",
-        "DONT_EXPIRE_PASSWORD",
-        "MNS_LOGON_ACCOUNT",
-        "SMARTCARD_REQUIRED",
-        "TRUSTED_FOR_DELEGATION",
-        "NOT_DELEGATED",
-        "USE_DES_KEY_ONLY",
-        "DONT_REQ_PREAUTH",
-        "PASSWORD_EXPIRED",
-        "TRUSTED_TO_AUTH_FOR_DELEGATION",
-        "RESERVED",
-        "PARTIAL_SECRETS_ACCOUNT",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED"
-    )
+$LDSEntries=Get-ADObject -LDAPFilter "(objectClass=userProxyFull)" -Properties chubbguid,name,mail,cpnumber,givenName,sn,racfid,title,telephonenumber,modifyTimeStamp,proxyAddresses,'msDS-PrincipalName' -searchbase $searchO -Server $LDSServer
 
-    return (0..($UACPropertyFlags.Length - 1) | Where-Object { $UAC -bAnd [math]::Pow(2, $_) } | ForEach-Object { $UACPropertyFlags[$_] }) -join ' | '
-}
+Remove-Item $extractfile -ErrorAction SilentlyContinue
+$lineout='"ChubbGUID","ACEINSID","RACFID","CPNumber","Mail","FirstName","LastName","Title","PhoneNumber","LastModified","MailAlias1","MailAlias2","MailAlias3","MailAlias4"'
+Add-Content $extractfile $lineout
 
-$results = foreach ($User in $data) {
-    if ($User.Name -match "^X'(.*)'$") {
-        $hex = $matches[1] -replace ' '
-        $bytes = [byte[]]::new(($hex -split '([0-9a-f]{2})' | Where-Object { $_ }) -as [byte[]])
-        $User.Name = [System.Text.Encoding]::UTF8.GetString($bytes)
-        $User.Name = $User.Name.TrimEnd("`0")  # Trim null characters at the end if any
-    }
-    $UserPathComponents = $User.DN -split ','
-    $UserPath = $UserPathComponents | Where-Object {($_ -like 'OU=*') -or ($_ -like 'DC=*')} | ForEach-Object {
-        if ($_ -like 'OU=*') {
-            $GroupName = $_.Split('=')[1]
-            $GroupName
-        }
-        elseif ($_ -like 'DC=*') {
-            $DomainName = $_.Split('=')[1]
-            $DomainName
-        }
-    }
-    $UserPath = $UserPath -join '\'
+ForEach ($LDSEntry in $LDSEntries)
+	{
+	if ($LDSEntry.name -ne $LDSEntry.racfid)
+		{
+		if ($LDSEntry.ChubbGUID.Length -ne 32)
+			{
+			Write-Host "Skipping entry for invalid GUID length $LDSEntry"
+			continue
+			}
+		$MailAlias1=""
+		$MailAlias2=""
+		$MailAlias3=""
+		$MailAlias4=""
+		$AliasCount=1
+		Foreach ($address in $LDSEntry.proxyAddresses)
+	        {
+	        $address=$address.ToLower()
+            if (($address.IndexOf("smtp") -ne -1) -and ($address.IndexOf("onmicrosoft") -eq -1) -and ($address.IndexOf("notes.chubb.com") -eq -1) -and ($address.IndexOf("exchange.chubb.com") -eq -1) -and ($address.IndexOf("ace-ina.com") -eq -1) -and ($address.IndexOf("cf.chubb.com") -eq -1) )
+                {
+                $cleanMail=$address.substring(5)
+                if ($cleanMail -ne $LDSEntry.mail)
+                    {
+	                switch ($AliasCount) {
+	                    1 {$MailAlias1=$cleanMail;$AliasCount++}
+	                    2 {$MailAlias2=$cleanMail;$AliasCount++}
+	                    3 {$MailAlias3=$cleanMail;$AliasCount++}
+	                    4 {$MailAlias4=$cleanMail;$AliasCount++}
+	                    }
+					}	                    
+                }
+	        }
+	    
+	    $ChangeDate = '{0:yyyy/MM/dd hh:mm:ss}' -f $LDSEntry.modifyTimeStamp
+		$lineout='"'+$LDSEntry.chubbguid+'","'+$LDSEntry.name+'","'+$LDSEntry.racfid+'","'+$LDSEntry.cpnumber+'","'+$LDSEntry.mail+'","'+$LDSEntry.givenName+'","'+$LDSEntry.sn+'","'+$LDSEntry.title+'","'+$LDSEntry.telephonenumber+'","'+$ChangeDate+'","'+$MailAlias1+'","'+$MailAlias2+'","'+$MailAlias3+'","'+$MailAlias4+'"'
+		Add-Content $extractfile $lineout
+		}
+	}
 
-    switch ($User.objectclass) {
-        'user' {
-            $EmployeeType = $User.EmployeeType
-            $ExtensionAttribute9 = $User.ExtensionAttribute9
-            $ObjectClass = 'User'
-            $OperatingSystem = $User.OperatingSystem
-            $AccountControl = Resolve-UserAccountControl -UAC $User.UserAccountControl
-            break
-        }
-        'group' {
-            $EmployeeType = $User.EmployeeType
-            $ExtensionAttribute9 = $User.ExtensionAttribute9
-            $ObjectClass = 'Group'
-            $OperatingSystem = $User.OperatingSystem
-            $AccountControl = Resolve-UserAccountControl -UAC $User.UserAccountControl
-            break
-        }
-        'computer' {
-            $EmployeeType = $User.EmployeeType
-            $ExtensionAttribute9 = $User.ExtensionAttribute9
-            $ObjectClass = 'Computer'
-            $OperatingSystem = $User.OperatingSystem
-            $AccountControl = Resolve-UserAccountControl -UAC $User.UserAccountControl
-            break
-        }
-        'server' {
-            $EmployeeType = $User.EmployeeType
-            $ExtensionAttribute9 = $User.ExtensionAttribute9
-            $ObjectClass = 'Server'
-            $OperatingSystem = $User.OperatingSystem
-            $AccountControl = Resolve-UserAccountControl -UAC $User.UserAccountControl
-            break
-        }
-    }
+#Parse file for duplicate GUIDS
+Write-Host "Starting load of extract"
+$LDSEntries2=Import-csv $extractfile
+#$LDSEntries2|FT
+$LastGUID=$null
+$LastLastname=$null
 
-    if ($AccountControl -notmatch "SERVER_TRUST_ACCOUNT") {
-        [PSCustomObject]@{
-            Name = $User.Name
-            SamAccountName = $User.SamAccountName
-            UserPrincipalName = $User.UserPrincipalName
-            ObjectCategory = $User.ObjectCategory
-            UserPath = $UserPath
-            EmployeeType = $EmployeeType
-            ExtensionAttribute9 = $ExtensionAttribute9
-            ObjectClass = $ObjectClass
-            OperatingSystem = $OperatingSystem
-            AccountControl = $AccountControl
-        }
-    }
-}
+Write-Host "Sorting Records"
+$LDSEntries=$LDSEntries2|sort ChubbGUID
+#$LDSEntries|FT
 
-$results | Export-Csv -Path "C:\Users\SASAHA3\Desktop\WindowsPowershell\powershellcommands\ACEINSExportAll_modified.csv" -NoTypeInformation
+Remove-Item $extractfile -ErrorAction SilentlyContinue
+$lineout='"ChubbGUID","ACEINSID","RACFID","CPNumber","Mail","FirstName","LastName","Title","PhoneNumber","LastModified","MailAlias1","MailAlias2","MailAlias3","MailAlias4"'
+Add-Content $extractfile $lineout
+
+ForEach ($LDSEntry in $LDSEntries)
+	{
+	if ($LDSEntry.ChubbGUID -eq $LastGUID)
+		{
+		If ($LDSEntry.LastName -ne $LastLastname)
+			{
+			Write-Host "Multiple GUID encountered with different last name" $LDSEntry
+			}
+		}
+	else
+		{
+		$lineout='"'+$LDSEntry.ChubbGUID+'","'+$LDSEntry.ACEINSID+'","'+$LDSEntry.RACFID+'","'+$LDSEntry.CPNumber+'","'+$LDSEntry.Mail+'","'+$LDSEntry.FirstName+'","'+$LDSEntry.LastName+'","'+$LDSEntry.Title+'","'+$LDSEntry.PhoneNumber+'","'+$LDSEntry.LastModified+'","'+$LDSEntry.MailAlias1+'","'+$LDSEntry.MailAlias2+'","'+$LDSEntry.MailAlias3+'","'+$LDSEntry.MailAlias4+'"'
+		Add-Content $extractfile $lineout
+		$LastGUID=$LDSEntry.ChubbGUID
+		$LastMail=$LDSEntry.mail
+		}
+	}	
+
+# if ("<<CopyExtract>>" -eq "Y")
+# 	{
+# 	Try
+# 		{
+# 		Copy-Item $extractfile "<<FileDrop>>"
+# 		}
+# 	catch
+# 		{
+# 		Write-Host "Copy of extract file $extractfile to <<FileDrop>> failed." $Error[0]
+# 		}
+# 	}
+	
+# if ("<<FTPExtract>>" -eq "Y")
+# 	{
+# 	try
+# 		{
+# 		$FTPDIR = "<<FTPDIR>>"
+# 		$submitResult=Submit-JAMSEntry "<<SubmitPath>>FTPLDSExtract" -UseVariable
+# 		}
+# 	catch
+# 		{
+# 		Write-Host "Submit of extract FTP for $extractfile failed." $Error[0]
+# 		}
+# 	}
 
 
-X'6950686f6e65c2a732524d464d45544f4244354b44465247355053514b4a4b4f4e43'
+# $searchO="OU=people,O=the chubb corporation"
+# $LDSServer="NAUSP-WAPP0338.aceins.com"
+# #$filedate=Get-Date -Format "yyyyMMdd"
+# #add one day to account for job starting day before file delivered.
+
+# ###\\rtpnas\JAMS\Q\Test\ 
+# $filedate=(get-date).AddDays(1).ToString("yyyyMMdd")
+# $extractfile="\\rtpnas\JAMS\Q\Test\LDSUserExtract_"+$filedate+".csv"
+# #$filedate=Get-Date -Format "MMddyyyy"
+# $filedate=(get-date).AddDays(1).ToString("MMddyyyy")
+# # $FTPFileName="LDSUsers_"+$filedate+".csv"
+
+# Write-Host "SubmitPath = \\rtpnas\JAMS\Q\Test\NewFold"
+
+# $LDSEntries=Get-ADObject -LDAPFilter "(objectClass=userProxyFull)" -Properties chubbguid,name,mail,cpnumber,givenName,sn,racfid,title,telephonenumber,modifyTimeStamp,proxyAddresses,'msDS-PrincipalName' -searchbase $searchO -Server $LDSServer
+
+# Remove-Item $extractfile -ErrorAction SilentlyContinue
+# $lineout='"ChubbGUID","ACEINSID","RACFID","CPNumber","Mail","FirstName","LastName","Title","PhoneNumber","LastModified","MailAlias1","MailAlias2","MailAlias3","MailAlias4"'
+# Add-Content $extractfile $lineout
+
+# ForEach ($LDSEntry in $LDSEntries)
+# 	{
+# 	if ($LDSEntry.name -ne $LDSEntry.racfid)
+# 		{
+# 		if ($LDSEntry.ChubbGUID.Length -ne 32)
+# 			{
+# 			Write-Host "Skipping entry for invalid GUID length $LDSEntry"
+# 			continue
+# 			}
+# 		$MailAlias1=""
+# 		$MailAlias2=""
+# 		$MailAlias3=""
+# 		$MailAlias4=""
+# 		$AliasCount=1
+# 		Foreach ($address in $LDSEntry.proxyAddresses)
+# 	        {
+# 	        $address=$address.ToLower()
+#             if (($address.IndexOf("smtp") -ne -1) -and ($address.IndexOf("onmicrosoft") -eq -1) -and ($address.IndexOf("notes.chubb.com") -eq -1) -and ($address.IndexOf("exchange.chubb.com") -eq -1) -and ($address.IndexOf("ace-ina.com") -eq -1) -and ($address.IndexOf("cf.chubb.com") -eq -1) )
+#                 {
+#                 $cleanMail=$address.substring(5)
+#                 if ($cleanMail -ne $LDSEntry.mail)
+#                     {
+# 	                switch ($AliasCount) {
+# 	                    1 {$MailAlias1=$cleanMail;$AliasCount++}
+# 	                    2 {$MailAlias2=$cleanMail;$AliasCount++}
+# 	                    3 {$MailAlias3=$cleanMail;$AliasCount++}
+# 	                    4 {$MailAlias4=$cleanMail;$AliasCount++}
+# 	                    }
+# 					}	                    
+#                 }
+# 	        }
+	    
+# 	    $ChangeDate = '{0:yyyy/MM/dd hh:mm:ss}' -f $LDSEntry.modifyTimeStamp
+# 		$lineout='"'+$LDSEntry.chubbguid+'","'+$LDSEntry.name+'","'+$LDSEntry.racfid+'","'+$LDSEntry.cpnumber+'","'+$LDSEntry.mail+'","'+$LDSEntry.givenName+'","'+$LDSEntry.sn+'","'+$LDSEntry.title+'","'+$LDSEntry.telephonenumber+'","'+$ChangeDate+'","'+$MailAlias1+'","'+$MailAlias2+'","'+$MailAlias3+'","'+$MailAlias4+'"'
+# 		Add-Content $extractfile $lineout
+# 		}
+# 	}
+
+# #Parse file for duplicate GUIDS
+# Write-Host "Starting load of extract"
+# $LDSEntries2=Import-csv $extractfile
+# #$LDSEntries2|FT
+# $LastGUID=$null
+# $LastLastname=$null
+
+# Write-Host "Sorting Records"
+# $LDSEntries=$LDSEntries2|sort ChubbGUID
+# #$LDSEntries|FT
+
+# Remove-Item $extractfile -ErrorAction SilentlyContinue
+# $lineout='"ChubbGUID","ACEINSID","RACFID","CPNumber","Mail","FirstName","LastName","Title","PhoneNumber","LastModified","MailAlias1","MailAlias2","MailAlias3","MailAlias4"'
+# Add-Content $extractfile $lineout
+
+# ForEach ($LDSEntry in $LDSEntries)
+# 	{
+# 	if ($LDSEntry.ChubbGUID -eq $LastGUID)
+# 		{
+# 		If ($LDSEntry.LastName -ne $LastLastname)
+# 			{
+# 			Write-Host "Multiple GUID encountered with different last name" $LDSEntry
+# 			}
+# 		}
+# 	else
+# 		{
+# 		$lineout='"'+$LDSEntry.ChubbGUID+'","'+$LDSEntry.ACEINSID+'","'+$LDSEntry.RACFID+'","'+$LDSEntry.CPNumber+'","'+$LDSEntry.Mail+'","'+$LDSEntry.FirstName+'","'+$LDSEntry.LastName+'","'+$LDSEntry.Title+'","'+$LDSEntry.PhoneNumber+'","'+$LDSEntry.LastModified+'","'+$LDSEntry.MailAlias1+'","'+$LDSEntry.MailAlias2+'","'+$LDSEntry.MailAlias3+'","'+$LDSEntry.MailAlias4+'"'
+# 		Add-Content $extractfile $lineout
+# 		$LastGUID=$LDSEntry.ChubbGUID
+# 		$LastMail=$LDSEntry.mail
+# 		}
+# 	}	
